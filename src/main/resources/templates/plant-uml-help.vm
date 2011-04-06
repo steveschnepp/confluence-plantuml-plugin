@@ -1,0 +1,25 @@
+
+<tr bgcolor=ffffff>
+  <td width="200px">
+    {plantuml}<br />
+BaseClass&nbsp;&lt;|--&nbsp;SubClass<br />
+    {plantuml}
+  </td>
+
+  <td>
+    <p>
+      Generates a PlantUML diagram.
+       <ul>
+         <li><b>title:</b> - (optional) the title of the diagram.</li>
+         <li><b>macro body:</b> - (required) the PlantUML block. The <tt>@startuml</tt> and <tt>@enduml</tt> tags are not required. The detailed documentation of the syntax is available on the <a href="http://plantuml.sourceforge.net">PlantUML website</a>.</li>
+       </ul>
+    </p>
+    <p>
+       This is the output of the sample on the left side:
+    </p>
+    <p>
+       <img src="$req.contextPath/download/resources/de.griffel.confluence.plugins.plant-uml/icons/macro-help.png"
+         width="80" height="150" border="0">
+    </p>
+  </td>
+</tr>
