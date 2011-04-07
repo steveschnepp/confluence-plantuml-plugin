@@ -33,7 +33,7 @@ public class PlantUmlMacroTest {
       Assert.assertEquals("<img src='junit/resource.png'/>", result);
       final ByteArrayOutputStream out = (ByteArrayOutputStream) resourceManager.getResourceWriter(null, null, null)
             .getStreamForWriting();
-      Assert.assertTrue(out.toByteArray().length > 0); // depends on installation of graphviz
+      Assert.assertTrue(out.toByteArray().length > 0); // file size depends on installation of graphviz
       IOUtils.write(out.toByteArray(), new FileOutputStream("target/junit.png"));
    }
 
