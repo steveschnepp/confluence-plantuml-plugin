@@ -108,7 +108,7 @@
 					<tagBase>https://studio.plugins.atlassian.com/svn/PUML/tags</tagBase>
 				</configuration>
 			</plugin>
-		</plugins>
+ 		</plugins>
 	</build>
 
 	<profiles>
