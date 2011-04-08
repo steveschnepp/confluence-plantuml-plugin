@@ -100,16 +100,14 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-release-plugin</artifactId>
-					<version>2.1</version>
-					<configuration>
-						<tagBase>https://studio.plugins.atlassian.com/svn/PUML/tags</tagBase>
-					</configuration>
-				</plugin>
-			</plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<tagBase>https://studio.plugins.atlassian.com/svn/PUML/tags</tagBase>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
