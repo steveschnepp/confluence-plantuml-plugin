@@ -24,51 +24,44 @@
  */
 package de.griffel.confluence.plugins.plantuml;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterators;
 
-/**
- * Supported PlantUML Macro parameters.
- */
-public class PlantUmlMacroParams {
+public enum DiagramType {
+   UML("uml", "@startuml", "@enduml"),
+   Ditaa("ditaa", "@startditaa", "@endditaa");
 
-   public enum Param {
-      title, type
+   private final String _type;
+   private final String _startTag;
+   private final String _endTag;
+
+   private DiagramType(String type, String startTag, String endTag) {
+      _type = type;
+      _startTag = startTag;
+      _endTag = endTag;
    }
 
-   @SuppressWarnings("rawtypes")
-   private final Map _params;
-
-   @SuppressWarnings("rawtypes")
-   public PlantUmlMacroParams(Map params) {
-      _params = params != null ? params : Collections.EMPTY_MAP;
+   public String getType() {
+      return _type;
    }
 
-   public String getTitle() {
-      return get(Param.title);
+   public String getStartTag() {
+      return _startTag;
    }
 
-   public DiagramType getDiagramType() {
-      final String type = get(Param.type);
-      /* final */DiagramType result;
-      try {
-         result = DiagramType.fromType(type);
-      } catch (NoSuchElementException e) {
-         result = DiagramType.getDefault();
-      }
-      return result;
+   public String getEndTag() {
+      return _endTag;
    }
 
-   /*
-    * @see java.lang.Object#toString()
-    */
-   @Override
-   public String toString() {
-      return "PlantUmlMacroParams [_params=" + _params + "]";
+   public static DiagramType getDefault() {
+      return UML;
    }
 
-   private String get(Param param) {
-      return (String) _params.get(param.name());
+   public static DiagramType fromType(final String type) {
+      return Iterators.find(Iterators.forArray(values()), new Predicate<DiagramType>() {
+         public boolean apply(DiagramType diagramType) {
+            return diagramType.getType().equals(type);
+         }
+      });
    }
 }

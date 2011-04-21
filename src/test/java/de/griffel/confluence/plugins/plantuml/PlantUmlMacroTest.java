@@ -58,7 +58,29 @@ public class PlantUmlMacroTest {
       final ByteArrayOutputStream out = (ByteArrayOutputStream) resourceManager.getResourceWriter(null, null, null)
             .getStreamForWriting();
       Assert.assertTrue(out.toByteArray().length > 0); // file size depends on installation of graphviz
-      IOUtils.write(out.toByteArray(), new FileOutputStream("target/junit.png"));
+      IOUtils.write(out.toByteArray(), new FileOutputStream("target/junit-basic.png"));
+   }
+
+   @Test
+   public void ditaa() throws Exception {
+      final MockExportDownloadResourceManager resourceManager = new MockExportDownloadResourceManager();
+      resourceManager.setDownloadResourceWriter(new MockDownloadResourceWriter());
+      final PlantUmlMacro macro = new PlantUmlMacro(resourceManager);
+      final Map<Param, String> macroParams = Collections.singletonMap(PlantUmlMacroParams.Param.type,
+            DiagramType.Ditaa.getType());
+      final String macroBody = new StringBuilder()
+            .append("/--------\\   +-------+\n")
+            .append("|cAAA    +---+Version|\n")
+            .append("|  Data  |   |   V3  |\n")
+            .append("|  Base  |   |cRED{d}|\n")
+            .append("|     {s}|   +-------+\n")
+            .append("\\---+----/\n").toString();
+      final String result = macro.execute(macroParams, macroBody, null);
+      Assert.assertEquals("<img src='junit/resource.png'/>", result);
+      final ByteArrayOutputStream out = (ByteArrayOutputStream) resourceManager.getResourceWriter(null, null, null)
+            .getStreamForWriting();
+      Assert.assertTrue(out.toByteArray().length > 0); // file size depends on installation of graphviz
+      IOUtils.write(out.toByteArray(), new FileOutputStream("target/junit-ditaat.png"));
    }
 
    static class MockExportDownloadResourceManager implements WritableDownloadResourceManager {

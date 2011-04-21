@@ -29,8 +29,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.plantuml.BlockUmlBuilder;
 import net.sourceforge.plantuml.SourceStringReader;
+import net.sourceforge.plantuml.StartUtils;
 import net.sourceforge.plantuml.preproc.Defines;
 
 import org.apache.log4j.Logger;
@@ -73,8 +73,9 @@ public class PlantUmlMacro extends BaseMacro {
       final DownloadResourceWriter resourceWriter = _writeableDownloadResourceManager.getResourceWriter(
             AuthenticatedUserThreadLocal.getUsername(), "plantuml", "png");
 
-      final String umlBlock = toUmlBlock(body);
-      final List<String> config = new PlantUmlConfigBuilder().build(new PlantUmlMacroParams(params));
+      final PlantUmlMacroParams macroParams = new PlantUmlMacroParams(params);
+      final String umlBlock = toUmlBlock(body, macroParams.getDiagramType());
+      final List<String> config = new PlantUmlConfigBuilder().build(macroParams);
       final SourceStringReader reader = new SourceStringReader(new Defines(), umlBlock, config);
       try {
          reader.generateImage(resourceWriter.getStreamForWriting());
@@ -90,17 +91,17 @@ public class PlantUmlMacro extends BaseMacro {
       return result.toString();
    }
 
-   static String toUmlBlock(String body) {
+   static String toUmlBlock(String body, DiagramType diagramType) {
       final String umlBlock;
-      if (BlockUmlBuilder.isArobaseStartuml(body)) {
+      if (StartUtils.isArobaseStartDiagram(body)) {
          umlBlock = body;
       } else {
          final StringBuilder sb = new StringBuilder();
-         sb.append("@startuml ");
-         sb.append("\n");
+         sb.append(diagramType.getStartTag());
+         sb.append(" \n");
          sb.append(body);
          sb.append("\n");
-         sb.append("@enduml");
+         sb.append(diagramType.getEndTag());
          umlBlock = sb.toString();
       }
       if (logger.isDebugEnabled()) {
@@ -127,5 +128,4 @@ public class PlantUmlMacro extends BaseMacro {
          return Collections.unmodifiableList(_config);
       }
    }
-
 }
