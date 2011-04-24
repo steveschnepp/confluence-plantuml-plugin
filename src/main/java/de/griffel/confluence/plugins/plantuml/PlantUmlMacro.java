@@ -89,13 +89,7 @@ public class PlantUmlMacro extends BaseMacro {
       sb.append("<img src='");
       sb.append(resourceWriter.getResourcePath());
       sb.append("'");
-
-      final String imageStyle = macroParams.getImageStyle();
-      if (!imageStyle.isEmpty()) {
-         sb.append(" style=\"");
-         sb.append(imageStyle);
-         sb.append("\"");
-      }
+      sb.append(macroParams.getImageStyle());
       sb.append("/>");
       sb.append("</span>");
       final String result = sb.toString();
