@@ -39,6 +39,7 @@ import com.atlassian.confluence.importexport.resource.DownloadResourceReader;
 import com.atlassian.confluence.importexport.resource.DownloadResourceWriter;
 import com.atlassian.confluence.importexport.resource.UnauthorizedDownloadResourceException;
 import com.atlassian.confluence.importexport.resource.WritableDownloadResourceManager;
+import com.google.common.collect.ImmutableMap;
 
 import de.griffel.confluence.plugins.plantuml.PlantUmlMacroParams.Param;
 
@@ -54,7 +55,8 @@ public class PlantUmlMacroTest {
       final Map<Param, String> macroParams = Collections.singletonMap(PlantUmlMacroParams.Param.title, "Sample Title");
       final String macroBody = "A <|-- B";
       final String result = macro.execute(macroParams, macroBody, null);
-      Assert.assertEquals("<img src='junit/resource.png'/>", result);
+      Assert.assertEquals("<span class=\"image-wrap\" style=\"\"><img src='junit/resource.png'/></span>",
+            result);
       final ByteArrayOutputStream out = (ByteArrayOutputStream) resourceManager.getResourceWriter(null, null, null)
             .getStreamForWriting();
       Assert.assertTrue(out.toByteArray().length > 0); // file size depends on installation of graphviz
@@ -66,8 +68,10 @@ public class PlantUmlMacroTest {
       final MockExportDownloadResourceManager resourceManager = new MockExportDownloadResourceManager();
       resourceManager.setDownloadResourceWriter(new MockDownloadResourceWriter());
       final PlantUmlMacro macro = new PlantUmlMacro(resourceManager);
-      final Map<Param, String> macroParams = Collections.singletonMap(PlantUmlMacroParams.Param.type,
-            DiagramType.Ditaa.getType());
+      final ImmutableMap<String, String> macroParams = new ImmutableMap.Builder<String, String>().put(
+            PlantUmlMacroParams.Param.type.name(), DiagramType.Ditaa.getType())
+            .put(PlantUmlMacroParams.Param.align.name(), PlantUmlMacroParams.Alignment.center.name())
+            .put(PlantUmlMacroParams.Param.border.name(), "3").build();
       final String macroBody = new StringBuilder()
             .append("/--------\\   +-------+\n")
             .append("|cAAA    +---+Version|\n")
@@ -76,7 +80,10 @@ public class PlantUmlMacroTest {
             .append("|     {s}|   +-------+\n")
             .append("\\---+----/\n").toString();
       final String result = macro.execute(macroParams, macroBody, null);
-      Assert.assertEquals("<img src='junit/resource.png'/>", result);
+      Assert.assertEquals(
+            "<span class=\"image-wrap\" style=\"display: block; text-align: center;\"><img src='junit/resource.png' " +
+                  "style=\"border: 3px solid black;\"/></span>",
+            result);
       final ByteArrayOutputStream out = (ByteArrayOutputStream) resourceManager.getResourceWriter(null, null, null)
             .getStreamForWriting();
       Assert.assertTrue(out.toByteArray().length > 0); // file size depends on installation of graphviz

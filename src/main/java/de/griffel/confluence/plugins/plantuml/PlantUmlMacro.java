@@ -84,9 +84,20 @@ public class PlantUmlMacro extends BaseMacro {
       }
 
       final StringBuilder sb = new StringBuilder();
+      sb.append("<span class=\"image-wrap\" style=\"" + macroParams.getAlignment().getCssStyle() + "\">");
+
       sb.append("<img src='");
       sb.append(resourceWriter.getResourcePath());
-      sb.append("'/>");
+      sb.append("'");
+
+      final String imageStyle = macroParams.getImageStyle();
+      if (!imageStyle.isEmpty()) {
+         sb.append(" style=\"");
+         sb.append(imageStyle);
+         sb.append("\"");
+      }
+      sb.append("/>");
+      sb.append("</span>");
       final String result = sb.toString();
       return result.toString();
    }

@@ -34,7 +34,24 @@ import java.util.NoSuchElementException;
 public class PlantUmlMacroParams {
 
    public enum Param {
-      title, type
+      title, type, border, align, hspace, vspace
+   }
+
+   public enum Alignment {
+      none(""), left("float: left;"), center("display: block; text-align: center;"), right("float: right;");
+      private final String _cssStyle;
+
+      private Alignment(String cssStyle) {
+         _cssStyle = cssStyle;
+      }
+
+      public String getCssStyle() {
+         return _cssStyle;
+      }
+
+      public static Alignment getDefault() {
+         return none;
+      }
    }
 
    @SuppressWarnings("rawtypes")
@@ -47,6 +64,44 @@ public class PlantUmlMacroParams {
 
    public String getTitle() {
       return get(Param.title);
+   }
+
+   public int getBorder() {
+      final String border = get(Param.border);
+      return border != null ? Integer.valueOf(border) : 0;
+   }
+
+   public int getHspace() {
+      final String hspace = get(Param.hspace);
+      return hspace != null ? Integer.valueOf(hspace) : 0;
+   }
+
+   public int getVspace() {
+      final String vspace = get(Param.vspace);
+      return vspace != null ? Integer.valueOf(vspace) : 0;
+   }
+
+   public String getImageStyle() {
+      final StringBuilder sb = new StringBuilder();
+      if (getBorder() > 0) {
+         sb.append("border: " + getBorder() + "px solid black;");
+      }
+      if (getHspace() > 0) {
+         sb.append("hspace=" + getHspace() + "px;");
+      }
+      if (getVspace() > 0) {
+         sb.append("vspace=" + getVspace() + "px;");
+      }
+      return sb.toString();
+   }
+
+   public Alignment getAlignment() {
+      final String align = get(Param.align);
+      try {
+         return align != null ? Alignment.valueOf(align) : Alignment.getDefault();
+      } catch (IllegalArgumentException e) {
+         return Alignment.getDefault();
+      }
    }
 
    public DiagramType getDiagramType() {

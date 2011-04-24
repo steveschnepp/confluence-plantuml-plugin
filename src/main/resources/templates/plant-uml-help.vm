@@ -11,6 +11,8 @@ BaseClass&nbsp;&lt;|--&nbsp;SubClass<br />
       Generates a PlantUML diagram.
        <ul>
          <li><b>type:</b> - (optional) the type of the diagram. Possible values are: 'uml' (default) or 'ditaa'</li>
+         <li><b>align:</b> - (optional) align the diagram. Supported values are 'none' (default), 'left', 'center' and 'right'.</li>
+         <li><b>border:</b> - (optional) border size in pixel. Value must be integer > 0.</li>
          <li><b>title:</b> - (optional) the title of the diagram, default is none title.</li>
          <li><b>macro body:</b> - (required) the PlantUML block. The <tt>@start</tt> and <tt>@end</tt> tags are not required. The detailed documentation of the syntax is available on the <a href="http://plantuml.sourceforge.net">PlantUML website</a>.</li>
        </ul>
