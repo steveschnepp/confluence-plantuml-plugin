@@ -30,6 +30,8 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Map;
 
+import net.sourceforge.plantuml.DiagramType;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -69,7 +71,7 @@ public class PlantUmlMacroTest {
       resourceManager.setDownloadResourceWriter(new MockDownloadResourceWriter());
       final PlantUmlMacro macro = new PlantUmlMacro(resourceManager);
       final ImmutableMap<String, String> macroParams = new ImmutableMap.Builder<String, String>().put(
-            PlantUmlMacroParams.Param.type.name(), DiagramType.Ditaa.getType())
+            PlantUmlMacroParams.Param.type.name(), DiagramType.DITAA.name().toLowerCase())
             .put(PlantUmlMacroParams.Param.align.name(), PlantUmlMacroParams.Alignment.center.name())
             .put(PlantUmlMacroParams.Param.border.name(), "3").build();
       final String macroBody = new StringBuilder()

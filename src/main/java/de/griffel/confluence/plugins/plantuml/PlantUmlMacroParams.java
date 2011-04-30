@@ -25,8 +25,14 @@
 package de.griffel.confluence.plugins.plantuml;
 
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import net.sourceforge.plantuml.DiagramType;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterators;
 
 /**
  * Supported PlantUML Macro parameters.
@@ -105,12 +111,16 @@ public class PlantUmlMacroParams {
    }
 
    public DiagramType getDiagramType() {
-      final String type = get(Param.type);
       /* final */DiagramType result;
       try {
-         result = DiagramType.fromType(type);
+         final String type = get(Param.type);
+         result = Iterators.find(Iterators.forArray(DiagramType.values()), new Predicate<DiagramType>() {
+            public boolean apply(DiagramType diagramType) {
+               return diagramType.name().toLowerCase(Locale.US).equals(type);
+            }
+         });
       } catch (NoSuchElementException e) {
-         result = DiagramType.getDefault();
+         result = DiagramType.UML;
       }
       return result;
    }

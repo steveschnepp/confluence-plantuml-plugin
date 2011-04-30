@@ -25,15 +25,15 @@
 package de.griffel.confluence.plugins.plantuml;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.plantuml.DiagramType;
 import net.sourceforge.plantuml.SourceStringReader;
-import net.sourceforge.plantuml.StartUtils;
+import net.sourceforge.plantuml.UmlSource;
 import net.sourceforge.plantuml.preproc.Defines;
-
-import org.apache.log4j.Logger;
 
 import com.atlassian.confluence.importexport.resource.DownloadResourceWriter;
 import com.atlassian.confluence.importexport.resource.WritableDownloadResourceManager;
@@ -44,9 +44,9 @@ import com.atlassian.renderer.v2.macro.BaseMacro;
 import com.atlassian.renderer.v2.macro.MacroException;
 import com.google.common.collect.Lists;
 
-public class PlantUmlMacro extends BaseMacro {
+import de.griffel.confluence.plugins.plantuml.PlantUmlPreprocessor.IncludeFileHandler;
 
-   private static final Logger logger = Logger.getLogger(PlantUmlMacro.class);
+public class PlantUmlMacro extends BaseMacro {
 
    private final WritableDownloadResourceManager _writeableDownloadResourceManager;
 
@@ -96,23 +96,24 @@ public class PlantUmlMacro extends BaseMacro {
       return result.toString();
    }
 
-   static String toUmlBlock(String body, DiagramType diagramType) {
-      final String umlBlock;
-      if (StartUtils.isArobaseStartDiagram(body)) {
-         umlBlock = body;
-      } else {
-         final StringBuilder sb = new StringBuilder();
-         sb.append(diagramType.getStartTag());
-         sb.append(" \n");
-         sb.append(body);
-         sb.append("\n");
-         sb.append(diagramType.getEndTag());
-         umlBlock = sb.toString();
+   static String toUmlBlock(final String body, final DiagramType diagramType) throws MacroException {
+      final IncludeFileHandler includeFileHandler = new IncludeFileHandler() {
+
+         public UmlSource resolve(String name) {
+            throw new NoSuchMethodError(name); // FIXME
+         }
+      };
+      final UmlSourceBuilder builder;
+      try {
+         builder = new UmlSourceBuilder(diagramType).append(new StringReader(body));
+      } catch (IOException e) {
+         throw new MacroException(e);
       }
-      if (logger.isDebugEnabled()) {
-         logger.debug("Using UML block " + umlBlock);
+      try {
+         return new PlantUmlPreprocessor(builder.build(), includeFileHandler).toUmlBlock();
+      } catch (final IOException e) {
+         throw new MacroException(e);
       }
-      return umlBlock;
    }
 
    public static class PlantUmlConfigBuilder {

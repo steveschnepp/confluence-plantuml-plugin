@@ -24,44 +24,24 @@
  */
 package de.griffel.confluence.plugins.plantuml;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterators;
+import net.sourceforge.plantuml.UmlSource;
 
-public enum DiagramType {
-   UML("uml", "@startuml", "@enduml"),
-   Ditaa("ditaa", "@startditaa", "@endditaa");
+import org.junit.Assert;
+import org.junit.Test;
 
-   private final String _type;
-   private final String _startTag;
-   private final String _endTag;
+import com.google.common.collect.ImmutableList;
 
-   private DiagramType(String type, String startTag, String endTag) {
-      _type = type;
-      _startTag = startTag;
-      _endTag = endTag;
-   }
+import de.griffel.confluence.plugins.plantuml.PlantUmlPreprocessor.IncludeFileHandler;
 
-   public String getType() {
-      return _type;
-   }
-
-   public String getStartTag() {
-      return _startTag;
-   }
-
-   public String getEndTag() {
-      return _endTag;
-   }
-
-   public static DiagramType getDefault() {
-      return UML;
-   }
-
-   public static DiagramType fromType(final String type) {
-      return Iterators.find(Iterators.forArray(values()), new Predicate<DiagramType>() {
-         public boolean apply(DiagramType diagramType) {
-            return diagramType.getType().equals(type);
-         }
-      });
+public class PlantUmlPreprocessorTest {
+   @Test
+   public void testInlining() throws Exception {
+      final UmlSource umlSource = new UmlSource(ImmutableList.of("!include x", "buz", "eof"));
+      Assert.assertEquals("foo\nbar\nbuz\neof\n",
+            new PlantUmlPreprocessor(umlSource, new IncludeFileHandler() {
+               public UmlSource resolve(String name) {
+                  return new UmlSource(ImmutableList.of("foo", "bar"));
+               }
+            }).toUmlBlock());
    }
 }
