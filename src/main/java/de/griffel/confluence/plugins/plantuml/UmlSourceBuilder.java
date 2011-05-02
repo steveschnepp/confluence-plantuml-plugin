@@ -25,6 +25,7 @@
 package de.griffel.confluence.plugins.plantuml;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.util.List;
@@ -33,19 +34,34 @@ import java.util.Locale;
 import net.sourceforge.plantuml.DiagramType;
 import net.sourceforge.plantuml.UmlSource;
 
+import org.apache.commons.io.IOUtils;
+
 import com.google.common.collect.Lists;
 
 public final class UmlSourceBuilder {
    private final List<String> _lines = Lists.newArrayList();
    private final DiagramType _diagramType;
 
+   public UmlSourceBuilder() {
+      this(null);
+   }
+
    public UmlSourceBuilder(DiagramType diagramType) {
       _diagramType = diagramType;
-      append(getStartTag());
+      if (diagramType != null) {
+         append(getStartTag());
+      }
    }
 
    public UmlSourceBuilder append(String line) {
       _lines.add(line);
+      return this;
+   }
+
+   public UmlSourceBuilder append(List<String> lines) {
+      for (String line : lines) {
+         _lines.add(line);
+      }
       return this;
    }
 
@@ -59,8 +75,15 @@ public final class UmlSourceBuilder {
       return this;
    }
 
+   @SuppressWarnings("unchecked")
+   public UmlSourceBuilder append(InputStream stream) throws IOException {
+      return append(IOUtils.readLines(stream));
+   }
+
    public UmlSource build() {
-      append(getEndTag());
+      if (_diagramType != null) {
+         append(getEndTag());
+      }
       return new UmlSource(_lines);
    }
 

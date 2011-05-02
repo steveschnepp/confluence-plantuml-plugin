@@ -35,8 +35,14 @@ import net.sourceforge.plantuml.SourceStringReader;
 import net.sourceforge.plantuml.UmlSource;
 import net.sourceforge.plantuml.preproc.Defines;
 
+import org.apache.log4j.Logger;
+
 import com.atlassian.confluence.importexport.resource.DownloadResourceWriter;
 import com.atlassian.confluence.importexport.resource.WritableDownloadResourceManager;
+import com.atlassian.confluence.pages.Attachment;
+import com.atlassian.confluence.pages.Page;
+import com.atlassian.confluence.pages.PageManager;
+import com.atlassian.confluence.renderer.PageContext;
 import com.atlassian.confluence.user.AuthenticatedUserThreadLocal;
 import com.atlassian.renderer.RenderContext;
 import com.atlassian.renderer.v2.RenderMode;
@@ -44,14 +50,24 @@ import com.atlassian.renderer.v2.macro.BaseMacro;
 import com.atlassian.renderer.v2.macro.MacroException;
 import com.google.common.collect.Lists;
 
-import de.griffel.confluence.plugins.plantuml.PlantUmlPreprocessor.IncludeFileHandler;
+import de.griffel.confluence.plugins.plantuml.PlantUmlPreprocessor.UmlSourceLocator;
 
+/**
+ * The Confluence PlantUML Macro.
+ * 
+ * @author Michael Griffel
+ */
 public class PlantUmlMacro extends BaseMacro {
+   private final Logger logger = Logger.getLogger(PlantUmlMacro.class);
 
    private final WritableDownloadResourceManager _writeableDownloadResourceManager;
 
-   public PlantUmlMacro(WritableDownloadResourceManager writeableDownloadResourceManager) {
+   private final PageManager _pageManager;
+
+   public PlantUmlMacro(WritableDownloadResourceManager writeableDownloadResourceManager,
+         PageManager pageManager) {
       _writeableDownloadResourceManager = writeableDownloadResourceManager;
+      _pageManager = pageManager;
    }
 
    @Override
@@ -67,14 +83,55 @@ public class PlantUmlMacro extends BaseMacro {
       return RenderMode.NO_RENDER;
    }
 
-   public String execute(@SuppressWarnings("rawtypes") Map params, String body, RenderContext renderContext)
+   public String execute(@SuppressWarnings("rawtypes") final Map params, final String body,
+         final RenderContext renderContext)
          throws MacroException {
 
       final DownloadResourceWriter resourceWriter = _writeableDownloadResourceManager.getResourceWriter(
             AuthenticatedUserThreadLocal.getUsername(), "plantuml", "png");
 
+      final UmlSourceLocator umlSourceLocator;
+      if (renderContext instanceof PageContext) {
+         final PageContext pageContext = (PageContext) renderContext;
+         umlSourceLocator = new UmlSourceLocator() {
+            public UmlSource get(String name) throws IOException {
+               final ConfluenceLinkParser parser = new ConfluenceLinkParser(pageContext);
+               final ConfluenceLink confluenceLink = parser.parse(name);
+
+               if (logger.isDebugEnabled()) {
+                  logger.debug("Link '" + name + "' -> " + confluenceLink);
+               }
+
+               if (confluenceLink.hasAttachmentName()) {
+                  final Page page = _pageManager.getPage(confluenceLink.getSpaceKey(), confluenceLink.getPageTitle());
+                  if (page == null) {
+                     throw new IOException("Cannot find page '" + confluenceLink.getPageTitle()
+                           + "' in space '" + confluenceLink.getSpaceKey() + "'");
+                  }
+                  final Attachment attachment = page.getAttachmentNamed(confluenceLink.getAttachmentName());
+                  if (attachment == null) {
+                     throw new IOException("Cannot find attachment '" + confluenceLink.getAttachmentName()
+                           + "' on page '" + confluenceLink.getPageTitle()
+                           + "' in space '" + confluenceLink.getSpaceKey() + "'");
+                  }
+                  return new UmlSourceBuilder().append(attachment.getContentsAsStream()).build();
+
+               } else {
+                  final Page page = _pageManager.getPage(confluenceLink.getSpaceKey(), confluenceLink.getPageTitle());
+                  if (page == null) {
+                     throw new IOException("Cannot find page '" + confluenceLink.getPageTitle()
+                           + "' in space '" + confluenceLink.getSpaceKey() + "'");
+                  }
+                  return new UmlSourceBuilder().append(page.getContent()).build();
+               }
+            }
+         };
+      } else {
+         umlSourceLocator = null;
+      }
+
       final PlantUmlMacroParams macroParams = new PlantUmlMacroParams(params);
-      final String umlBlock = toUmlBlock(body, macroParams.getDiagramType());
+      final String umlBlock = toUmlBlock(body, macroParams.getDiagramType(), umlSourceLocator);
       final List<String> config = new PlantUmlConfigBuilder().build(macroParams);
       final SourceStringReader reader = new SourceStringReader(new Defines(), umlBlock, config);
       try {
@@ -96,13 +153,9 @@ public class PlantUmlMacro extends BaseMacro {
       return result.toString();
    }
 
-   static String toUmlBlock(final String body, final DiagramType diagramType) throws MacroException {
-      final IncludeFileHandler includeFileHandler = new IncludeFileHandler() {
+   String toUmlBlock(final String body, final DiagramType diagramType, UmlSourceLocator umlSourceLocator)
+         throws MacroException {
 
-         public UmlSource resolve(String name) {
-            throw new NoSuchMethodError(name); // FIXME
-         }
-      };
       final UmlSourceBuilder builder;
       try {
          builder = new UmlSourceBuilder(diagramType).append(new StringReader(body));
@@ -110,7 +163,7 @@ public class PlantUmlMacro extends BaseMacro {
          throw new MacroException(e);
       }
       try {
-         return new PlantUmlPreprocessor(builder.build(), includeFileHandler).toUmlBlock();
+         return new PlantUmlPreprocessor(builder.build(), umlSourceLocator).toUmlBlock();
       } catch (final IOException e) {
          throw new MacroException(e);
       }

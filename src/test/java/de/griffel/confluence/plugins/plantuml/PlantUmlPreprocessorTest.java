@@ -31,15 +31,15 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 
-import de.griffel.confluence.plugins.plantuml.PlantUmlPreprocessor.IncludeFileHandler;
+import de.griffel.confluence.plugins.plantuml.PlantUmlPreprocessor.UmlSourceLocator;
 
 public class PlantUmlPreprocessorTest {
    @Test
    public void testInlining() throws Exception {
       final UmlSource umlSource = new UmlSource(ImmutableList.of("!include x", "buz", "eof"));
       Assert.assertEquals("foo\nbar\nbuz\neof\n",
-            new PlantUmlPreprocessor(umlSource, new IncludeFileHandler() {
-               public UmlSource resolve(String name) {
+            new PlantUmlPreprocessor(umlSource, new UmlSourceLocator() {
+               public UmlSource get(String name) {
                   return new UmlSource(ImmutableList.of("foo", "bar"));
                }
             }).toUmlBlock());

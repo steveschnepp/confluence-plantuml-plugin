@@ -53,7 +53,7 @@ public class PlantUmlMacroTest {
    public void basic() throws Exception {
       final MockExportDownloadResourceManager resourceManager = new MockExportDownloadResourceManager();
       resourceManager.setDownloadResourceWriter(new MockDownloadResourceWriter());
-      final PlantUmlMacro macro = new PlantUmlMacro(resourceManager);
+      final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null);
       final Map<Param, String> macroParams = Collections.singletonMap(PlantUmlMacroParams.Param.title, "Sample Title");
       final String macroBody = "A <|-- B";
       final String result = macro.execute(macroParams, macroBody, null);
@@ -69,7 +69,7 @@ public class PlantUmlMacroTest {
    public void ditaa() throws Exception {
       final MockExportDownloadResourceManager resourceManager = new MockExportDownloadResourceManager();
       resourceManager.setDownloadResourceWriter(new MockDownloadResourceWriter());
-      final PlantUmlMacro macro = new PlantUmlMacro(resourceManager);
+      final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null);
       final ImmutableMap<String, String> macroParams = new ImmutableMap.Builder<String, String>().put(
             PlantUmlMacroParams.Param.type.name(), DiagramType.DITAA.name().toLowerCase())
             .put(PlantUmlMacroParams.Param.align.name(), PlantUmlMacroParams.Alignment.center.name())

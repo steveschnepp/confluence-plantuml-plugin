@@ -42,16 +42,16 @@ public class PlantUmlPreprocessor {
    private static final Pattern INCLUDE_PATTERN = Pattern.compile("^\\s*!include\\s+\"?([^\"]+)\"?$");
 
    private final UmlSource _umlSource;
-   private final IncludeFileHandler _includeFileHandler;
+   private final UmlSourceLocator _umlSourceLocator;
 
-   public PlantUmlPreprocessor(UmlSource umlSource, IncludeFileHandler includeFileHandler) throws IOException {
+   public PlantUmlPreprocessor(UmlSource umlSource, UmlSourceLocator includeFileHandler) throws IOException {
       this(umlSource, null, includeFileHandler);
    }
 
-   private PlantUmlPreprocessor(UmlSource umlSource, PlantUmlPreprocessor parent, IncludeFileHandler includeFileHandler)
+   private PlantUmlPreprocessor(UmlSource umlSource, PlantUmlPreprocessor parent, UmlSourceLocator includeFileHandler)
          throws IOException {
       _umlSource = umlSource;
-      _includeFileHandler = includeFileHandler;
+      _umlSourceLocator = includeFileHandler;
    }
 
    public String toUmlBlock() throws IOException {
@@ -63,9 +63,8 @@ public class PlantUmlPreprocessor {
          final Matcher matcher = INCLUDE_PATTERN.matcher(line);
          if (matcher.find()) {
             final String fileName = matcher.group(1);
-            logger.info("fileName: " + fileName);
-            final UmlSource includeSource = _includeFileHandler.resolve(fileName);
-            sb.append(new PlantUmlPreprocessor(includeSource, _includeFileHandler).toUmlBlock());
+            final UmlSource includeSource = _umlSourceLocator.get(fileName);
+            sb.append(new PlantUmlPreprocessor(includeSource, _umlSourceLocator).toUmlBlock());
          } else {
             sb.append(line);
             sb.append("\n");
@@ -77,11 +76,11 @@ public class PlantUmlPreprocessor {
    /**
     * @return the _includeFileHandler
     */
-   public IncludeFileHandler getIncludeFileHandler() {
-      return _includeFileHandler;
+   public UmlSourceLocator getIncludeFileHandler() {
+      return _umlSourceLocator;
    }
 
-   public interface IncludeFileHandler {
-      UmlSource resolve(String name);
+   public interface UmlSourceLocator {
+      UmlSource get(String name) throws IOException;
    }
 }
