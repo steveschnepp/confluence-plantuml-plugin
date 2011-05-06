@@ -84,7 +84,7 @@ public class PlantUmlMacroTest {
       final String result = macro.execute(macroParams, macroBody, null);
       Assert.assertEquals(
             "<span class=\"image-wrap\" style=\"display: block; text-align: center;\"><img src='junit/resource.png' " +
-                  "border: 3px solid black;/></span>",
+                  "border=3/></span>",
             result);
       final ByteArrayOutputStream out = (ByteArrayOutputStream) resourceManager.getResourceWriter(null, null, null)
             .getStreamForWriting();
