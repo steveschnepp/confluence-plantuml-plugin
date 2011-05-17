@@ -40,6 +40,11 @@
 			<name>Michael Griffel</name>
 			<email>michael.griffel@gmail.com</email>
 		</developer>
+		<developer>
+			<id>cgiess</id>
+			<name>Christoph Giess</name>
+			<email>christoph.giess@avono.de</email>
+		</developer>
 	</developers>
 
 	<dependencies>
