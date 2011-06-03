@@ -233,7 +233,9 @@ public class PlantUmlMacro extends BaseMacro {
          try {
             system = blockUml.getSystem();
          } catch (InterruptedException e) {
-            throw new IOException(e);
+            final IOException x = new IOException();
+            x.initCause(e);
+            throw x;
          }
          final StringBuilder cmap = new StringBuilder();
          system.exportDiagram(new NullOutputStream(), cmap, 0, new FileFormatOption(FileFormat.PNG));
