@@ -27,6 +27,7 @@ package de.griffel.confluence.plugins.plantuml;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
@@ -41,9 +42,14 @@ import com.atlassian.confluence.importexport.resource.DownloadResourceReader;
 import com.atlassian.confluence.importexport.resource.DownloadResourceWriter;
 import com.atlassian.confluence.importexport.resource.UnauthorizedDownloadResourceException;
 import com.atlassian.confluence.importexport.resource.WritableDownloadResourceManager;
+import com.atlassian.confluence.setup.settings.GlobalDescription;
+import com.atlassian.confluence.setup.settings.Settings;
+import com.atlassian.confluence.setup.settings.SettingsManager;
+import com.atlassian.confluence.setup.settings.SpaceSettings;
 import com.google.common.collect.ImmutableMap;
 
 import de.griffel.confluence.plugins.plantuml.PlantUmlMacroParams.Param;
+import de.griffel.confluence.plugins.plantuml.preprocess.PageContextMock;
 
 /**
  * Testing {@link de.griffel.confluence.plugins.plantuml.PlantUmlMacro}
@@ -53,10 +59,10 @@ public class PlantUmlMacroTest {
    public void basic() throws Exception {
       final MockExportDownloadResourceManager resourceManager = new MockExportDownloadResourceManager();
       resourceManager.setDownloadResourceWriter(new MockDownloadResourceWriter());
-      final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null);
+      final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null, new MockSettingsManager());
       final Map<Param, String> macroParams = Collections.singletonMap(PlantUmlMacroParams.Param.title, "Sample Title");
       final String macroBody = "A <|-- B";
-      final String result = macro.execute(macroParams, macroBody, null);
+      final String result = macro.execute(macroParams, macroBody, new PageContextMock());
       Assert.assertEquals("<span class=\"image-wrap\" style=\"\"><img src='junit/resource.png'/></span>",
             result);
       final ByteArrayOutputStream out = (ByteArrayOutputStream) resourceManager.getResourceWriter(null, null, null)
@@ -69,7 +75,7 @@ public class PlantUmlMacroTest {
    public void ditaa() throws Exception {
       final MockExportDownloadResourceManager resourceManager = new MockExportDownloadResourceManager();
       resourceManager.setDownloadResourceWriter(new MockDownloadResourceWriter());
-      final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null);
+      final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null, new MockSettingsManager());
       final ImmutableMap<String, String> macroParams = new ImmutableMap.Builder<String, String>().put(
             PlantUmlMacroParams.Param.type.name(), DiagramType.DITAA.name().toLowerCase())
             .put(PlantUmlMacroParams.Param.align.name(), PlantUmlMacroParams.Alignment.center.name())
@@ -81,7 +87,7 @@ public class PlantUmlMacroTest {
             .append("|  Base  |   |cRED{d}|\n")
             .append("|     {s}|   +-------+\n")
             .append("\\---+----/\n").toString();
-      final String result = macro.execute(macroParams, macroBody, null);
+      final String result = macro.execute(macroParams, macroBody, new PageContextMock());
       Assert.assertEquals(
             "<span class=\"image-wrap\" style=\"display: block; text-align: center;\"><img src='junit/resource.png' " +
                   "border=3/></span>",
@@ -129,5 +135,48 @@ public class PlantUmlMacroTest {
       public String getResourcePath() {
          return "junit/resource.png";
       }
+   }
+
+   static class MockSettingsManager implements SettingsManager {
+
+      public GlobalDescription getGlobalDescription() {
+         throw new UnsupportedOperationException();
+      }
+
+      public Settings getGlobalSettings() {
+         return new Settings() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public String getBaseUrl() {
+               return "http://localhost:8080/confluence";
+            }
+         };
+      }
+
+      public Serializable getPluginSettings(String arg0) {
+         throw new UnsupportedOperationException();
+      }
+
+      public SpaceSettings getSpaceSettings(String arg0) {
+         throw new UnsupportedOperationException();
+      }
+
+      public void updateGlobalDescription(GlobalDescription arg0) {
+         throw new UnsupportedOperationException();
+      }
+
+      public void updateGlobalSettings(Settings arg0) {
+         throw new UnsupportedOperationException();
+      }
+
+      public void updatePluginSettings(String arg0, Serializable arg1) {
+         throw new UnsupportedOperationException();
+      }
+
+      public void updateSpaceSettings(SpaceSettings arg0) {
+         throw new UnsupportedOperationException();
+      }
+
    }
 }

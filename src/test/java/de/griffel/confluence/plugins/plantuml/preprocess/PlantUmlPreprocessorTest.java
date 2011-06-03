@@ -22,16 +22,15 @@
  * The software is developed by Arnaud Roques at
  * http://plantuml.sourceforge.org.
  */
-package de.griffel.confluence.plugins.plantuml;
+package de.griffel.confluence.plugins.plantuml.preprocess;
 
 import net.sourceforge.plantuml.UmlSource;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.atlassian.confluence.renderer.PageContext;
 import com.google.common.collect.ImmutableList;
-
-import de.griffel.confluence.plugins.plantuml.PlantUmlPreprocessor.UmlSourceLocator;
 
 public class PlantUmlPreprocessorTest {
    @Test
@@ -41,6 +40,15 @@ public class PlantUmlPreprocessorTest {
             new PlantUmlPreprocessor(umlSource, new UmlSourceLocator() {
                public UmlSource get(String name) {
                   return new UmlSource(ImmutableList.of("foo", "bar"));
+               }
+            }, new PreprocessingContext() {
+
+               public PageContext getPageContext() {
+                  throw new NoSuchMethodError();
+               }
+
+               public String getBaseUrl() {
+                  return "http:://localhost:8080/confluence";
                }
             }).toUmlBlock());
    }
