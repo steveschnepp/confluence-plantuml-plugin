@@ -22,7 +22,7 @@
  * The software is developed by Arnaud Roques at
  * http://plantuml.sourceforge.org.
  */
-package de.griffel.confluence.plugins.plantuml;
+package de.griffel.confluence.plugins.plantuml.type;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,9 +30,9 @@ import org.junit.Test;
 import com.atlassian.confluence.renderer.PageContext;
 
 /**
- * ConfluenceLinkParserTest.
+ * ConfluenceLinkTest.
  */
-public class ConfluenceLinkParserTest {
+public class ConfluenceLinkTest {
    private static final String DEFAULT_SPACE_KEY = "DFL-SPACE-KEY";
    private static final String DEFAULT_PAGE_TITLE = "Default Page Title - JUnit";
 
@@ -53,7 +53,7 @@ public class ConfluenceLinkParserTest {
    private void checkResult(String expectedSpaceKey, String expectedPageTitle, String expectedAttachmentName,
          String link) {
       final PageContext context = new MyPageContext();
-      final ConfluenceLinkParser parser = new ConfluenceLinkParser(context);
+      final ConfluenceLink.Parser parser = new ConfluenceLink.Parser(context);
       final ConfluenceLink confluenceLink = parser.parse(link);
       Assert.assertEquals(expectedSpaceKey, confluenceLink.getSpaceKey());
       Assert.assertEquals(expectedPageTitle, confluenceLink.getPageTitle());

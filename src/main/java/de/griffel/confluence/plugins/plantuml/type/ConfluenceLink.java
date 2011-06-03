@@ -22,11 +22,15 @@
  * The software is developed by Arnaud Roques at
  * http://plantuml.sourceforge.org.
  */
-package de.griffel.confluence.plugins.plantuml;
+package de.griffel.confluence.plugins.plantuml.type;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.atlassian.confluence.renderer.PageContext;
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 /**
  * Represents a Confluence link to a page or attachment. Note: The name of the attachment is optional.
@@ -87,4 +91,72 @@ public class ConfluenceLink implements Serializable {
    public String getAttachmentName() {
       return _attachmentName;
    }
+
+   public String toUrlPath() {
+      final StringBuilder sb = new StringBuilder();
+      sb.append(getSpaceKey());
+      sb.append("/");
+      sb.append(getPageTitle());
+      return sb.toString();
+   }
+
+   /**
+    * ConfluenceLinkParser can be used to parse a string to a {@link ConfluenceLink}. The following string
+    * representations are supporte:
+    * 
+    * <pre>
+    * ^attachment.ext
+    * or
+    * pagetitle
+    * pagetitle^attachment.ext
+    * or
+    * spacekey:pagetitle
+    * spacekey:pagetitle^attachment.ext
+    * </pre>
+    */
+   public static final class Parser {
+      private final PageContext _pageContext;
+
+      public Parser(PageContext context) {
+         _pageContext = context;
+      }
+
+      public ConfluenceLink parse(String link) {
+         Preconditions.checkNotNull(link);
+
+         final String spaceKey;
+         final String pageTitle;
+         final String attachmentName;
+         if (link.contains("^")) {
+            final String[] parts = link.split("[\\^:]");
+            if (parts.length > 1 && !StringUtils.isEmpty(parts[0])) {
+               if (parts.length > 2) {
+                  spaceKey = parts[0];
+                  pageTitle = parts[1];
+                  attachmentName = parts[2];
+               } else {
+                  spaceKey = _pageContext.getSpaceKey();
+                  pageTitle = parts[0];
+                  attachmentName = parts[1];
+               }
+            } else {
+               spaceKey = _pageContext.getSpaceKey();
+               pageTitle = _pageContext.getPageTitle();
+               attachmentName = parts[1];
+            }
+         } else {
+            attachmentName = null;
+            final String[] parts = link.split(":");
+            if (parts.length > 1) {
+               spaceKey = parts[0];
+               pageTitle = parts[1];
+            } else {
+               spaceKey = _pageContext.getSpaceKey();
+               pageTitle = link;
+            }
+         }
+         return new ConfluenceLink(spaceKey, pageTitle, attachmentName);
+      }
+   }
+
 }

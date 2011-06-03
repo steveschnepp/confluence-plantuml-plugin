@@ -22,7 +22,7 @@
  * The software is developed by Arnaud Roques at
  * http://plantuml.sourceforge.org.
  */
-package de.griffel.confluence.plugins.plantuml;
+package de.griffel.confluence.plugins.plantuml.type;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -22,53 +22,36 @@
  * The software is developed by Arnaud Roques at
  * http://plantuml.sourceforge.org.
  */
-package de.griffel.confluence.plugins.plantuml;
+package de.griffel.confluence.plugins.plantuml.preprocess;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.sourceforge.plantuml.UmlSource;
 
-import org.apache.log4j.Logger;
-
 public class PlantUmlPreprocessor {
-   private final Logger logger = Logger.getLogger(PlantUmlPreprocessor.class);
-
-   /**
-    * @see net.sourceforge.plantuml.preproc.PreprocessorInclude#includePattern
-    */
-   private static final Pattern INCLUDE_PATTERN = Pattern.compile("^\\s*!include\\s+\"?([^\"]+)\"?$");
 
    private final UmlSource _umlSource;
    private final UmlSourceLocator _umlSourceLocator;
+   private final PreprocessingContext _context;
 
-   public PlantUmlPreprocessor(UmlSource umlSource, UmlSourceLocator includeFileHandler) throws IOException {
-      this(umlSource, null, includeFileHandler);
-   }
-
-   private PlantUmlPreprocessor(UmlSource umlSource, PlantUmlPreprocessor parent, UmlSourceLocator includeFileHandler)
+   public PlantUmlPreprocessor(UmlSource umlSource, UmlSourceLocator includeFileHandler, PreprocessingContext context)
          throws IOException {
       _umlSource = umlSource;
       _umlSourceLocator = includeFileHandler;
+      _context = context;
    }
 
    public String toUmlBlock() throws IOException {
       final StringBuilder sb = new StringBuilder();
+      final StringFunctions functions = StringFunctions.builder()
+            .add(new IncludeFunction(_umlSourceLocator))
+            .add(new UrlReplaceFunction())
+            .build();
 
       for (Iterator<String> iterator = _umlSource.iterator(); iterator.hasNext();) {
          final String line = iterator.next();
-
-         final Matcher matcher = INCLUDE_PATTERN.matcher(line);
-         if (matcher.find()) {
-            final String fileName = matcher.group(1);
-            final UmlSource includeSource = _umlSourceLocator.get(fileName);
-            sb.append(new PlantUmlPreprocessor(includeSource, _umlSourceLocator).toUmlBlock());
-         } else {
-            sb.append(line);
-            sb.append("\n");
-         }
+         sb.append(functions.apply(_context, line));
       }
       return sb.toString();
    }
@@ -80,7 +63,4 @@ public class PlantUmlPreprocessor {
       return _umlSourceLocator;
    }
 
-   public interface UmlSourceLocator {
-      UmlSource get(String name) throws IOException;
-   }
 }
