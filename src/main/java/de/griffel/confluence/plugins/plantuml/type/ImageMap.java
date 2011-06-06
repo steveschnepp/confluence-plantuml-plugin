@@ -75,12 +75,11 @@ public final class ImageMap {
    }
 
    /**
-    * Returns the HTML <map> element as string. All URLs that looks like a Confluence link are replaced.
+    * Returns the HTML <map> element as string.
     * 
     * @return the HTML <map> element as string.
     */
-   public String toConfluenceString() {
-      // TODO Replace URL -> Confluence URLs
+   public String toHtmlString() {
       return _cmap;
    }
 

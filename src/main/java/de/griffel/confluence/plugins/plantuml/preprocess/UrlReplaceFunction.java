@@ -33,12 +33,12 @@ import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
 import net.sourceforge.plantuml.classdiagram.command.CommandUrl;
 import net.sourceforge.plantuml.command.CommandControl;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
-
-
 import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
 
 /**
- * Replaces the URL as defined in the {@link CommandUrl} class from Confluence link style.
+ * Replaces the URL as defined in the {@link CommandUrl} class from Confluence link style with a Confluence link.
+ * <p>
+ * Note: The link is only replaced if it is nor a relative link or absolute link.
  */
 public class UrlReplaceFunction implements LineFunction {
 
@@ -46,8 +46,9 @@ public class UrlReplaceFunction implements LineFunction {
    private static final Pattern URL_PATTERN = Pattern.compile(URL_PATTERN_REGEX);
 
    public String apply(PreprocessingContext context, final String line) {
-      final MyCommandUrl myCommandUrl = new MyCommandUrl(new DummyEntityDiagram());
+      final CommandUrl myCommandUrl = new CommandUrl(new DummyEntityDiagram());
       final CommandControl control = myCommandUrl.isValid(Collections.singletonList(line));
+
       final String result;
       switch (control) {
       case OK:
@@ -55,10 +56,11 @@ public class UrlReplaceFunction implements LineFunction {
          if (!matcher.find()) {
             result = line;
          } else {
+            // check for absolute or relative links
             if (!(line.contains("://") || line.contains("[[/"))) {
-               result = replaceUrl(context, matcher, line);
+               result = toConfluenceUrl(context, matcher, line);
             } else {
-               result = line; // absolute or relative link -> don't touch
+               result = line;
             }
          }
          break;
@@ -68,15 +70,13 @@ public class UrlReplaceFunction implements LineFunction {
       return result;
    }
 
-   private String replaceUrl(PreprocessingContext context, final Matcher matcher, final String line) {
+   static String toConfluenceUrl(PreprocessingContext context, final Matcher matcher, final String line) {
       final String url = matcher.group(1);
       final String alias = matcher.group(2);
       final ConfluenceLink link = new ConfluenceLink.Parser(new PageContextMock()).parse(url);
       final StringBuilder sb = new StringBuilder();
       sb.append("[[");
-      sb.append(context.getBaseUrl());
-      sb.append("/display/");
-      sb.append(link.toUrlPath());
+      sb.append(link.toDisplayUrl(context.getBaseUrl()));
       if (alias != null) {
          sb.append("|");
          sb.append(alias);
@@ -84,13 +84,6 @@ public class UrlReplaceFunction implements LineFunction {
       sb.append("]]");
       final String result = line.replaceAll(URL_PATTERN_REGEX, sb.toString());
       return result;
-   }
-
-   private static class MyCommandUrl extends CommandUrl {
-      public MyCommandUrl(AbstractEntityDiagram diagram) {
-         super(diagram);
-      }
-
    }
 
    private static class DummyEntityDiagram extends AbstractEntityDiagram {

@@ -28,6 +28,17 @@ import java.io.IOException;
 
 import net.sourceforge.plantuml.UmlSource;
 
+/**
+ * Interface to locate a UML source.
+ */
 public interface UmlSourceLocator {
+
+   /**
+    * Gets the UML source for the given name.
+    * 
+    * @param name the complete name of the UML source.
+    * @return the UML source for the given name.
+    * @throws IOException in case of an I/O error.
+    */
    UmlSource get(String name) throws IOException;
 }

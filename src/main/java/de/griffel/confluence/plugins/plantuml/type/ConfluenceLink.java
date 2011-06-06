@@ -35,7 +35,7 @@ import com.google.common.base.Preconditions;
 /**
  * Represents a Confluence link to a page or attachment. Note: The name of the attachment is optional.
  */
-public class ConfluenceLink implements Serializable {
+public final class ConfluenceLink implements Serializable {
    private static final long serialVersionUID = 1L;
    private final String _spaceKey;
    private final String _pageTitle;
@@ -92,8 +92,17 @@ public class ConfluenceLink implements Serializable {
       return _attachmentName;
    }
 
-   public String toUrlPath() {
+   /**
+    * Returns the external display URL of this Confluence link.
+    * 
+    * @param baseUrl
+    * @param alias
+    * @return
+    */
+   public String toDisplayUrl(String baseUrl) {
       final StringBuilder sb = new StringBuilder();
+      sb.append(baseUrl);
+      sb.append("/display/");
       sb.append(getSpaceKey());
       sb.append("/");
       sb.append(getPageTitle());
