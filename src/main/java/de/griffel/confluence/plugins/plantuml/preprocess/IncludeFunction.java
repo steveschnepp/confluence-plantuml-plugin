@@ -30,6 +30,10 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.plantuml.UmlSource;
 
+/**
+ * 
+ * The Include function is responsible to resolve line containing a <tt>include</tt> directive.
+ */
 public final class IncludeFunction implements LineFunction {
    /**
     * @see net.sourceforge.plantuml.preproc.PreprocessorInclude#includePattern
@@ -38,10 +42,18 @@ public final class IncludeFunction implements LineFunction {
 
    private final UmlSourceLocator _umlSourceLocator;
 
+   /**
+    * Constructs a new instance using the given umlSourceLocator
+    * 
+    * @param umlSourceLocator
+    */
    public IncludeFunction(UmlSourceLocator umlSourceLocator) {
       _umlSourceLocator = umlSourceLocator;
    }
 
+   /**
+    * {@inheritDoc}
+    */
    public String apply(PreprocessingContext context, String from) throws IOException {
       final StringBuilder sb = new StringBuilder();
       final Matcher matcher = INCLUDE_PATTERN.matcher(from);

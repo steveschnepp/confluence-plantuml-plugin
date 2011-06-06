@@ -38,6 +38,9 @@ import org.apache.commons.io.IOUtils;
 
 import com.google.common.collect.Lists;
 
+/**
+ * Builder for {@link UmlSource}.
+ */
 public final class UmlSourceBuilder {
    private final List<String> _lines = Lists.newArrayList();
    private final DiagramType _diagramType;

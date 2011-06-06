@@ -52,7 +52,9 @@ import de.griffel.confluence.plugins.plantuml.PlantUmlMacroParams.Param;
 import de.griffel.confluence.plugins.plantuml.preprocess.PageContextMock;
 
 /**
- * Testing {@link de.griffel.confluence.plugins.plantuml.PlantUmlMacro}
+ * Testing {@link de.griffel.confluence.plugins.plantuml.PlantUmlMacro}.
+ * 
+ * This unit test requires Graphviz.
  */
 public class PlantUmlMacroTest {
    @Test

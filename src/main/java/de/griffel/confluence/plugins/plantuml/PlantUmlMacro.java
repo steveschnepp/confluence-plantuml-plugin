@@ -99,44 +99,44 @@ public class PlantUmlMacro extends BaseMacro {
          final RenderContext renderContext)
          throws MacroException {
 
+      try {
+         return executeInternal(params, body, renderContext);
+      } catch (final IOException e) {
+         throw new MacroException(e);
+      }
+   }
+
+   private String executeInternal(@SuppressWarnings("rawtypes") final Map params, final String body,
+         final RenderContext renderContext)
+         throws MacroException, IOException {
       final DownloadResourceWriter resourceWriter = _writeableDownloadResourceManager.getResourceWriter(
             AuthenticatedUserThreadLocal.getUsername(), "plantuml", "png");
 
       final PlantUmlMacroParams macroParams = new PlantUmlMacroParams(params);
 
-      final UmlSourceLocator umlSourceLocator;
       if (!(renderContext instanceof PageContext)) {
          throw new MacroException("This macro can only be used in Confluence pages. (ctx="
                + renderContext.getClass().getName() + ")");
       }
 
       final PageContext pageContext = (PageContext) renderContext;
-      umlSourceLocator = new DefaultUmlSourceLocator(pageContext);
-      final PreprocessingContext preprocessingContext = new PreprocessingContext() {
-         public String getBaseUrl() {
-            final String baseUrl = _settingsManager.getGlobalSettings().getBaseUrl();
-            return baseUrl;
-         }
+      final UmlSourceLocator umlSourceLocator = new UmlSourceLocatorConfluence(pageContext);
+      final PreprocessingContext preprocessingContext = new MyPreprocessingContext(pageContext);
 
-         public PageContext getPageContext() {
-            return pageContext;
-         }
-      };
+      final DiagramType diagramType = macroParams.getDiagramType();
+      final UmlSourceBuilder builder = new UmlSourceBuilder(diagramType).append(new StringReader(body));
+      final PlantUmlPreprocessor preprocessor = new PlantUmlPreprocessor(
+            builder.build(), umlSourceLocator, preprocessingContext);
+      final String umlBlock = preprocessor.toUmlBlock();
 
-      final String umlBlock = toUmlBlock(body, macroParams.getDiagramType(), umlSourceLocator, preprocessingContext);
       final List<String> config = new PlantUmlConfigBuilder().build(macroParams);
       final MySourceStringReader reader = new MySourceStringReader(new Defines(), umlBlock, config);
-      final ImageMap cmap;
-      try {
-         cmap = new ImageMap(reader.buildCmap());
-         reader.generateImage(resourceWriter.getStreamForWriting());
-      } catch (IOException e) {
-         throw new MacroException(e);
-      }
+      final ImageMap cmap = new ImageMap(reader.buildCmap());
+      reader.generateImage(resourceWriter.getStreamForWriting());
 
       final StringBuilder sb = new StringBuilder();
       if (cmap.isValid()) {
-         sb.append(cmap.toConfluenceString());
+         sb.append(cmap.toHtmlString());
       }
 
       sb.append("<span class=\"image-wrap\" style=\"" + macroParams.getAlignment().getCssStyle() + "\">");
@@ -152,37 +152,49 @@ public class PlantUmlMacro extends BaseMacro {
       sb.append(macroParams.getImageStyle());
       sb.append("/>");
       sb.append("</span>");
+
       final String result = sb.toString();
       return result.toString();
    }
 
-   String toUmlBlock(final String body, final DiagramType diagramType, UmlSourceLocator umlSourceLocator,
-         PreprocessingContext context)
-         throws MacroException {
+   private final class MyPreprocessingContext implements PreprocessingContext {
+      private final PageContext pageContext;
 
-      final UmlSourceBuilder builder;
-      try {
-         builder = new UmlSourceBuilder(diagramType).append(new StringReader(body));
-      } catch (IOException e) {
-         throw new MacroException(e);
+      /**
+       * {@inheritDoc}
+       */
+      private MyPreprocessingContext(PageContext pageContext) {
+         this.pageContext = pageContext;
       }
-      try {
-         return new PlantUmlPreprocessor(builder.build(), umlSourceLocator, context).toUmlBlock();
-      } catch (final IOException e) {
-         throw new MacroException(e);
+
+      /**
+       * Returns the base URL from the global settings.
+       * 
+       * @return the base URL from the global settings.
+       */
+      public String getBaseUrl() {
+         final String baseUrl = _settingsManager.getGlobalSettings().getBaseUrl();
+         return baseUrl;
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+      public PageContext getPageContext() {
+         return pageContext;
       }
    }
 
    /**
     * Gets the UML source either from a Confluence page or from an attachment.
     */
-   private final class DefaultUmlSourceLocator implements UmlSourceLocator {
+   private final class UmlSourceLocatorConfluence implements UmlSourceLocator {
       private final PageContext _pageContext;
 
       /**
        * @param pageContext
        */
-      private DefaultUmlSourceLocator(PageContext pageContext) {
+      private UmlSourceLocatorConfluence(PageContext pageContext) {
          _pageContext = pageContext;
       }
 
@@ -194,12 +206,12 @@ public class PlantUmlMacro extends BaseMacro {
             logger.debug("Link '" + name + "' -> " + confluenceLink);
          }
 
+         final Page page = _pageManager.getPage(confluenceLink.getSpaceKey(), confluenceLink.getPageTitle());
+         if (page == null) {
+            throw new IOException("Cannot find page '" + confluenceLink.getPageTitle()
+                  + "' in space '" + confluenceLink.getSpaceKey() + "'");
+         }
          if (confluenceLink.hasAttachmentName()) {
-            final Page page = _pageManager.getPage(confluenceLink.getSpaceKey(), confluenceLink.getPageTitle());
-            if (page == null) {
-               throw new IOException("Cannot find page '" + confluenceLink.getPageTitle()
-                     + "' in space '" + confluenceLink.getSpaceKey() + "'");
-            }
             final Attachment attachment = page.getAttachmentNamed(confluenceLink.getAttachmentName());
             if (attachment == null) {
                throw new IOException("Cannot find attachment '" + confluenceLink.getAttachmentName()
@@ -209,16 +221,14 @@ public class PlantUmlMacro extends BaseMacro {
             return new UmlSourceBuilder().append(attachment.getContentsAsStream()).build();
 
          } else {
-            final Page page = _pageManager.getPage(confluenceLink.getSpaceKey(), confluenceLink.getPageTitle());
-            if (page == null) {
-               throw new IOException("Cannot find page '" + confluenceLink.getPageTitle()
-                     + "' in space '" + confluenceLink.getSpaceKey() + "'");
-            }
             return new UmlSourceBuilder().append(page.getContent()).build();
          }
       }
    }
 
+   /**
+    * Extension to {@link SourceStringReader} to add the function to get the image map for the diagram.
+    */
    public static class MySourceStringReader extends SourceStringReader {
       /**
        * {@inheritDoc}

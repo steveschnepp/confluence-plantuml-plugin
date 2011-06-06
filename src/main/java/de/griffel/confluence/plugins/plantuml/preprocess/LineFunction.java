@@ -26,6 +26,18 @@ package de.griffel.confluence.plugins.plantuml.preprocess;
 
 import java.io.IOException;
 
+/**
+ * Interface to transform a line during the preprocessing phase.
+ */
 public interface LineFunction {
+
+   /**
+    * Transforms the given line.
+    * 
+    * @param ctx the preprocessing context
+    * @param line the current input line.
+    * @return the transformed line.
+    * @throws IOException in case of any I/O error.
+    */
    String apply(PreprocessingContext ctx, String line) throws IOException;
 }
