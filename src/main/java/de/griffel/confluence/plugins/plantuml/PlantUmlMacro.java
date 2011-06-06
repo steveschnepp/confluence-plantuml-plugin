@@ -142,7 +142,7 @@ public class PlantUmlMacro extends BaseMacro {
       sb.append("<span class=\"image-wrap\" style=\"" + macroParams.getAlignment().getCssStyle() + "\">");
       sb.append("<img");
       if (cmap.isValid()) {
-         sb.append(" usemap=\"");
+         sb.append(" usemap=\"#");
          sb.append(cmap.getId());
          sb.append("\"");
       }
