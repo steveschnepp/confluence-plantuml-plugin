@@ -126,7 +126,25 @@
 	<profiles>
 		<profile>
 			<id>bamboo</id>
-			<!-- clover is already integrated in bamboo -->
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.atlassian.maven.plugins</groupId>
+						<artifactId>maven-clover2-plugin</artifactId>
+						<version>3.0.5</version>
+						<configuration>
+							<excludes>
+								<exclude>**/generated/**/*</exclude>
+								<exclude>**/generated-sources/**/*</exclude>
+							</excludes>
+							<copyExcludedFiles>false</copyExcludedFiles>
+							<generatePdf>false</generatePdf>
+							<generateXml>true</generateXml>
+							<generateHtml>false</generateHtml>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 
