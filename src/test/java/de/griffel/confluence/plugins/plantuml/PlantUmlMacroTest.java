@@ -83,6 +83,7 @@ public class PlantUmlMacroTest {
    @Test
    public void basic() throws Exception {
       Assume.assumeNotNull(GraphvizUtils.getDotExe());
+      Assume.assumeTrue(!GraphvizUtils.dotVersion().startsWith("Error:"));
       final MockExportDownloadResourceManager resourceManager = new MockExportDownloadResourceManager();
       resourceManager.setDownloadResourceWriter(new MockDownloadResourceWriter());
       final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null, new MockSettingsManager(), _pluginAccessor);
