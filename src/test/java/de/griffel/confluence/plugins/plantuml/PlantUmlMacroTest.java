@@ -32,9 +32,11 @@ import java.util.Collections;
 import java.util.Map;
 
 import net.sourceforge.plantuml.DiagramType;
+import net.sourceforge.plantuml.cucadiagram.dot.GraphvizUtils;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -80,6 +82,7 @@ public class PlantUmlMacroTest {
 
    @Test
    public void basic() throws Exception {
+      Assume.assumeNotNull(GraphvizUtils.getDotExe());
       final MockExportDownloadResourceManager resourceManager = new MockExportDownloadResourceManager();
       resourceManager.setDownloadResourceWriter(new MockDownloadResourceWriter());
       final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null, new MockSettingsManager(), _pluginAccessor);
