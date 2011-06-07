@@ -49,6 +49,7 @@ import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.renderer.PageContext;
 import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.user.AuthenticatedUserThreadLocal;
+import com.atlassian.plugin.PluginAccessor;
 import com.atlassian.renderer.RenderContext;
 import com.atlassian.renderer.v2.RenderMode;
 import com.atlassian.renderer.v2.macro.BaseMacro;
@@ -66,7 +67,7 @@ import de.griffel.confluence.plugins.plantuml.type.UmlSourceBuilder;
  * 
  * @author Michael Griffel
  */
-public class PlantUmlMacro extends BaseMacro {
+public final class PlantUmlMacro extends BaseMacro {
    private final Logger logger = Logger.getLogger(PlantUmlMacro.class);
 
    private final WritableDownloadResourceManager _writeableDownloadResourceManager;
@@ -75,11 +76,14 @@ public class PlantUmlMacro extends BaseMacro {
 
    private final SettingsManager _settingsManager;
 
+   private final PluginAccessor _pluginAccessor;
+
    public PlantUmlMacro(WritableDownloadResourceManager writeableDownloadResourceManager,
-         PageManager pageManager, SettingsManager settingsManager) {
+         PageManager pageManager, SettingsManager settingsManager, PluginAccessor pluginAccessor) {
       _writeableDownloadResourceManager = writeableDownloadResourceManager;
       _pageManager = pageManager;
       _settingsManager = settingsManager;
+      _pluginAccessor = pluginAccessor;
    }
 
    @Override
@@ -137,6 +141,10 @@ public class PlantUmlMacro extends BaseMacro {
       final StringBuilder sb = new StringBuilder();
       if (cmap.isValid()) {
          sb.append(cmap.toHtmlString());
+      }
+
+      if (umlBlock.matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX)) {
+         sb.append(new PlantUmlPluginInfo(_pluginAccessor).toHtmlString());
       }
 
       sb.append("<span class=\"image-wrap\" style=\"" + macroParams.getAlignment().getCssStyle() + "\">");
