@@ -137,10 +137,10 @@ public class PlantUmlMacroTest {
 
    @Test
    public void testVersionInfo() throws Exception {
-      Assert.assertTrue("@startuml\nversion\n@enduml".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
-      Assert.assertTrue("@startuml\nabout\n@enduml".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
-      Assert.assertTrue("@startuml\rversion\r@enduml".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
-      Assert.assertTrue("@startuml\r\nversion\r\n@enduml".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
+      Assert.assertTrue("@startuml\nversion\n@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
+      Assert.assertTrue("@startuml\nabout\n@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
+      Assert.assertTrue("@startuml\rversion\r@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
+      Assert.assertTrue("@startuml\r\nversion\r\n@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
    }
 
    static class MockExportDownloadResourceManager implements WritableDownloadResourceManager {

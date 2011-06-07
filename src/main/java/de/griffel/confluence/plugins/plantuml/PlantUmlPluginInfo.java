@@ -34,7 +34,7 @@ import com.atlassian.plugin.PluginInformation;
 public class PlantUmlPluginInfo {
    public static final String PLUGIN_KEY = "de.griffel.confluence.plugins.plant-uml";
 
-   static final String PLANTUML_VERSION_INFO_REGEX = "@startuml\\s*(version|about|testdot)\\s*@enduml";
+   static final String PLANTUML_VERSION_INFO_REGEX = "@startuml\\s*(version|about|testdot)\\s*@enduml\\s*";
 
    private final PluginAccessor _pluginAccessor;
 
