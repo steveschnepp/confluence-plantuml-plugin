@@ -17,6 +17,14 @@
 		<url>https://plugins.atlassian.com/plugin/details/41025</url>
 	</organization>
 
+	<licenses>
+		<license>
+			<name>GNU General Public License (GPL)</name>
+			<url>http://www.gnu.org/licenses/gpl.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<properties>
 		<confluence.version>3.4.7</confluence.version>
 		<confluence.data.version>3.1</confluence.data.version>
