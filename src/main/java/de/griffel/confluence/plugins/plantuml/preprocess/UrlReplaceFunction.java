@@ -46,8 +46,8 @@ public class UrlReplaceFunction implements LineFunction {
    private static final Pattern URL_PATTERN = Pattern.compile(URL_PATTERN_REGEX);
 
    public String apply(PreprocessingContext context, final String line) {
-      final CommandUrl myCommandUrl = new CommandUrl(new DummyEntityDiagram());
-      final CommandControl control = myCommandUrl.isValid(Collections.singletonList(line));
+      final CommandUrl commandUrl = new CommandUrl(new DummyEntityDiagram());
+      final CommandControl control = commandUrl.isValid(Collections.singletonList(line));
 
       final String result;
       switch (control) {
