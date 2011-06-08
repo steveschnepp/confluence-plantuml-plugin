@@ -41,6 +41,7 @@ public class UrlReplaceFunctionTest {
    @Before
    public void setup() {
       Mockito.when(contextMock.getBaseUrl()).thenReturn(BASE_URL);
+      Mockito.when(contextMock.getPageContext()).thenReturn(new PageContextMock());
    }
 
    @Test
