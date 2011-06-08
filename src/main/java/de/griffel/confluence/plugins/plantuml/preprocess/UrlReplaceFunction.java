@@ -73,7 +73,7 @@ public class UrlReplaceFunction implements LineFunction {
    static String toConfluenceUrl(PreprocessingContext context, final Matcher matcher, final String line) {
       final String url = matcher.group(1);
       final String alias = matcher.group(2);
-      final ConfluenceLink link = new ConfluenceLink.Parser(new PageContextMock()).parse(url);
+      final ConfluenceLink link = new ConfluenceLink.Parser(context.getPageContext()).parse(url);
       final StringBuilder sb = new StringBuilder();
       sb.append("[[");
       sb.append(link.toDisplayUrl(context.getBaseUrl()));
