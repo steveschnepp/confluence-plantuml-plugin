@@ -35,29 +35,52 @@ import com.atlassian.confluence.renderer.PageContext;
 public class ConfluenceLinkTest {
    private static final String DEFAULT_SPACE_KEY = "DFL-SPACE-KEY";
    private static final String DEFAULT_PAGE_TITLE = "Default Page Title - JUnit";
+   private static final String BASE_URL = "http://foo.com/bar";
 
    @Test
    public void testSimple() {
       // pagetitle
-      checkResult(DEFAULT_SPACE_KEY, "foo bar buz", null, "foo bar buz");
+      checkResult(DEFAULT_SPACE_KEY, "foo bar buz", null, null, "foo bar buz");
       // spacekey:pagetitle
-      checkResult("spacekey", "pagetitle", null, "spacekey:pagetitle");
+      checkResult("spacekey", "pagetitle", null, null, "spacekey:pagetitle");
+      // spacekey:pagetitle#section
+      checkResult("spacekey", "pagetitle", null, "section", "spacekey:pagetitle#section");
       // spacekey:pagetitle^attachment.ext
-      checkResult("spacekey", "pagetitle", "attachment.ext", "spacekey:pagetitle^attachment.ext");
+      checkResult("spacekey", "pagetitle", "attachment.ext", null, "spacekey:pagetitle^attachment.ext");
       // pagetitle^attachment.ext
-      checkResult(DEFAULT_SPACE_KEY, "pagetitle", "attachment.ext", "pagetitle^attachment.ext");
+      checkResult(DEFAULT_SPACE_KEY, "pagetitle", "attachment.ext", null, "pagetitle^attachment.ext");
+      // pagetitle#section
+      checkResult(DEFAULT_SPACE_KEY, "foo bar buz", null, "section", "foo bar buz#section");
       // ^attachment.ext
-      checkResult(DEFAULT_SPACE_KEY, DEFAULT_PAGE_TITLE, "attachment.ext", "^attachment.ext");
+      checkResult(DEFAULT_SPACE_KEY, DEFAULT_PAGE_TITLE, "attachment.ext", null, "^attachment.ext");
+      // #section
+      checkResult(DEFAULT_SPACE_KEY, DEFAULT_PAGE_TITLE, null, "section", "#section");
    }
 
    private void checkResult(String expectedSpaceKey, String expectedPageTitle, String expectedAttachmentName,
-         String link) {
+         String expectedSection, String link) {
       final PageContext context = new MyPageContext();
       final ConfluenceLink.Parser parser = new ConfluenceLink.Parser(context);
       final ConfluenceLink confluenceLink = parser.parse(link);
       Assert.assertEquals(expectedSpaceKey, confluenceLink.getSpaceKey());
       Assert.assertEquals(expectedPageTitle, confluenceLink.getPageTitle());
       Assert.assertEquals(expectedAttachmentName, confluenceLink.getAttachmentName());
+      Assert.assertEquals(expectedSection, confluenceLink.getSection());
+   }
+
+   @Test
+   public void testToUrl() throws Exception {
+      checkUrl("FOO", "PageTitle", null, BASE_URL + "/display/FOO/PageTitle");
+      checkUrl("FOO", "Page with spaces", null, BASE_URL + "/display/FOO/Page with spaces");
+      checkUrl("FOO", "PageTitle", "Section", BASE_URL + "/display/FOO/PageTitle#PageTitle-Section");
+      checkUrl("FOO", "Page Title", "Section x\u00e4\u00f6\u00fcx", BASE_URL
+            + "/display/FOO/Page Title#PageTitle-Sectionx%C3%A4%C3%B6%C3%BCx");
+   }
+
+   private void checkUrl(String spaceKey, String pageTitle, String section, String url) {
+      final ConfluenceLink link = new ConfluenceLink(spaceKey, pageTitle, null, section);
+      Assert.assertEquals(url, link.toDisplayUrl(BASE_URL));
+
    }
 
    private class MyPageContext extends PageContext {
