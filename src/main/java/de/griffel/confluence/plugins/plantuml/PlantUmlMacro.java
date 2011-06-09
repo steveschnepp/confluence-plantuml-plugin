@@ -48,6 +48,7 @@ import com.atlassian.confluence.pages.Page;
 import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.renderer.PageContext;
 import com.atlassian.confluence.setup.settings.SettingsManager;
+import com.atlassian.confluence.spaces.SpaceManager;
 import com.atlassian.confluence.user.AuthenticatedUserThreadLocal;
 import com.atlassian.plugin.PluginAccessor;
 import com.atlassian.renderer.RenderContext;
@@ -74,14 +75,18 @@ public final class PlantUmlMacro extends BaseMacro {
 
    private final PageManager _pageManager;
 
+   private final SpaceManager _spaceManager;
+
    private final SettingsManager _settingsManager;
 
    private final PluginAccessor _pluginAccessor;
 
    public PlantUmlMacro(WritableDownloadResourceManager writeableDownloadResourceManager,
-         PageManager pageManager, SettingsManager settingsManager, PluginAccessor pluginAccessor) {
+         PageManager pageManager, SpaceManager spaceManager, SettingsManager settingsManager,
+         PluginAccessor pluginAccessor) {
       _writeableDownloadResourceManager = writeableDownloadResourceManager;
       _pageManager = pageManager;
+      _spaceManager = spaceManager;
       _settingsManager = settingsManager;
       _pluginAccessor = pluginAccessor;
    }
@@ -190,6 +195,10 @@ public final class PlantUmlMacro extends BaseMacro {
        */
       public PageContext getPageContext() {
          return pageContext;
+      }
+
+      public SpaceManager getSpaceManager() {
+         return _spaceManager;
       }
    }
 
