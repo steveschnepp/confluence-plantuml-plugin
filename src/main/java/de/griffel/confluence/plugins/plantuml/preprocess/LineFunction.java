@@ -26,6 +26,8 @@ package de.griffel.confluence.plugins.plantuml.preprocess;
 
 import java.io.IOException;
 
+import com.atlassian.renderer.v2.macro.MacroException;
+
 /**
  * Interface to transform a line during the preprocessing phase.
  */
@@ -38,6 +40,7 @@ public interface LineFunction {
     * @param line the current input line.
     * @return the transformed line.
     * @throws IOException in case of any I/O error.
+    * @throws MacroException in case of any error during the preprocessing operation.
     */
-   String apply(PreprocessingContext ctx, String line) throws IOException;
+   String apply(PreprocessingContext ctx, String line) throws IOException, MacroException;
 }

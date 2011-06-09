@@ -28,6 +28,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.atlassian.renderer.v2.macro.MacroException;
+
 import de.griffel.confluence.plugins.plantuml.Mocks;
 
 /**
@@ -43,7 +45,7 @@ public class UrlReplaceFunctionTest {
    }
 
    @Test
-   public void testSimple() throws Exception {
+   public void testStandardSyntax() throws Exception {
       checkConfluencekUrl("url for Bob is [[Home]]", "/display/PUML/Home", "PlantUML Space - Home");
       checkConfluencekUrl("url for Bob is [[PUML:Home]]", "/display/PUML/Home", "PlantUML Space - Home");
       checkConfluencekUrl("url for Bob is [[PUML:Home|alias]]", "/display/PUML/Home", "alias");
@@ -54,12 +56,19 @@ public class UrlReplaceFunctionTest {
       checExternalUrl("url for Bob is [[http://www.example.com/foo/bar.html|alias]]");
    }
 
-   private void checkConfluencekUrl(String line, String result, String alias) {
+   @Test
+   public void testConfluenceSyntax() throws Exception {
+      checkConfluencekUrl("url for Bob is [Home]", "/display/PUML/Home", "PlantUML Space - Home");
+      checkConfluencekUrl("url for Bob is [alias foo bar|Home]", "/display/PUML/Home", "alias foo bar");
+      checkConfluencekUrl("url for Bob is [alias foo bar|PUML:Home]", "/display/PUML/Home", "alias foo bar");
+   }
+
+   private void checkConfluencekUrl(String line, String result, String alias) throws MacroException {
       Assert.assertEquals("url for Bob is " + "[[" + _mocks.getBaseUrl() + result + "|" + alias + "]]",
             new UrlReplaceFunction().apply(_mocks.getPreprocessingContext(), line));
    }
 
-   private void checExternalUrl(String line) {
+   private void checExternalUrl(String line) throws MacroException {
       Assert.assertEquals(line, new UrlReplaceFunction().apply(_mocks.getPreprocessingContext(), line));
    }
 }

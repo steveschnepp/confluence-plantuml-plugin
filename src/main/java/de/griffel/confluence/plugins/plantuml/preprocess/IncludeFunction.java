@@ -30,6 +30,8 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.plantuml.UmlSource;
 
+import com.atlassian.renderer.v2.macro.MacroException;
+
 /**
  * 
  * The Include function is responsible to resolve line containing a <tt>include</tt> directive.
@@ -54,7 +56,7 @@ public final class IncludeFunction implements LineFunction {
    /**
     * {@inheritDoc}
     */
-   public String apply(PreprocessingContext context, String from) throws IOException {
+   public String apply(PreprocessingContext context, String from) throws IOException, MacroException {
       final StringBuilder sb = new StringBuilder();
       final Matcher matcher = INCLUDE_PATTERN.matcher(from);
       if (matcher.find()) {
