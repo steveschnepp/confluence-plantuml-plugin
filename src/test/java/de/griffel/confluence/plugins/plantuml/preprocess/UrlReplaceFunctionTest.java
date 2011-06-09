@@ -27,41 +27,39 @@ package de.griffel.confluence.plugins.plantuml.preprocess;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+
+import de.griffel.confluence.plugins.plantuml.Mocks;
 
 /**
  * JUnit Test for UrlReplaceFunctionTest.
  */
 public class UrlReplaceFunctionTest {
 
-   private static final String BASE_URL = "http://localhost:8080/confluence";
-
-   private final PreprocessingContext contextMock = Mockito.mock(PreprocessingContext.class);
+   private Mocks _mocks;
 
    @Before
    public void setup() {
-      Mockito.when(contextMock.getBaseUrl()).thenReturn(BASE_URL);
-      Mockito.when(contextMock.getPageContext()).thenReturn(new PageContextMock());
+      _mocks = new Mocks();
    }
 
    @Test
    public void testSimple() throws Exception {
-      checConfluencekUrl("url for Bob is [[Home]]", "/display/PUML/Home");
-      checConfluencekUrl("url for Bob is [[PUML:Home]]", "/display/PUML/Home");
-      checConfluencekUrl("url for Bob is [[PUML:Home|alias]]", "/display/PUML/Home|alias");
-      checConfluencekUrl("url for Bob is [[PUML:Home|alias foo bar]]", "/display/PUML/Home|alias foo bar");
+      checkConfluencekUrl("url for Bob is [[Home]]", "/display/PUML/Home", "PlantUML Space - Home");
+      checkConfluencekUrl("url for Bob is [[PUML:Home]]", "/display/PUML/Home", "PlantUML Space - Home");
+      checkConfluencekUrl("url for Bob is [[PUML:Home|alias]]", "/display/PUML/Home", "alias");
+      checkConfluencekUrl("url for Bob is [[PUML:Home|alias foo bar]]", "/display/PUML/Home", "alias foo bar");
       checExternalUrl("url for Bob is [[/foo/bar.html]]");
       checExternalUrl("url for Bob is [[https://www.example.com/secure]]");
       checExternalUrl("url for Bob is [[http://www.example.com/foo/bar.html]]");
       checExternalUrl("url for Bob is [[http://www.example.com/foo/bar.html|alias]]");
    }
 
-   private void checConfluencekUrl(String line, String result) {
-      Assert.assertEquals("url for Bob is " + "[[" + BASE_URL + result + "]]",
-            new UrlReplaceFunction().apply(contextMock, line));
+   private void checkConfluencekUrl(String line, String result, String alias) {
+      Assert.assertEquals("url for Bob is " + "[[" + _mocks.getBaseUrl() + result + "|" + alias + "]]",
+            new UrlReplaceFunction().apply(_mocks.getPreprocessingContext(), line));
    }
 
    private void checExternalUrl(String line) {
-      Assert.assertEquals(line, new UrlReplaceFunction().apply(contextMock, line));
+      Assert.assertEquals(line, new UrlReplaceFunction().apply(_mocks.getPreprocessingContext(), line));
    }
 }

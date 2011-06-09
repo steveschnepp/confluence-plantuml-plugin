@@ -80,6 +80,12 @@ public class UrlReplaceFunction implements LineFunction {
       if (alias != null) {
          sb.append("|");
          sb.append(alias);
+      } else {
+         // PUML-13: nicer move-over text for Confluence URL
+         sb.append("|");
+         sb.append(context.getSpaceManager().getSpace(link.getSpaceKey()).getName());
+         sb.append(" - ");
+         sb.append(link.getPageTitle());
       }
       sb.append("]]");
       final String result = line.replaceAll(URL_PATTERN_REGEX, sb.toString());

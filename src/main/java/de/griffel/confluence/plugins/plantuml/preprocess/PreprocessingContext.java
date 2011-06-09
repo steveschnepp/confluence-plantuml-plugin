@@ -25,6 +25,7 @@
 package de.griffel.confluence.plugins.plantuml.preprocess;
 
 import com.atlassian.confluence.renderer.PageContext;
+import com.atlassian.confluence.spaces.SpaceManager;
 
 /**
  * Preprocessing Context.
@@ -45,4 +46,10 @@ public interface PreprocessingContext {
     */
    PageContext getPageContext();
 
+   /**
+    * Returns a reference to a space manager.
+    * 
+    * @return a reference to a space manager.
+    */
+   SpaceManager getSpaceManager();
 }

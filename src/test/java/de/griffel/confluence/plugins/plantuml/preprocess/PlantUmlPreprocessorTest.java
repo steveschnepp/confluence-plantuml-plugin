@@ -28,8 +28,10 @@ import net.sourceforge.plantuml.UmlSource;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.atlassian.confluence.renderer.PageContext;
+import com.atlassian.confluence.spaces.SpaceManager;
 import com.google.common.collect.ImmutableList;
 
 public class PlantUmlPreprocessorTest {
@@ -49,6 +51,10 @@ public class PlantUmlPreprocessorTest {
 
                public String getBaseUrl() {
                   return "http:://localhost:8080/confluence";
+               }
+
+               public SpaceManager getSpaceManager() {
+                  return Mockito.mock(SpaceManager.class);
                }
             }).toUmlBlock());
    }
