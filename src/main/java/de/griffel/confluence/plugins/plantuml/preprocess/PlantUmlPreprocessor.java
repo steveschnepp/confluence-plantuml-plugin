@@ -29,6 +29,8 @@ import java.util.Iterator;
 
 import net.sourceforge.plantuml.UmlSource;
 
+import com.atlassian.renderer.v2.macro.MacroException;
+
 public class PlantUmlPreprocessor {
 
    private final UmlSource _umlSource;
@@ -42,7 +44,7 @@ public class PlantUmlPreprocessor {
       _context = context;
    }
 
-   public String toUmlBlock() throws IOException {
+   public String toUmlBlock() throws IOException, MacroException {
       final StringBuilder sb = new StringBuilder();
       final StringFunctions functions = StringFunctions.builder()
             .add(new IncludeFunction(_umlSourceLocator))
