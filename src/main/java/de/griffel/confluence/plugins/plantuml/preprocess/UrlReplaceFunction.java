@@ -27,23 +27,34 @@ package de.griffel.confluence.plugins.plantuml.preprocess;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sourceforge.plantuml.UmlDiagramType;
-import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
-import net.sourceforge.plantuml.classdiagram.command.CommandUrl;
-import net.sourceforge.plantuml.cucadiagram.IEntity;
-
 import com.atlassian.confluence.spaces.Space;
 import com.atlassian.renderer.v2.macro.MacroException;
 
 import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
 
 /**
- * Replaces the URL as defined in the {@link CommandUrl} class from Confluence link style with a Confluence link.
+ * Replaces an URL from MediaWiki syntax or Confluence syntax with a Confluence link.
  * <p>
- * Note: The link is only replaced if it is nor a relative link or absolute link.
+ * URLs which includes a protocol (absolute URLs) are not replaces. Same rule applies to URLs that start with an '/'.
  */
 public class UrlReplaceFunction implements LineFunction {
 
+   /**
+    * Syntax is based on UrlComannd but it is also allowed to have a link that is embedded with only one bracket
+    * (Confluence syntax) instead of two brackets (MediaWiki syntax).
+    * <table border="1">
+    * <tr>
+    * <td>MediaWiki Syntax</td>
+    * <td><tt>[[URL|alias]]</tt></td>
+    * </tr>
+    * <tr>
+    * <td>Conflunece Syntax</td>
+    * <td><tt>[alias|URL]</tt></td>
+    * </tr>
+    * </table>
+    * Besides the difference between of the brackets the Confluence alias comes <b>before</b> the URL. Both use the pipe
+    * symbol '|' to separate the URL from the alias.
+    */
    private static final String URL_LINE_REGEX = "^url\\s*(?:of|for)?\\s+(?:[\\p{L}0-9_.]+|\"[^\"]+\")\\s+(?:is)?\\s*"
          + "(?:\\[)?\\[([^|]*?)(?:\\|([^|]*?))?(?:\\])+";
 
@@ -57,7 +68,7 @@ public class UrlReplaceFunction implements LineFunction {
       } else {
          // check for absolute or relative links
          if (!(line.contains("://") || line.contains("[/"))) {
-            result = toConfluenceUrl(context, matcher, line);
+            result = transformUrl(context, matcher, line);
          } else {
             result = line;
          }
@@ -65,7 +76,7 @@ public class UrlReplaceFunction implements LineFunction {
       return result;
    }
 
-   static String toConfluenceUrl(PreprocessingContext context, final Matcher matcher, final String line)
+   static String transformUrl(PreprocessingContext context, final Matcher matcher, final String line)
          throws MacroException {
       final String url;
       final String alias;
@@ -78,12 +89,18 @@ public class UrlReplaceFunction implements LineFunction {
          if (line.contains("|")) {
             url = matcher.group(2);
             alias = matcher.group(1);
-         } else {
+         } else { // w/o alias
             url = matcher.group(1);
             alias = null;
          }
       }
+      return renderUrl(context, line, url, alias);
+   }
+
+   private static String renderUrl(PreprocessingContext context, final String line, final String url, final String alias)
+         throws MacroException {
       final ConfluenceLink link = new ConfluenceLink.Parser(context.getPageContext()).parse(url);
+
       final StringBuilder sb = new StringBuilder();
       sb.append("[[");
       sb.append(link.toDisplayUrl(context.getBaseUrl()));
@@ -91,7 +108,7 @@ public class UrlReplaceFunction implements LineFunction {
          sb.append("|");
          sb.append(alias);
       } else {
-         // PUML-13: nicer move-over text for Confluence URL
+         // PUML-13: nicer move-over text for Confluence URL where no alias was given
          sb.append("|");
          final Space space = context.getSpaceManager().getSpace(link.getSpaceKey());
          if (space == null) {
@@ -103,21 +120,8 @@ public class UrlReplaceFunction implements LineFunction {
          sb.append(link.getPageTitle());
       }
       sb.append("]]");
+      // replace original URL with transformed URL
       final String result = line.replaceAll("\\[.*\\]", sb.toString());
       return result;
-   }
-
-   private static class DummyEntityDiagram extends AbstractEntityDiagram {
-
-      @Override
-      public IEntity getOrCreateClass(String code) {
-         throw new UnsupportedOperationException();
-      }
-
-      @Override
-      public UmlDiagramType getUmlDiagramType() {
-         throw new UnsupportedOperationException();
-      }
-
    }
 }
