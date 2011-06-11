@@ -42,18 +42,18 @@ public final class ConfluenceLink implements Serializable {
    private final String _spaceKey;
    private final String _pageTitle;
    private final String _attachmentName;
-   private final String _section;
+   private final String _fragment;
 
-   public ConfluenceLink(String spaceKey, String pageTitle, String attachmentName, String section) {
+   public ConfluenceLink(String spaceKey, String pageTitle, String attachmentName, String fragment) {
       _spaceKey = spaceKey;
       _pageTitle = pageTitle;
       _attachmentName = attachmentName;
-      _section = section;
+      _fragment = fragment;
 
-      if (section != null && _attachmentName != null) {
+      if (fragment != null && _attachmentName != null) {
          throw new IllegalArgumentException(
-               "Either attachment name or section can be set but not both: attachment name is '" + attachmentName
-                     + "' and section is '" + section + "'");
+               "Either attachment name or fragment can be set but not both: attachment name is '" + attachmentName
+                     + "' and fragment is '" + fragment + "'");
       }
    }
 
@@ -62,7 +62,7 @@ public final class ConfluenceLink implements Serializable {
     */
    @Override
    public int hashCode() {
-      return Objects.hashCode(getSpaceKey(), getPageTitle(), getAttachmentName(), getSection());
+      return Objects.hashCode(getSpaceKey(), getPageTitle(), getAttachmentName(), getFragment());
    }
 
    /**
@@ -80,7 +80,7 @@ public final class ConfluenceLink implements Serializable {
     * @return <tt>true</tt> if this Confluence link references an section within a page.; <tt>false</tt> otherwise.
     */
    public boolean hasSection() {
-      return getSection() != null;
+      return getFragment() != null;
    }
 
    /**
@@ -102,7 +102,7 @@ public final class ConfluenceLink implements Serializable {
       return Objects.equal(getSpaceKey(), other.getSpaceKey())
             && Objects.equal(getPageTitle(), other.getPageTitle())
             && Objects.equal(getAttachmentName(), other.getAttachmentName())
-            && Objects.equal(getSection(), other.getSection());
+            && Objects.equal(getFragment(), other.getFragment());
    }
 
    /**
@@ -118,7 +118,7 @@ public final class ConfluenceLink implements Serializable {
       sb.append(", _attachmentName=");
       sb.append(getAttachmentName());
       sb.append(", _section=");
-      sb.append(getSection());
+      sb.append(getFragment());
       sb.append("]");
       return sb.toString();
    }
@@ -151,39 +151,24 @@ public final class ConfluenceLink implements Serializable {
    }
 
    /**
-    * Returns the section.
+    * Returns the fragment of the URL.
     * 
-    * @return the section.
+    * @return the fragment of the URL.
     */
-   public String getSection() {
-      return _section;
+   public String getFragment() {
+      return _fragment;
    }
 
    /**
-    * Returns the external display URL of this Confluence link.
+    * Returns the URL fragment of the Confluence Link. The fragment is the part of the URL after the '#".
     * 
-    * @param baseUrl
-    * @param alias
-    * @return
+    * @return the URL fragment of the Confluence Link. This URL always starts with the '#' and is URL-encoded. .
     */
-   public String toDisplayUrl(String baseUrl) {
-      final StringBuilder sb = new StringBuilder();
-      sb.append(baseUrl);
-      sb.append("/display/");
-      sb.append(getSpaceKey());
-      sb.append("/");
-      sb.append(getPageTitle());
-      if (hasSection()) {
-         sb.append(buildSectionUrl());
-      }
-      return sb.toString();
-   }
-
-   private String buildSectionUrl() {
+   public String toFragmentUrl() {
       final StringBuilder sb = new StringBuilder();
       sb.append(StringUtils.deleteWhitespace(getPageTitle()));
       sb.append("-");
-      sb.append(StringUtils.deleteWhitespace(getSection()));
+      sb.append(StringUtils.deleteWhitespace(getFragment()));
 
       final String result;
       try {
@@ -213,9 +198,9 @@ public final class ConfluenceLink implements Serializable {
     */
    public static final class Parser {
       /**
-       *
+       * URL separator for a fragment
        */
-      private static final String SECTION_SEPARATOR = "#";
+      public static final String FRAGMENT_SEPARATOR = "#";
       private final PageContext _pageContext;
 
       public Parser(PageContext context) {
@@ -232,7 +217,7 @@ public final class ConfluenceLink implements Serializable {
          Preconditions.checkNotNull(link);
 
          final String spaceKey;
-         final String pageTitleWithSection;
+         final String pageTitleWithFragment;
          final String attachmentName;
 
          // link to "^attachment" ?
@@ -241,16 +226,16 @@ public final class ConfluenceLink implements Serializable {
             if (parts.length > 1 && !StringUtils.isEmpty(parts[0])) {
                if (parts.length > 2) {
                   spaceKey = parts[0];
-                  pageTitleWithSection = parts[1];
+                  pageTitleWithFragment = parts[1];
                   attachmentName = parts[2];
                } else {
                   spaceKey = _pageContext.getSpaceKey();
-                  pageTitleWithSection = parts[0];
+                  pageTitleWithFragment = parts[0];
                   attachmentName = parts[1];
                }
             } else {
                spaceKey = _pageContext.getSpaceKey();
-               pageTitleWithSection = _pageContext.getPageTitle();
+               pageTitleWithFragment = _pageContext.getPageTitle();
                attachmentName = parts[1];
             }
          } else {
@@ -258,30 +243,29 @@ public final class ConfluenceLink implements Serializable {
             final String[] parts = link.split(":");
             if (parts.length > 1) {
                spaceKey = parts[0];
-               pageTitleWithSection = parts[1];
+               pageTitleWithFragment = parts[1];
             } else {
                spaceKey = _pageContext.getSpaceKey();
-               pageTitleWithSection = link;
+               pageTitleWithFragment = link;
             }
          }
 
-         // page title contains "#section" ?
-         final String section;
+         // page title contains "#fragment" ?
+         final String fragment;
          final String pageTitle;
-         if (pageTitleWithSection.contains(SECTION_SEPARATOR)) {
-            if (pageTitleWithSection.startsWith(SECTION_SEPARATOR)) {
+         if (pageTitleWithFragment.contains(FRAGMENT_SEPARATOR)) {
+            if (pageTitleWithFragment.startsWith(FRAGMENT_SEPARATOR)) {
                pageTitle = _pageContext.getPageTitle();
-               section = pageTitleWithSection.substring(SECTION_SEPARATOR.length());
+               fragment = pageTitleWithFragment.substring(FRAGMENT_SEPARATOR.length());
             } else {
-               pageTitle = StringUtils.substringBefore(pageTitleWithSection, SECTION_SEPARATOR);
-               section = StringUtils.substringAfter(pageTitleWithSection, SECTION_SEPARATOR);
+               pageTitle = StringUtils.substringBefore(pageTitleWithFragment, FRAGMENT_SEPARATOR);
+               fragment = StringUtils.substringAfter(pageTitleWithFragment, FRAGMENT_SEPARATOR);
             }
          } else {
-            pageTitle = pageTitleWithSection;
-            section = null;
+            pageTitle = pageTitleWithFragment;
+            fragment = null;
          }
-         return new ConfluenceLink(spaceKey, pageTitle, attachmentName, section);
+         return new ConfluenceLink(spaceKey, pageTitle, attachmentName, fragment);
       }
    }
-
 }

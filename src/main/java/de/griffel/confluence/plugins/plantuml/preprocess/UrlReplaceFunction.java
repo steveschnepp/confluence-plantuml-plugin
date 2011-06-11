@@ -100,10 +100,11 @@ public class UrlReplaceFunction implements LineFunction {
    private static String renderUrl(PreprocessingContext context, final String line, final String url, final String alias)
          throws MacroException {
       final ConfluenceLink link = new ConfluenceLink.Parser(context.getPageContext()).parse(url);
+      final UrlRenderer urlRenderer = selectUrlRenderer(context, url);
 
       final StringBuilder sb = new StringBuilder();
       sb.append("[[");
-      sb.append(link.toDisplayUrl(context.getBaseUrl()));
+      sb.append(urlRenderer.render(link));
       if (alias != null) {
          sb.append("|");
          sb.append(alias);
@@ -123,5 +124,15 @@ public class UrlReplaceFunction implements LineFunction {
       // replace original URL with transformed URL
       final String result = line.replaceAll("\\[.*\\]", sb.toString());
       return result;
+   }
+
+   private static UrlRenderer selectUrlRenderer(PreprocessingContext context, final String url) {
+      final UrlRenderer urlRenderer;
+      if (url.startsWith(ConfluenceLink.Parser.FRAGMENT_SEPARATOR)) {
+         urlRenderer = new UrlOnSamePageUrlRenderer();
+      } else {
+         urlRenderer = new ExternalUrlRenderer(context.getBaseUrl());
+      }
+      return urlRenderer;
    }
 }

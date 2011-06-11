@@ -29,6 +29,9 @@ import org.junit.Test;
 
 import com.atlassian.confluence.renderer.PageContext;
 
+import de.griffel.confluence.plugins.plantuml.preprocess.ExternalUrlRenderer;
+
+
 /**
  * ConfluenceLinkTest.
  */
@@ -65,7 +68,7 @@ public class ConfluenceLinkTest {
       Assert.assertEquals(expectedSpaceKey, confluenceLink.getSpaceKey());
       Assert.assertEquals(expectedPageTitle, confluenceLink.getPageTitle());
       Assert.assertEquals(expectedAttachmentName, confluenceLink.getAttachmentName());
-      Assert.assertEquals(expectedSection, confluenceLink.getSection());
+      Assert.assertEquals(expectedSection, confluenceLink.getFragment());
    }
 
    @Test
@@ -79,7 +82,7 @@ public class ConfluenceLinkTest {
 
    private void checkUrl(String spaceKey, String pageTitle, String section, String url) {
       final ConfluenceLink link = new ConfluenceLink(spaceKey, pageTitle, null, section);
-      Assert.assertEquals(url, link.toDisplayUrl(BASE_URL));
+      Assert.assertEquals(url, new ExternalUrlRenderer(BASE_URL).render(link));
 
    }
 
