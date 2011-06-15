@@ -25,9 +25,12 @@
 package de.griffel.confluence.plugins.plantuml;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.mockito.Mockito;
 
+import com.atlassian.confluence.renderer.ShortcutLinkConfig;
+import com.atlassian.confluence.renderer.ShortcutLinksManager;
 import com.atlassian.confluence.setup.settings.GlobalDescription;
 import com.atlassian.confluence.setup.settings.Settings;
 import com.atlassian.confluence.setup.settings.SettingsManager;
@@ -37,6 +40,7 @@ import com.atlassian.confluence.spaces.SpaceManager;
 import com.atlassian.plugin.Plugin;
 import com.atlassian.plugin.PluginAccessor;
 import com.atlassian.plugin.PluginInformation;
+import com.google.common.collect.ImmutableMap;
 
 import de.griffel.confluence.plugins.plantuml.preprocess.PageContextMock;
 import de.griffel.confluence.plugins.plantuml.preprocess.PreprocessingContext;
@@ -54,6 +58,7 @@ public final class Mocks {
    private final SpaceManager _spaceManager = Mockito.mock(SpaceManager.class);
    private final Space _plantUmlSpaceMock = Mockito.mock(Space.class);
    private final PreprocessingContext _preprocessingContext = Mockito.mock(PreprocessingContext.class);
+   private final ShortcutLinksManager _shortcutLinksManager = Mockito.mock(ShortcutLinksManager.class);
 
    public Mocks() {
       Mockito.when(_pluginAccessor.getPlugin(PlantUmlPluginInfo.PLUGIN_KEY)).thenReturn(_plugin);
@@ -66,9 +71,18 @@ public final class Mocks {
       Mockito.when(_spaceManager.getSpace(new PageContextMock().getSpaceKey())).thenReturn(_plantUmlSpaceMock);
       Mockito.when(_plantUmlSpaceMock.getName()).thenReturn("PlantUML Space");
 
+      final ShortcutLinkConfig googleShortcutLinkConfig = new ShortcutLinkConfig();
+      googleShortcutLinkConfig.setDefaultAlias("Google Search with '%s'");
+      googleShortcutLinkConfig.setExpandedValue("http://www.google.com/search?q=%s");
+      Mockito.when(_shortcutLinksManager.getShortcutLinks()).thenReturn(
+            ImmutableMap.of("google", googleShortcutLinkConfig));
+      final Map<String, ShortcutLinkConfig> shortcutLinks = _shortcutLinksManager.getShortcutLinks();
+
       Mockito.when(_preprocessingContext.getBaseUrl()).thenReturn(BASE_URL);
       Mockito.when(_preprocessingContext.getPageContext()).thenReturn(new PageContextMock());
       Mockito.when(_preprocessingContext.getSpaceManager()).thenReturn(_spaceManager);
+      Mockito.when(_preprocessingContext.getShortcutLinks()).thenReturn(shortcutLinks);
+
    }
 
    public String getBaseUrl() {
@@ -89,6 +103,10 @@ public final class Mocks {
 
    public SettingsManager getSettingsManager() {
       return new MockSettingsManager();
+   }
+
+   public ShortcutLinksManager getShortcutLinksManager() {
+      return _shortcutLinksManager;
    }
 
    private static class MockSettingsManager implements SettingsManager {

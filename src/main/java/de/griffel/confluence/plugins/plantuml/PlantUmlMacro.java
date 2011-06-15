@@ -47,6 +47,8 @@ import com.atlassian.confluence.pages.Attachment;
 import com.atlassian.confluence.pages.Page;
 import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.renderer.PageContext;
+import com.atlassian.confluence.renderer.ShortcutLinkConfig;
+import com.atlassian.confluence.renderer.ShortcutLinksManager;
 import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.spaces.SpaceManager;
 import com.atlassian.confluence.user.AuthenticatedUserThreadLocal;
@@ -81,14 +83,17 @@ public final class PlantUmlMacro extends BaseMacro {
 
    private final PluginAccessor _pluginAccessor;
 
+   private final ShortcutLinksManager _shortcutLinksManager;
+
    public PlantUmlMacro(WritableDownloadResourceManager writeableDownloadResourceManager,
          PageManager pageManager, SpaceManager spaceManager, SettingsManager settingsManager,
-         PluginAccessor pluginAccessor) {
+         PluginAccessor pluginAccessor, ShortcutLinksManager shortcutLinksManager) {
       _writeableDownloadResourceManager = writeableDownloadResourceManager;
       _pageManager = pageManager;
       _spaceManager = spaceManager;
       _settingsManager = settingsManager;
       _pluginAccessor = pluginAccessor;
+      _shortcutLinksManager = shortcutLinksManager;
    }
 
    @Override
@@ -199,6 +204,13 @@ public final class PlantUmlMacro extends BaseMacro {
 
       public SpaceManager getSpaceManager() {
          return _spaceManager;
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+      public Map<String, ShortcutLinkConfig> getShortcutLinks() {
+         return _shortcutLinksManager.getShortcutLinks();
       }
    }
 

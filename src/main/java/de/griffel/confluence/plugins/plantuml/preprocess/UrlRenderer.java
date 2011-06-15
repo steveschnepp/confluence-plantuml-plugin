@@ -24,8 +24,12 @@
  */
 package de.griffel.confluence.plugins.plantuml.preprocess;
 
+import com.atlassian.renderer.v2.macro.MacroException;
+
 import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
 
 public interface UrlRenderer {
-   String render(ConfluenceLink link);
+   String getHyperlink(ConfluenceLink link) throws MacroException;
+
+   String getDefaultAlias(PreprocessingContext context, ConfluenceLink link) throws MacroException;
 }

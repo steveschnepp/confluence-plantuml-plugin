@@ -24,7 +24,10 @@
  */
 package de.griffel.confluence.plugins.plantuml.preprocess;
 
+import java.util.Map;
+
 import com.atlassian.confluence.renderer.PageContext;
+import com.atlassian.confluence.renderer.ShortcutLinkConfig;
 import com.atlassian.confluence.spaces.SpaceManager;
 
 /**
@@ -52,4 +55,11 @@ public interface PreprocessingContext {
     * @return a reference to a space manager.
     */
    SpaceManager getSpaceManager();
+
+   /**
+    * Returns the shortcut link map.
+    * 
+    * @return the shortcut link map.
+    */
+   Map<String, ShortcutLinkConfig> getShortcutLinks();
 }

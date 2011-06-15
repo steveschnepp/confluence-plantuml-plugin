@@ -71,7 +71,8 @@ public class PlantUmlMacroTest {
       resourceManager.setDownloadResourceWriter(new MockDownloadResourceWriter());
       final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null, _mocks.getSpaceManager(),
             _mocks.getSettingsManager(),
-            _mocks.getPluginAccessor());
+            _mocks.getPluginAccessor(),
+            _mocks.getShortcutLinksManager());
       final Map<Param, String> macroParams = Collections.singletonMap(PlantUmlMacroParams.Param.title, "Sample Title");
       final String macroBody = "A <|-- B\nurl for A is [[Home]]";
       final String result = macro.execute(macroParams, macroBody, new PageContextMock());
@@ -98,7 +99,8 @@ public class PlantUmlMacroTest {
       resourceManager.setDownloadResourceWriter(new MockDownloadResourceWriter());
       final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null, _mocks.getSpaceManager(),
             _mocks.getSettingsManager(),
-            _mocks.getPluginAccessor());
+            _mocks.getPluginAccessor(),
+            _mocks.getShortcutLinksManager());
       final ImmutableMap<String, String> macroParams = new ImmutableMap.Builder<String, String>().put(
             PlantUmlMacroParams.Param.type.name(), DiagramType.DITAA.name().toLowerCase())
             .put(PlantUmlMacroParams.Param.align.name(), PlantUmlMacroParams.Alignment.center.name())
@@ -133,7 +135,7 @@ public class PlantUmlMacroTest {
 
       private DownloadResourceWriter downloadResourceWriter;
 
-      public DownloadResourceReader getResourceReader(String arg0, String arg1, Map arg2)
+      public DownloadResourceReader getResourceReader(String arg0, String arg1, @SuppressWarnings("rawtypes") Map arg2)
             throws UnauthorizedDownloadResourceException, DownloadResourceNotFoundException {
          throw new UnsupportedOperationException();
       }

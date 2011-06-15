@@ -27,7 +27,6 @@ package de.griffel.confluence.plugins.plantuml.preprocess;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.atlassian.confluence.spaces.Space;
 import com.atlassian.renderer.v2.macro.MacroException;
 
 import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
@@ -104,21 +103,13 @@ public class UrlReplaceFunction implements LineFunction {
 
       final StringBuilder sb = new StringBuilder();
       sb.append("[[");
-      sb.append(urlRenderer.render(link));
+      sb.append(urlRenderer.getHyperlink(link));
+      sb.append("|");
       if (alias != null) {
-         sb.append("|");
          sb.append(alias);
       } else {
          // PUML-13: nicer move-over text for Confluence URL where no alias was given
-         sb.append("|");
-         final Space space = context.getSpaceManager().getSpace(link.getSpaceKey());
-         if (space == null) {
-            throw new MacroException("The space key '" + link.getSpaceKey() + "' from the link '" + line
-                  + "' is unknown");
-         }
-         sb.append(space.getName());
-         sb.append(" - ");
-         sb.append(link.getPageTitle());
+         sb.append(urlRenderer.getDefaultAlias(context, link));
       }
       sb.append("]]");
       // replace original URL with transformed URL
@@ -130,6 +121,8 @@ public class UrlReplaceFunction implements LineFunction {
       final UrlRenderer urlRenderer;
       if (url.startsWith(ConfluenceLink.Parser.FRAGMENT_SEPARATOR)) {
          urlRenderer = new UrlOnSamePageUrlRenderer();
+      } else if (url.contains(ShortcutLinkUrlRenderer.SEPARATOR)) {
+         urlRenderer = new ShortcutLinkUrlRenderer(context.getShortcutLinks());
       } else {
          urlRenderer = new ExternalUrlRenderer(context.getBaseUrl());
       }
