@@ -26,9 +26,9 @@ package de.griffel.confluence.plugins.plantuml.preprocess;
 
 import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
 
-public class UrlOnSamePageUrlRenderer implements UrlRenderer {
+public class UrlOnSamePageUrlRenderer extends AbstractUrlRenderer {
 
-   public String render(ConfluenceLink link) {
+   public String getHyperlink(ConfluenceLink link) {
       if (!link.hasSection()) {
          throw new IllegalArgumentException(
                "This renderer can only be used for links on the same page,"

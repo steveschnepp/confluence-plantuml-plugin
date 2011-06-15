@@ -24,6 +24,8 @@
  */
 package de.griffel.confluence.plugins.plantuml.preprocess;
 
+import java.util.Map;
+
 import net.sourceforge.plantuml.UmlSource;
 
 import org.junit.Assert;
@@ -31,6 +33,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.atlassian.confluence.renderer.PageContext;
+import com.atlassian.confluence.renderer.ShortcutLinkConfig;
 import com.atlassian.confluence.spaces.SpaceManager;
 import com.google.common.collect.ImmutableList;
 
@@ -56,6 +59,11 @@ public class PlantUmlPreprocessorTest {
                public SpaceManager getSpaceManager() {
                   return Mockito.mock(SpaceManager.class);
                }
+
+               public Map<String, ShortcutLinkConfig> getShortcutLinks() {
+                  return null;
+               }
+
             }).toUmlBlock());
    }
 }

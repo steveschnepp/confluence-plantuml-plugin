@@ -24,32 +24,34 @@
  */
 package de.griffel.confluence.plugins.plantuml.preprocess;
 
+import com.atlassian.confluence.spaces.Space;
+import com.atlassian.renderer.v2.macro.MacroException;
+
 import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
 
-public class ExternalUrlRenderer extends AbstractUrlRenderer {
+/**
+ * Abstract UrlRenderer.
+ */
+public abstract class AbstractUrlRenderer implements UrlRenderer {
 
-   private final String _baseUrl;
-
-   public ExternalUrlRenderer(String baseUrl) {
-      _baseUrl = baseUrl;
-   }
-
-   /**
-    * Returns the external display URL of this Confluence link.
+   /*
+    * (non-Javadoc)
     * 
-    * @param link the Confluence link for which the external display URL should be generated.
-    * @return the external display URL of this Confluence link.
+    * @see
+    * de.griffel.confluence.plugins.plantuml.preprocess.UrlRenderer#buildDefaultAlias(de.griffel.confluence.plugins.
+    * plantuml.preprocess.PreprocessingContext, de.griffel.confluence.plugins.plantuml.type.ConfluenceLink)
     */
-   public String getHyperlink(ConfluenceLink link) {
+   public String getDefaultAlias(PreprocessingContext context, ConfluenceLink link) throws MacroException {
       final StringBuilder sb = new StringBuilder();
-      sb.append(_baseUrl);
-      sb.append("/display/");
-      sb.append(link.getSpaceKey());
-      sb.append("/");
-      sb.append(link.getPageTitle());
-      if (link.hasSection()) {
-         sb.append(link.toFragmentUrl());
+      final Space space = context.getSpaceManager().getSpace(link.getSpaceKey());
+      if (space == null) {
+         throw new MacroException("The space key '" + link.getSpaceKey() + "' from the link '" + link
+               + "' is unknown");
       }
+      sb.append(space.getName());
+      sb.append(" - ");
+      sb.append(link.getPageTitle());
       return sb.toString();
    }
+
 }

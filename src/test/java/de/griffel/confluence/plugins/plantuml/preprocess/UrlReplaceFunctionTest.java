@@ -63,6 +63,16 @@ public class UrlReplaceFunctionTest {
       checkConfluencekUrl("url for Bob is [alias foo bar|PUML:Home]", "/display/PUML/Home", "alias foo bar");
    }
 
+   @Test
+   public void testShortcutLinks() throws Exception {
+      checkShortcutUrl("url for Bob is [foo@google]",
+            "url for Bob is [[http://www.google.com/search?q=foo|Google Search with 'foo']]");
+   }
+
+   private void checkShortcutUrl(String line, String expected) throws MacroException {
+      Assert.assertEquals(expected, new UrlReplaceFunction().apply(_mocks.getPreprocessingContext(), line));
+   }
+
    private void checkConfluencekUrl(String line, String result, String alias) throws MacroException {
       Assert.assertEquals("url for Bob is " + "[[" + _mocks.getBaseUrl() + result + "|" + alias + "]]",
             new UrlReplaceFunction().apply(_mocks.getPreprocessingContext(), line));

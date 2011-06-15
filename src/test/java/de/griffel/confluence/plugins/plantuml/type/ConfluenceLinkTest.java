@@ -82,7 +82,7 @@ public class ConfluenceLinkTest {
 
    private void checkUrl(String spaceKey, String pageTitle, String section, String url) {
       final ConfluenceLink link = new ConfluenceLink(spaceKey, pageTitle, null, section);
-      Assert.assertEquals(url, new ExternalUrlRenderer(BASE_URL).render(link));
+      Assert.assertEquals(url, new ExternalUrlRenderer(BASE_URL).getHyperlink(link));
 
    }
 
