@@ -38,6 +38,7 @@ import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
  * Render Shortcut Links like 'foo@google'.
  */
 public class ShortcutLinkUrlRenderer extends AbstractUrlRenderer {
+
    /**
     * Separator string for shortcut links.
     */
@@ -82,20 +83,10 @@ public class ShortcutLinkUrlRenderer extends AbstractUrlRenderer {
       return result;
    }
 
-   /**
-    * @param pageTitle
-    * @return
-    */
    private String getShortcutValue(final String pageTitle) {
       return StringUtils.substringBefore(pageTitle, SEPARATOR);
    }
 
-   /**
-    * @param pageTitle
-    * @param shortcutValue
-    * @param shortcutKey
-    * @return
-    */
    private ShortcutLinkConfig getShortcutLinkConfig(final String pageTitle, final String shortcutValue) {
       final String shortcutKey = StringUtils.substringAfter(pageTitle, SEPARATOR);
 
