@@ -27,9 +27,9 @@ package de.griffel.confluence.plugins.plantuml.preprocess;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.atlassian.renderer.v2.macro.MacroException;
-
 import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
+import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink.NoSuchPageException;
+import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink.NoSuchSpaceException;
 
 /**
  * Replaces an URL from MediaWiki syntax or Confluence syntax with a Confluence link.
@@ -59,7 +59,7 @@ public class UrlReplaceFunction implements LineFunction {
 
    private static final Pattern URL_LINE_PATTERN = Pattern.compile(URL_LINE_REGEX);
 
-   public String apply(PreprocessingContext context, final String line) throws MacroException {
+   public String apply(PreprocessingContext context, final String line) throws PreprocessingException {
       final String result;
       final Matcher matcher = URL_LINE_PATTERN.matcher(line);
       if (!matcher.find()) {
@@ -76,7 +76,7 @@ public class UrlReplaceFunction implements LineFunction {
    }
 
    static String transformUrl(PreprocessingContext context, final Matcher matcher, final String line)
-         throws MacroException {
+         throws PreprocessingException {
       final String url;
       final String alias;
       if (line.contains("[[")) {
@@ -97,8 +97,17 @@ public class UrlReplaceFunction implements LineFunction {
    }
 
    private static String renderUrl(PreprocessingContext context, final String line, final String url, final String alias)
-         throws MacroException {
-      final ConfluenceLink link = new ConfluenceLink.Parser(context.getPageContext()).parse(url);
+         throws PreprocessingException {
+      final ConfluenceLink.Parser parser =
+            new ConfluenceLink.Parser(context.getPageContext(), context.getSpaceManager(), context.getPageManager());
+      final ConfluenceLink link;
+      try {
+         link = parser.parse(url);
+      } catch (NoSuchPageException e) {
+         throw new PreprocessingException(line, e.getMessage(), e);
+      } catch (NoSuchSpaceException e) {
+         throw new PreprocessingException(line, e.getMessage(), e);
+      }
       final UrlRenderer urlRenderer = selectUrlRenderer(context, url);
 
       final StringBuilder sb = new StringBuilder();

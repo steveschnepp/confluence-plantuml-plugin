@@ -25,17 +25,22 @@
 package de.griffel.confluence.plugins.plantuml.preprocess;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import net.sourceforge.plantuml.UmlSource;
 
-import com.atlassian.renderer.v2.macro.MacroException;
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 public class PlantUmlPreprocessor {
 
    private final UmlSource _umlSource;
    private final UmlSourceLocator _umlSourceLocator;
    private final PreprocessingContext _context;
+   private final List<PreprocessingException> _errors = Lists.newArrayList();
 
    public PlantUmlPreprocessor(UmlSource umlSource, UmlSourceLocator includeFileHandler, PreprocessingContext context)
          throws IOException {
@@ -44,7 +49,7 @@ public class PlantUmlPreprocessor {
       _context = context;
    }
 
-   public String toUmlBlock() throws IOException, MacroException {
+   public String toUmlBlock() throws IOException {
       final StringBuilder sb = new StringBuilder();
       final StringFunctions functions = StringFunctions.builder()
             .add(new IncludeFunction(_umlSourceLocator))
@@ -53,7 +58,11 @@ public class PlantUmlPreprocessor {
 
       for (Iterator<String> iterator = _umlSource.iterator(); iterator.hasNext();) {
          final String line = iterator.next();
-         sb.append(functions.apply(_context, line));
+         try {
+            sb.append(functions.apply(_context, line));
+         } catch (PreprocessingException e) {
+            _errors.add(e);
+         }
       }
       return sb.toString();
    }
@@ -65,4 +74,36 @@ public class PlantUmlPreprocessor {
       return _umlSourceLocator;
    }
 
+   public void handleExceptions() throws PreprocessingException {
+      if (hasExceptions()) {
+         if (_errors.size() == 1) {
+            throw _errors.iterator().next();
+         } else {
+            throw new PreprocessingException(null, String.valueOf(Iterables.transform(_errors,
+                  new Function<PreprocessingException, String>() {
+                     public String apply(PreprocessingException from) {
+                        return from.getDetails();
+                     }
+                  })));
+         }
+      }
+   }
+
+   /**
+    * Returns {@code true} if during the pre-processoing at least one error occurred.
+    * 
+    * @return {@code true} if during the pre-processoing at least one error occurred; {@code false} otherwise.
+    */
+   public boolean hasExceptions() {
+      return !_errors.isEmpty();
+   }
+
+   /**
+    * Returns a immutable list of all errors that are occurred during the pre-processing.
+    * 
+    * @return a immutable list of all errors that are occurred during the pre-processing.
+    */
+   public List<PreprocessingException> getExceptions() {
+      return Collections.unmodifiableList(_errors);
+   }
 }

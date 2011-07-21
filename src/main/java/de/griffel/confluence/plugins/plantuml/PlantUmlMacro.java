@@ -60,6 +60,7 @@ import com.atlassian.renderer.v2.macro.MacroException;
 
 import de.griffel.confluence.plugins.plantuml.preprocess.PlantUmlPreprocessor;
 import de.griffel.confluence.plugins.plantuml.preprocess.PreprocessingContext;
+import de.griffel.confluence.plugins.plantuml.preprocess.PreprocessingException;
 import de.griffel.confluence.plugins.plantuml.preprocess.UmlSourceLocator;
 import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
 import de.griffel.confluence.plugins.plantuml.type.ImageMap;
@@ -139,8 +140,8 @@ public final class PlantUmlMacro extends BaseMacro {
 
       final DiagramType diagramType = macroParams.getDiagramType();
       final UmlSourceBuilder builder = new UmlSourceBuilder(diagramType).append(new StringReader(body));
-      final PlantUmlPreprocessor preprocessor = new PlantUmlPreprocessor(
-            builder.build(), umlSourceLocator, preprocessingContext);
+      final PlantUmlPreprocessor preprocessor =
+            new PlantUmlPreprocessor(builder.build(), umlSourceLocator, preprocessingContext);
       final String umlBlock = preprocessor.toUmlBlock();
 
       final List<String> config = new PlantUmlConfigBuilder().build(macroParams);
@@ -149,6 +150,16 @@ public final class PlantUmlMacro extends BaseMacro {
       reader.generateImage(resourceWriter.getStreamForWriting());
 
       final StringBuilder sb = new StringBuilder();
+      if (preprocessor.hasExceptions()) {
+         sb.append("<div class=\"error\">");
+         for (PreprocessingException exception : preprocessor.getExceptions()) {
+            sb.append("<span class=\"error\">");
+            sb.append("plantuml: ");
+            sb.append(exception.getDetails());
+            sb.append("</span><br/>");
+         }
+         sb.append("</div>");
+      }
       if (cmap.isValid()) {
          sb.append(cmap.toHtmlString());
       }
@@ -209,6 +220,13 @@ public final class PlantUmlMacro extends BaseMacro {
       /**
        * {@inheritDoc}
        */
+      public PageManager getPageManager() {
+         return _pageManager;
+      }
+
+      /**
+       * {@inheritDoc}
+       */
       public Map<String, ShortcutLinkConfig> getShortcutLinks() {
          return _shortcutLinksManager.getShortcutLinks();
       }
@@ -228,7 +246,7 @@ public final class PlantUmlMacro extends BaseMacro {
       }
 
       public UmlSource get(String name) throws IOException {
-         final ConfluenceLink.Parser parser = new ConfluenceLink.Parser(_pageContext);
+         final ConfluenceLink.Parser parser = new ConfluenceLink.Parser(_pageContext, _spaceManager, _pageManager);
          final ConfluenceLink confluenceLink = parser.parse(name);
 
          if (logger.isDebugEnabled()) {
@@ -236,10 +254,7 @@ public final class PlantUmlMacro extends BaseMacro {
          }
 
          final Page page = _pageManager.getPage(confluenceLink.getSpaceKey(), confluenceLink.getPageTitle());
-         if (page == null) {
-            throw new IOException("Cannot find page '" + confluenceLink.getPageTitle()
-                  + "' in space '" + confluenceLink.getSpaceKey() + "'");
-         }
+         // page cannot be null since it is validated before
          if (confluenceLink.hasAttachmentName()) {
             final Attachment attachment = page.getAttachmentNamed(confluenceLink.getAttachmentName());
             if (attachment == null) {

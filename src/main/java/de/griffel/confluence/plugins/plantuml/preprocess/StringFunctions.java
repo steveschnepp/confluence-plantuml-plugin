@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import com.atlassian.renderer.v2.macro.MacroException;
 import com.google.common.collect.Lists;
 
 /**
@@ -17,7 +16,7 @@ public class StringFunctions implements LineFunction {
       _functions = functions;
    }
 
-   public String apply(PreprocessingContext context, String line) throws IOException, MacroException {
+   public String apply(PreprocessingContext context, String line) throws IOException, PreprocessingException {
       String result = line;
       for (LineFunction function : _functions) {
          result = function.apply(context, result);

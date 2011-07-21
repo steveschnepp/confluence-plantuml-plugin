@@ -28,8 +28,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.atlassian.renderer.v2.macro.MacroException;
-
 import de.griffel.confluence.plugins.plantuml.Mocks;
 
 /**
@@ -69,16 +67,16 @@ public class UrlReplaceFunctionTest {
             "url for Bob is [[http://www.google.com/search?q=foo|Google Search with 'foo']]");
    }
 
-   private void checkShortcutUrl(String line, String expected) throws MacroException {
+   private void checkShortcutUrl(String line, String expected) throws Exception {
       Assert.assertEquals(expected, new UrlReplaceFunction().apply(_mocks.getPreprocessingContext(), line));
    }
 
-   private void checkConfluencekUrl(String line, String result, String alias) throws MacroException {
+   private void checkConfluencekUrl(String line, String result, String alias) throws Exception {
       Assert.assertEquals("url for Bob is " + "[[" + _mocks.getBaseUrl() + result + "|" + alias + "]]",
             new UrlReplaceFunction().apply(_mocks.getPreprocessingContext(), line));
    }
 
-   private void checExternalUrl(String line) throws MacroException {
+   private void checExternalUrl(String line) throws Exception {
       Assert.assertEquals(line, new UrlReplaceFunction().apply(_mocks.getPreprocessingContext(), line));
    }
 }
