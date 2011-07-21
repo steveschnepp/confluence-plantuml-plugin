@@ -25,7 +25,6 @@
 package de.griffel.confluence.plugins.plantuml.preprocess;
 
 import com.atlassian.confluence.spaces.Space;
-import com.atlassian.renderer.v2.macro.MacroException;
 
 import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
 
@@ -41,13 +40,9 @@ public abstract class AbstractUrlRenderer implements UrlRenderer {
     * de.griffel.confluence.plugins.plantuml.preprocess.UrlRenderer#buildDefaultAlias(de.griffel.confluence.plugins.
     * plantuml.preprocess.PreprocessingContext, de.griffel.confluence.plugins.plantuml.type.ConfluenceLink)
     */
-   public String getDefaultAlias(PreprocessingContext context, ConfluenceLink link) throws MacroException {
+   public String getDefaultAlias(PreprocessingContext context, ConfluenceLink link) {
       final StringBuilder sb = new StringBuilder();
       final Space space = context.getSpaceManager().getSpace(link.getSpaceKey());
-      if (space == null) {
-         throw new MacroException("The space key '" + link.getSpaceKey() + "' from the link '" + link
-               + "' is unknown");
-      }
       sb.append(space.getName());
       sb.append(" - ");
       sb.append(link.getPageTitle());

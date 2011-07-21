@@ -29,7 +29,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.atlassian.confluence.renderer.ShortcutLinkConfig;
-import com.atlassian.renderer.v2.macro.MacroException;
 import com.google.common.base.Preconditions;
 
 import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
@@ -55,7 +54,7 @@ public class ShortcutLinkUrlRenderer extends AbstractUrlRenderer {
    /**
     * {@inheritDoc}
     */
-   public String getHyperlink(ConfluenceLink link) throws MacroException {
+   public String getHyperlink(ConfluenceLink link) {
       Preconditions.checkArgument(link.getPageTitle().contains(SEPARATOR));
 
       final String pageTitle = link.getPageTitle();
@@ -68,7 +67,7 @@ public class ShortcutLinkUrlRenderer extends AbstractUrlRenderer {
    }
 
    @Override
-   public String getDefaultAlias(PreprocessingContext context, ConfluenceLink link) throws MacroException {
+   public String getDefaultAlias(PreprocessingContext context, ConfluenceLink link) {
       final String pageTitle = link.getPageTitle();
       final String shortcutValue = getShortcutValue(pageTitle);
       final ShortcutLinkConfig shortcutLinkConfig = getShortcutLinkConfig(pageTitle, shortcutValue);

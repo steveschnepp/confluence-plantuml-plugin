@@ -30,7 +30,11 @@ import java.net.URLEncoder;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.atlassian.confluence.pages.Page;
+import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.renderer.PageContext;
+import com.atlassian.confluence.spaces.Space;
+import com.atlassian.confluence.spaces.SpaceManager;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -45,6 +49,8 @@ public final class ConfluenceLink implements Serializable {
    private final String _fragment;
 
    public ConfluenceLink(String spaceKey, String pageTitle, String attachmentName, String fragment) {
+      Preconditions.checkNotNull(spaceKey);
+      Preconditions.checkNotNull(pageTitle);
       _spaceKey = spaceKey;
       _pageTitle = pageTitle;
       _attachmentName = attachmentName;
@@ -111,15 +117,19 @@ public final class ConfluenceLink implements Serializable {
    @Override
    public String toString() {
       final StringBuilder sb = new StringBuilder();
-      sb.append("ConfluenceLink [_spaceKey=");
-      sb.append(getSpaceKey());
-      sb.append(", _pageTitle=");
+      if (StringUtils.isNotEmpty(getSpaceKey())) {
+         sb.append(getSpaceKey());
+         sb.append(":");
+      }
       sb.append(getPageTitle());
-      sb.append(", _attachmentName=");
-      sb.append(getAttachmentName());
-      sb.append(", _section=");
-      sb.append(getFragment());
-      sb.append("]");
+      if (StringUtils.isNotEmpty(getAttachmentName())) {
+         sb.append("^");
+         sb.append(getAttachmentName());
+      }
+      if (StringUtils.isNotEmpty(getFragment())) {
+         sb.append("#");
+         sb.append(getFragment());
+      }
       return sb.toString();
    }
 
@@ -202,9 +212,30 @@ public final class ConfluenceLink implements Serializable {
        */
       public static final String FRAGMENT_SEPARATOR = "#";
       private final PageContext _pageContext;
+      private final SpaceManager _spaceManager;
+      private final PageManager _pageManager;
 
-      public Parser(PageContext context) {
+      /**
+       * Constructs a new Parser. This parser validates if the link references a valid page and a valid space using the
+       * given page manager and space manager.
+       * 
+       * @param context the page context.
+       * @param spaceManager the space manager.
+       * @param pageManager the page manger.
+       */
+      public Parser(PageContext context, SpaceManager spaceManager, PageManager pageManager) {
          _pageContext = context;
+         _spaceManager = spaceManager;
+         _pageManager = pageManager;
+      }
+
+      /**
+       * Constructs a new Parser. This parser does not validate if the page or space is valid.
+       * 
+       * @param context the page context.
+       */
+      public Parser(PageContext context) {
+         this(context, null, null);
       }
 
       /**
@@ -265,7 +296,39 @@ public final class ConfluenceLink implements Serializable {
             pageTitle = pageTitleWithFragment;
             fragment = null;
          }
+
+         if (_spaceManager != null) {
+
+            final Space space = _spaceManager.getSpace(spaceKey);
+            if (space == null) {
+               throw new NoSuchSpaceException(link, spaceKey);
+            }
+         }
+
+         if (_pageManager != null) {
+
+            final Page page = _pageManager.getPage(spaceKey, pageTitle);
+            if (page == null) {
+               throw new NoSuchPageException(link, spaceKey, pageTitle);
+            }
+         }
          return new ConfluenceLink(spaceKey, pageTitle, attachmentName, fragment);
+      }
+   }
+
+   public static class NoSuchPageException extends RuntimeException {
+      private static final long serialVersionUID = 1L;
+
+      protected NoSuchPageException(String link, String spaceKey, String pageTitle) {
+         super("Cannot find page '" + pageTitle + "' in space '" + spaceKey + "' referenced by link '" + link + "'.");
+      }
+   }
+
+   public static class NoSuchSpaceException extends RuntimeException {
+      private static final long serialVersionUID = 1L;
+
+      protected NoSuchSpaceException(String link, String spaceKey) {
+         super("The space with the key '" + spaceKey + "' from link '" + link + "' does not exists.");
       }
    }
 }

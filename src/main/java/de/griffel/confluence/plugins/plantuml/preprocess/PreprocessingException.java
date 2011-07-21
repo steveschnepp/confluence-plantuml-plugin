@@ -24,50 +24,51 @@
  */
 package de.griffel.confluence.plugins.plantuml.preprocess;
 
-import java.util.Map;
-
-import com.atlassian.confluence.pages.PageManager;
-import com.atlassian.confluence.renderer.PageContext;
-import com.atlassian.confluence.renderer.ShortcutLinkConfig;
-import com.atlassian.confluence.spaces.SpaceManager;
-
 /**
- * Preprocessing Context.
+ * Exception thrown during pre-processing.
  */
-public interface PreprocessingContext {
+public class PreprocessingException extends Exception {
+
+   private static final long serialVersionUID = 1L;
+   private final String _line;
+
+   public PreprocessingException(String line, String message, Throwable cause) {
+      super(message, cause);
+      _line = line;
+   }
+
+   public PreprocessingException(String line, String message) {
+      super(message);
+      _line = line;
+   }
+
+   public PreprocessingException(String line, Throwable cause) {
+      super(cause);
+      _line = line;
+   }
 
    /**
-    * Returns the base URL of a Confluence installation.
+    * Returns the line where this exception occurred.
     * 
-    * @return the base URL of a Confluence installation.
+    * @return the line where this exception occurred.
     */
-   String getBaseUrl();
+   public final String getLine() {
+      return _line;
+   }
 
    /**
-    * Returns the current Confluence page context.
+    * Returns the details error message for the user.
     * 
-    * @return the current Confluence page context.
+    * @return the details error message for the user.
     */
-   PageContext getPageContext();
-
-   /**
-    * Returns a reference to a space manager.
-    * 
-    * @return a reference to a space manager.
-    */
-   SpaceManager getSpaceManager();
-
-   /**
-    * Returns a reference to a page manager.
-    * 
-    * @return a reference to a page manager.
-    */
-   PageManager getPageManager();
-
-   /**
-    * Returns the shortcut link map.
-    * 
-    * @return the shortcut link map.
-    */
-   Map<String, ShortcutLinkConfig> getShortcutLinks();
+   public String getDetails() {
+      final StringBuilder sb = new StringBuilder();
+      if (getLine() != null) {
+         sb.append("line: '");
+         sb.append(getLine());
+         sb.append("' ");
+      }
+      sb.append(getMessage());
+      return sb.toString();
+   }
 }

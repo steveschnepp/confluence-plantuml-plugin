@@ -31,7 +31,6 @@ import com.atlassian.confluence.renderer.PageContext;
 
 import de.griffel.confluence.plugins.plantuml.preprocess.ExternalUrlRenderer;
 
-
 /**
  * ConfluenceLinkTest.
  */
@@ -39,6 +38,15 @@ public class ConfluenceLinkTest {
    private static final String DEFAULT_SPACE_KEY = "DFL-SPACE-KEY";
    private static final String DEFAULT_PAGE_TITLE = "Default Page Title - JUnit";
    private static final String BASE_URL = "http://foo.com/bar";
+
+   @Test
+   public void testToString() {
+      Assert.assertEquals("spaceKey:pageTitle", new ConfluenceLink("spaceKey", "pageTitle", null, null).toString());
+      Assert.assertEquals("spacekey:pageTitle^attachment", new ConfluenceLink("spacekey", "pageTitle",
+            "attachment", null).toString());
+      Assert.assertEquals("spacekey:pageTitle#section", new ConfluenceLink("spacekey", "pageTitle",
+            null, "section").toString());
+   }
 
    @Test
    public void testSimple() {

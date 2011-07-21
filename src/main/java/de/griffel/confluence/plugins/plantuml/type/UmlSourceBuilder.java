@@ -56,8 +56,10 @@ public final class UmlSourceBuilder {
       }
    }
 
-   public UmlSourceBuilder append(String line) {
-      _lines.add(line);
+   public UmlSourceBuilder append(String lineOrMuliLine) {
+      for (String line : lineOrMuliLine.split("\n")) {
+         _lines.add(line);
+      }
       return this;
    }
 
