@@ -17,6 +17,7 @@
          <parameter name="type" type="enum" default="plantuml">
             <value name="plantuml"/>
             <value name="ditaa"/>
+            <value name="dot"/>
          </parameter>
          <parameter name="title" type="string"/>
          <parameter name="align" type="enum" default="none">
