@@ -38,11 +38,6 @@ import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
  */
 public class ShortcutLinkUrlRenderer extends AbstractUrlRenderer {
 
-   /**
-    * Separator string for shortcut links.
-    */
-   public static final String SEPARATOR = "@";
-
    private static final String PLACEHOLDER = "%s";
 
    private final Map<String, ShortcutLinkConfig> _shortcutLinkMap;
@@ -55,7 +50,7 @@ public class ShortcutLinkUrlRenderer extends AbstractUrlRenderer {
     * {@inheritDoc}
     */
    public String getHyperlink(ConfluenceLink link) {
-      Preconditions.checkArgument(link.getPageTitle().contains(SEPARATOR));
+      Preconditions.checkArgument(link.isShortCutLink());
 
       final String pageTitle = link.getPageTitle();
       final String shortcutValue = getShortcutValue(pageTitle);
@@ -83,11 +78,11 @@ public class ShortcutLinkUrlRenderer extends AbstractUrlRenderer {
    }
 
    private String getShortcutValue(final String pageTitle) {
-      return StringUtils.substringBefore(pageTitle, SEPARATOR);
+      return StringUtils.substringBefore(pageTitle, ConfluenceLink.SHORTCUT_LINK_SEPARATOR);
    }
 
    private ShortcutLinkConfig getShortcutLinkConfig(final String pageTitle, final String shortcutValue) {
-      final String shortcutKey = StringUtils.substringAfter(pageTitle, SEPARATOR);
+      final String shortcutKey = StringUtils.substringAfter(pageTitle, ConfluenceLink.SHORTCUT_LINK_SEPARATOR);
 
       if (StringUtils.isEmpty(shortcutValue)) {
          throw new IllegalArgumentException("Invalid shortcut link. Missing value for link '" + pageTitle + "'.");
