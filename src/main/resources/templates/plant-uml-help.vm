@@ -10,7 +10,7 @@ BaseClass&nbsp;&lt;|--&nbsp;SubClass<br />
     <p>
       Generates a PlantUML diagram.
        <ul>
-         <li><b>type:</b> - (optional) the type of the diagram. Possible values are: 'plantuml' (default) or 'ditaa'</li>
+         <li><b>type:</b> - (optional) the type of the diagram. Possible values are: 'plantuml' (default), 'ditaa' or 'dot'</li>
          <li><b>align:</b> - (optional) align the diagram. Supported values are 'none' (default), 'left', 'center' and 'right'.</li>
          <li><b>border:</b> - (optional) border size in pixel. Value must be integer > 0.</li>
          <li><b>hspace:</b> - (optional) extra space left and right from the image. Value must be integer > 0.</li>
