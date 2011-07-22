@@ -48,6 +48,11 @@ public final class ConfluenceLink implements Serializable {
    private final String _attachmentName;
    private final String _fragment;
 
+   /**
+    * Separator string for shortcut links.
+    */
+   public static final String SHORTCUT_LINK_SEPARATOR = "@";
+
    public ConfluenceLink(String spaceKey, String pageTitle, String attachmentName, String fragment) {
       Preconditions.checkNotNull(spaceKey);
       Preconditions.checkNotNull(pageTitle);
@@ -167,6 +172,24 @@ public final class ConfluenceLink implements Serializable {
     */
    public String getFragment() {
       return _fragment;
+   }
+
+   /**
+    * Returns {@code true} if this link contains a shortcut link in the page title.
+    * 
+    * @return {@code true} if this link contains a shortcut link in the page title.
+    */
+   public boolean isShortCutLink() {
+      return _pageTitle.contains(SHORTCUT_LINK_SEPARATOR);
+   }
+
+   /**
+    * Returns {@code true} if this link contains a blog post link in the page title.
+    * 
+    * @return {@code true} if this link contains a blog post link in the page title.
+    */
+   public boolean isBlogPost() {
+      return _pageTitle.contains("/");
    }
 
    /**
@@ -297,22 +320,29 @@ public final class ConfluenceLink implements Serializable {
             fragment = null;
          }
 
-         if (_spaceManager != null) {
+         final ConfluenceLink result = new ConfluenceLink(spaceKey, pageTitle, attachmentName, fragment);
+         if (!result.isShortCutLink()) {
+            if (_spaceManager != null) {
 
-            final Space space = _spaceManager.getSpace(spaceKey);
-            if (space == null) {
-               throw new NoSuchSpaceException(link, spaceKey);
+               final Space space = _spaceManager.getSpace(spaceKey);
+               if (space == null) {
+                  throw new NoSuchSpaceException(link, spaceKey);
+               }
+            }
+
+            if (_pageManager != null) {
+
+               if (result.isBlogPost()) {
+                  // TODO: check if blog post link is valid
+               } else {
+                  final Page page = _pageManager.getPage(spaceKey, pageTitle);
+                  if (page == null) {
+                     throw new NoSuchPageException(link, spaceKey, pageTitle);
+                  }
+               }
             }
          }
-
-         if (_pageManager != null) {
-
-            final Page page = _pageManager.getPage(spaceKey, pageTitle);
-            if (page == null) {
-               throw new NoSuchPageException(link, spaceKey, pageTitle);
-            }
-         }
-         return new ConfluenceLink(spaceKey, pageTitle, attachmentName, fragment);
+         return result;
       }
    }
 

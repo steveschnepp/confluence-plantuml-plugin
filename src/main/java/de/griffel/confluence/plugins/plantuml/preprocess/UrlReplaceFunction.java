@@ -130,7 +130,7 @@ public class UrlReplaceFunction implements LineFunction {
       final UrlRenderer urlRenderer;
       if (url.startsWith(ConfluenceLink.Parser.FRAGMENT_SEPARATOR)) {
          urlRenderer = new UrlOnSamePageUrlRenderer();
-      } else if (url.contains(ShortcutLinkUrlRenderer.SEPARATOR)) {
+      } else if (url.contains(ConfluenceLink.SHORTCUT_LINK_SEPARATOR)) {
          urlRenderer = new ShortcutLinkUrlRenderer(context.getShortcutLinks());
       } else {
          urlRenderer = new ExternalUrlRenderer(context.getBaseUrl());
