@@ -18,6 +18,7 @@
             <value name="plantuml"/>
             <value name="ditaa"/>
             <value name="dot"/>
+            <value name="jcckit"/>
          </parameter>
          <parameter name="title" type="string"/>
          <parameter name="align" type="enum" default="none">
