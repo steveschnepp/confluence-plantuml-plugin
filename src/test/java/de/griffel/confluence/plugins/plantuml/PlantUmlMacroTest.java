@@ -24,6 +24,9 @@
  */
 package de.griffel.confluence.plugins.plantuml;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -34,7 +37,6 @@ import net.sourceforge.plantuml.DiagramType;
 import net.sourceforge.plantuml.cucadiagram.dot.GraphvizUtils;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,10 +88,10 @@ public class PlantUmlMacroTest {
       sb.append(SYSTEM_NEWLINE);
       sb.append("</map><span class=\"image-wrap\" style=\"\">");
       sb.append("<img usemap=\"#unix\" src='junit/resource.png'/></span>");
-      Assert.assertEquals(sb.toString(), result);
+      assertEquals(sb.toString(), result);
       final ByteArrayOutputStream out = (ByteArrayOutputStream) resourceManager.getResourceWriter(null, null, null)
             .getStreamForWriting();
-      Assert.assertTrue(out.toByteArray().length > 0); // file size depends on installation of graphviz
+      assertTrue(out.toByteArray().length > 0); // file size depends on installation of graphviz
       IOUtils.write(out.toByteArray(), new FileOutputStream("target/junit-basic.png"));
    }
 
@@ -113,22 +115,28 @@ public class PlantUmlMacroTest {
             .append("|     {s}|   +-------+\n")
             .append("\\---+----/\n").toString();
       final String result = macro.execute(macroParams, macroBody, new PageContextMock());
-      Assert.assertEquals(
+      assertEquals(
             "<span class=\"image-wrap\" style=\"display: block; text-align: center;\"><img src='junit/resource.png' " +
                   "border=3/></span>",
             result);
       final ByteArrayOutputStream out = (ByteArrayOutputStream) resourceManager.getResourceWriter(null, null, null)
             .getStreamForWriting();
-      Assert.assertTrue(out.toByteArray().length > 0); // file size depends on installation of graphviz
+      assertTrue(out.toByteArray().length > 0); // file size depends on installation of graphviz
       IOUtils.write(out.toByteArray(), new FileOutputStream("target/junit-ditaat.png"));
    }
 
    @Test
    public void testVersionInfo() throws Exception {
-      Assert.assertTrue("@startuml\nversion\n@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
-      Assert.assertTrue("@startuml\nabout\n@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
-      Assert.assertTrue("@startuml\rversion\r@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
-      Assert.assertTrue("@startuml\r\nversion\r\n@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
+      assertTrue("@startuml\nversion\n@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
+      assertTrue("@startuml\nabout\n@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
+      assertTrue("@startuml\rversion\r@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
+      assertTrue("@startuml\r\nversion\r\n@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
+   }
+
+   @Test
+   public void testUnescapeHtml() throws Exception {
+      assertEquals("url for \"Referenz Seite\" is [[Referenz Seite#Überschrift Ebene 3]]",
+            PlantUmlMacro.unescapeHtml("url for \"Referenz Seite\" is [[Referenz Seite#&Uuml;berschrift Ebene 3]]"));
    }
 
    static class MockExportDownloadResourceManager implements WritableDownloadResourceManager {

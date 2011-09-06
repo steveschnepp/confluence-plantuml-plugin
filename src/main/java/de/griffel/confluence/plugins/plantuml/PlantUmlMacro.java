@@ -25,7 +25,9 @@
 package de.griffel.confluence.plugins.plantuml;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +40,7 @@ import net.sourceforge.plantuml.SourceStringReader;
 import net.sourceforge.plantuml.UmlSource;
 import net.sourceforge.plantuml.preproc.Defines;
 
-import org.apache.commons.io.output.NullOutputStream;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 import com.atlassian.confluence.importexport.resource.DownloadResourceWriter;
@@ -115,10 +117,17 @@ public final class PlantUmlMacro extends BaseMacro {
          throws MacroException {
 
       try {
-         return executeInternal(params, body, renderContext);
+         final String unescapeHtml = unescapeHtml(body);
+         return executeInternal(params, unescapeHtml, renderContext);
       } catch (final IOException e) {
          throw new MacroException(e);
       }
+   }
+
+   static String unescapeHtml(final String body) throws IOException {
+      final StringWriter sw = new StringWriter();
+      StringEscapeUtils.unescapeHtml(sw, body);
+      return sw.toString();
    }
 
    private String executeInternal(@SuppressWarnings("rawtypes") final Map params, final String body,
@@ -146,8 +155,7 @@ public final class PlantUmlMacro extends BaseMacro {
 
       final List<String> config = new PlantUmlConfigBuilder().build(macroParams);
       final MySourceStringReader reader = new MySourceStringReader(new Defines(), umlBlock, config);
-      final ImageMap cmap = new ImageMap(reader.buildCmap());
-      reader.generateImage(resourceWriter.getStreamForWriting());
+      final ImageMap cmap = reader.renderImage(resourceWriter.getStreamForWriting());
 
       final StringBuilder sb = new StringBuilder();
       if (preprocessor.hasExceptions()) {
@@ -281,7 +289,7 @@ public final class PlantUmlMacro extends BaseMacro {
          super(defines, source, config);
       }
 
-      public String buildCmap() throws IOException {
+      public ImageMap renderImage(OutputStream outputStream) throws IOException {
          final BlockUml blockUml = getBlocks().iterator().next();
          final PSystem system;
          try {
@@ -292,8 +300,8 @@ public final class PlantUmlMacro extends BaseMacro {
             throw x;
          }
          final StringBuilder cmap = new StringBuilder();
-         system.exportDiagram(new NullOutputStream(), cmap, 0, new FileFormatOption(FileFormat.PNG));
-         return cmap.toString();
+         system.exportDiagram(outputStream, cmap, 0, new FileFormatOption(FileFormat.PNG));
+         return new ImageMap(cmap.toString());
       }
    }
 }
