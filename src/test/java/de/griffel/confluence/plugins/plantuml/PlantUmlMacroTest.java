@@ -135,7 +135,7 @@ public class PlantUmlMacroTest {
 
    @Test
    public void testUnescapeHtml() throws Exception {
-      assertEquals("url for \"Referenz Seite\" is [[Referenz Seite#Überschrift Ebene 3]]",
+      assertEquals("url for \"Referenz Seite\" is [[Referenz Seite#\u00dcberschrift Ebene 3]]",
             PlantUmlMacro.unescapeHtml("url for \"Referenz Seite\" is [[Referenz Seite#&Uuml;berschrift Ebene 3]]"));
    }
 
