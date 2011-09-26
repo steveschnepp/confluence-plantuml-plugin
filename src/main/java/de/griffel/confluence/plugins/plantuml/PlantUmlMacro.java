@@ -295,7 +295,7 @@ public final class PlantUmlMacro extends BaseMacro implements Macro {
             return new UmlSourceBuilder().append(attachment.getContentsAsStream()).build();
 
          } else {
-            return new UmlSourceBuilder().append(page.getBodyContent().getBody()).build();
+            return new UmlSourceBuilder().append(page.getBodyAsStringWithoutMarkup()).build();
          }
       }
    }
