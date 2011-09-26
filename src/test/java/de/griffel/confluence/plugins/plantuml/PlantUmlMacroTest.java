@@ -86,8 +86,8 @@ public class PlantUmlMacroTest {
       sb.append("title=\"PlantUML Space &#45; Home\" ");
       sb.append("alt=\"\" coords=\"5,5,80,69\"/>");
       sb.append(SYSTEM_NEWLINE);
-      sb.append("</map><span class=\"image-wrap\" style=\"\">");
-      sb.append("<img usemap=\"#unix\" src='junit/resource.png'/></span>");
+      sb.append("</map><div class=\"image-wrap\" style=\"\">");
+      sb.append("<img usemap=\"#unix\" src='junit/resource.png' style=\"\" /></div>");
       assertEquals(sb.toString(), result);
       final ByteArrayOutputStream out = (ByteArrayOutputStream) resourceManager.getResourceWriter(null, null, null)
             .getStreamForWriting();
@@ -116,8 +116,8 @@ public class PlantUmlMacroTest {
             .append("\\---+----/\n").toString();
       final String result = macro.execute(macroParams, macroBody, new PageContextMock());
       assertEquals(
-            "<span class=\"image-wrap\" style=\"display: block; text-align: center;\"><img src='junit/resource.png' " +
-                  "border=3/></span>",
+            "<div class=\"image-wrap\" style=\"display: block; text-align: center;\"><img src='junit/resource.png' " +
+                  "style=\"border:3px solid black;\" /></div>",
             result);
       final ByteArrayOutputStream out = (ByteArrayOutputStream) resourceManager.getResourceWriter(null, null, null)
             .getStreamForWriting();

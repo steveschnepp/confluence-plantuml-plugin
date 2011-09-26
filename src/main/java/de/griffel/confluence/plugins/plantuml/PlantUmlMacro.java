@@ -43,8 +43,11 @@ import net.sourceforge.plantuml.preproc.Defines;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
+import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.importexport.resource.DownloadResourceWriter;
 import com.atlassian.confluence.importexport.resource.WritableDownloadResourceManager;
+import com.atlassian.confluence.macro.Macro;
+import com.atlassian.confluence.macro.MacroExecutionException;
 import com.atlassian.confluence.pages.Attachment;
 import com.atlassian.confluence.pages.Page;
 import com.atlassian.confluence.pages.PageManager;
@@ -73,7 +76,7 @@ import de.griffel.confluence.plugins.plantuml.type.UmlSourceBuilder;
  * 
  * @author Michael Griffel
  */
-public final class PlantUmlMacro extends BaseMacro {
+public final class PlantUmlMacro extends BaseMacro implements Macro {
    private final Logger logger = Logger.getLogger(PlantUmlMacro.class);
 
    private final WritableDownloadResourceManager _writeableDownloadResourceManager;
@@ -122,6 +125,25 @@ public final class PlantUmlMacro extends BaseMacro {
       } catch (final IOException e) {
          throw new MacroException(e);
       }
+   }
+
+   public String execute(Map<String, String> params, String body, ConversionContext context)
+         throws MacroExecutionException {
+      try {
+         return executeInternal(params, body, context.getPageContext());
+      } catch (final IOException e) {
+         throw new MacroExecutionException(e);
+      } catch (MacroException e) {
+         throw new MacroExecutionException(e);
+      }
+   }
+
+   public BodyType getBodyType() {
+      return BodyType.PLAIN_TEXT;
+   }
+
+   public OutputType getOutputType() {
+      return OutputType.BLOCK;
    }
 
    static String unescapeHtml(final String body) throws IOException {
@@ -176,7 +198,7 @@ public final class PlantUmlMacro extends BaseMacro {
          sb.append(new PlantUmlPluginInfo(_pluginAccessor).toHtmlString());
       }
 
-      sb.append("<span class=\"image-wrap\" style=\"" + macroParams.getAlignment().getCssStyle() + "\">");
+      sb.append("<div class=\"image-wrap\" style=\"" + macroParams.getAlignment().getCssStyle() + "\">");
       sb.append("<img");
       if (cmap.isValid()) {
          sb.append(" usemap=\"#");
@@ -188,7 +210,7 @@ public final class PlantUmlMacro extends BaseMacro {
       sb.append("'");
       sb.append(macroParams.getImageStyle());
       sb.append("/>");
-      sb.append("</span>");
+      sb.append("</div>");
 
       final String result = sb.toString();
       return result.toString();
@@ -273,7 +295,7 @@ public final class PlantUmlMacro extends BaseMacro {
             return new UmlSourceBuilder().append(attachment.getContentsAsStream()).build();
 
          } else {
-            return new UmlSourceBuilder().append(page.getContent()).build();
+            return new UmlSourceBuilder().append(page.getBodyContent().getBody()).build();
          }
       }
    }
@@ -304,4 +326,5 @@ public final class PlantUmlMacro extends BaseMacro {
          return new ImageMap(cmap.toString());
       }
    }
+
 }

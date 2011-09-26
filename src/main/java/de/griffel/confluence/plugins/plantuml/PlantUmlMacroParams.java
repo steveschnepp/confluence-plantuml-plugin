@@ -89,15 +89,14 @@ public class PlantUmlMacroParams {
 
    public String getImageStyle() {
       final StringBuilder sb = new StringBuilder();
+      sb.append(" style=\"");
       if (getBorder() > 0) {
-         sb.append(" border=" + getBorder());
+         sb.append("border:" + getBorder() + "px solid black;");
       }
-      if (getHspace() > 0) {
-         sb.append(" hspace=" + getHspace());
+      if (getHspace() > 0 || getVspace() > 0) {
+         sb.append("margin:" + getVspace() + "px " + getHspace() + "px;");
       }
-      if (getVspace() > 0) {
-         sb.append(" vspace=" + getVspace());
-      }
+      sb.append("\" ");
       return sb.toString();
    }
 
