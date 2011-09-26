@@ -8,6 +8,7 @@
     <resource key="icons" name="icons/" type="download" location="/images/icons/"/>
     <resource name="i18n" type="i18n" location="i18n/plantuml"/>
 
+    <!-- Confluence <=3.x -->
     <macro name="plantuml"
            class="de.griffel.confluence.plugins.plantuml.PlantUmlMacro"
            key="plantuml-macro"
@@ -35,4 +36,32 @@
         <param name="help-section" value="misc"/>
       </resource>
     </macro>
+    <!-- Confluence >=4.x -->
+    <xhtml-macro name="plantuml"
+           class="de.griffel.confluence.plugins.plantuml.PlantUmlMacro"
+           key="plantuml-macro-xhtml"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/icon.png">
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="type" type="enum" default="plantuml">
+            <value name="plantuml"/>
+            <value name="ditaa"/>
+            <value name="dot"/>
+            <value name="jcckit"/>
+         </parameter>
+         <parameter name="title" type="string"/>
+         <parameter name="align" type="enum" default="none">
+            <value name="none"/>
+            <value name="left"/>
+            <value name="center"/>
+            <value name="right"/>
+         </parameter>
+         <parameter name="border" type="string"/>
+         <parameter name="hspace" type="string"/>
+         <parameter name="vspace" type="string"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/plant-uml-help.vm">
+        <param name="help-section" value="misc"/>
+      </resource>
+    </xhtml-macro>
 </atlassian-plugin>
