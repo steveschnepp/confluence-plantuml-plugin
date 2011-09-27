@@ -38,7 +38,7 @@
     </macro>
     <!-- Confluence >=4.x -->
     <xhtml-macro name="plantuml"
-           class="de.griffel.confluence.plugins.plantuml.PlantUmlMacro"
+           class="de.griffel.confluence.plugins.plantuml.PlantUmlMacroV4"
            key="plantuml-macro-xhtml"
            icon="/download/resources/${project.groupId}.${project.artifactId}/icons/icon.png">
       <category name="visuals"/>

@@ -43,11 +43,8 @@ import net.sourceforge.plantuml.preproc.Defines;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
-import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.importexport.resource.DownloadResourceWriter;
 import com.atlassian.confluence.importexport.resource.WritableDownloadResourceManager;
-import com.atlassian.confluence.macro.Macro;
-import com.atlassian.confluence.macro.MacroExecutionException;
 import com.atlassian.confluence.pages.Attachment;
 import com.atlassian.confluence.pages.Page;
 import com.atlassian.confluence.pages.PageManager;
@@ -76,7 +73,7 @@ import de.griffel.confluence.plugins.plantuml.type.UmlSourceBuilder;
  * 
  * @author Michael Griffel
  */
-public final class PlantUmlMacro extends BaseMacro implements Macro {
+public class PlantUmlMacro extends BaseMacro {
    private final Logger logger = Logger.getLogger(PlantUmlMacro.class);
 
    private final WritableDownloadResourceManager _writeableDownloadResourceManager;
@@ -115,8 +112,8 @@ public final class PlantUmlMacro extends BaseMacro implements Macro {
       return RenderMode.NO_RENDER;
    }
 
-   public String execute(@SuppressWarnings("rawtypes") final Map params, final String body,
-         final RenderContext renderContext)
+   @SuppressWarnings({ "unchecked", "rawtypes" })
+   public String execute(Map params, final String body, final RenderContext renderContext)
          throws MacroException {
 
       try {
@@ -127,32 +124,13 @@ public final class PlantUmlMacro extends BaseMacro implements Macro {
       }
    }
 
-   public String execute(Map<String, String> params, String body, ConversionContext context)
-         throws MacroExecutionException {
-      try {
-         return executeInternal(params, body, context.getPageContext());
-      } catch (final IOException e) {
-         throw new MacroExecutionException(e);
-      } catch (MacroException e) {
-         throw new MacroExecutionException(e);
-      }
-   }
-
-   public BodyType getBodyType() {
-      return BodyType.PLAIN_TEXT;
-   }
-
-   public OutputType getOutputType() {
-      return OutputType.BLOCK;
-   }
-
    static String unescapeHtml(final String body) throws IOException {
       final StringWriter sw = new StringWriter();
       StringEscapeUtils.unescapeHtml(sw, body);
       return sw.toString();
    }
 
-   private String executeInternal(@SuppressWarnings("rawtypes") final Map params, final String body,
+   protected String executeInternal(Map<String, String> params, final String body,
          final RenderContext renderContext)
          throws MacroException, IOException {
       final DownloadResourceWriter resourceWriter = _writeableDownloadResourceManager.getResourceWriter(
