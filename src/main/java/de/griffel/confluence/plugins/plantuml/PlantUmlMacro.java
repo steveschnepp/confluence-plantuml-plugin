@@ -134,7 +134,7 @@ public class PlantUmlMacro extends BaseMacro {
          final RenderContext renderContext)
          throws MacroException, IOException {
       final DownloadResourceWriter resourceWriter = _writeableDownloadResourceManager.getResourceWriter(
-            AuthenticatedUserThreadLocal.getUsername(), "plantuml", "png");
+            AuthenticatedUserThreadLocal.getUsername(), "plantuml", ".png");
 
       final PlantUmlMacroParams macroParams = new PlantUmlMacroParams(params);
 
