@@ -32,7 +32,7 @@
 	<url>https://studio.plugins.atlassian.com/wiki/display/PUML</url>
 	<issueManagement>
 		<system>JIRA</system>
-		<url>https://studio.plugins.atlassian.com/wiki/display/PUML</url>
+		<url>https://studio.plugins.atlassian.com/browse/PUML</url>
 	</issueManagement>
 	<ciManagement>
 		<system>Bamboo</system>
