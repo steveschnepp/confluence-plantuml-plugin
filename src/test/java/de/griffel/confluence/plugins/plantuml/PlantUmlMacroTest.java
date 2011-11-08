@@ -57,7 +57,7 @@ import de.griffel.confluence.plugins.plantuml.preprocess.PageContextMock;
  * This unit test requires GraphViz.
  */
 public class PlantUmlMacroTest {
-   private static final String SYSTEM_NEWLINE = System.getProperty("line.separator");
+   private static final String NEWLINE = "\n";
    private Mocks _mocks;
 
    @Before
@@ -80,12 +80,12 @@ public class PlantUmlMacroTest {
       final String result = macro.execute(macroParams, macroBody, new PageContextMock());
       StringBuilder sb = new StringBuilder();
       sb.append("<map id=\"unix\" name=\"unix\">");
-      sb.append(SYSTEM_NEWLINE);
-      sb.append("<area shape=\"rect\" id=\"node1\" ");
+      sb.append(NEWLINE);
+      sb.append("<area shape=\"rect\" id=\"cl0002\" ");
       sb.append("href=\"http://localhost:8080/confluence/display/PUML/Home\" ");
-      sb.append("title=\"PlantUML Space &#45; Home\" ");
-      sb.append("alt=\"\" coords=\"5,5,80,69\"/>");
-      sb.append(SYSTEM_NEWLINE);
+      sb.append("title=\"PlantUML Space - Home\" ");
+      sb.append("alt=\"\" coords=\"6,8,54,56\"/>");
+      sb.append(NEWLINE);
       sb.append("</map><div class=\"image-wrap\" style=\"\">");
       sb.append("<img usemap=\"#unix\" src='junit/resource.png' style=\"\" /></div>");
       assertEquals(sb.toString(), result);
