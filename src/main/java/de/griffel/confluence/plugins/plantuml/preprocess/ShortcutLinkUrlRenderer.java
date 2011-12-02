@@ -59,8 +59,7 @@ public class ShortcutLinkUrlRenderer extends AbstractUrlRenderer {
       final ShortcutLinkConfig shortcutLinkConfig = getShortcutLinkConfig(pageTitle, shortcutValue);
       final String expandedValue = shortcutLinkConfig.getExpandedValue();
 
-      final String result = substitude(expandedValue, shortcutValue);
-      return result;
+      return substitude(expandedValue, shortcutValue);
    }
 
    @Override

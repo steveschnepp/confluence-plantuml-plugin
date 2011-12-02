@@ -83,6 +83,7 @@ public class ConfluenceLinkTest {
    public void testToUrl() throws Exception {
       checkUrl("FOO", "PageTitle", null, BASE_URL + "/display/FOO/PageTitle");
       checkUrl("FOO", "Page with spaces", null, BASE_URL + "/display/FOO/Page with spaces");
+      checkUrl("FOO", "2011/12/02/Blog Post", null, BASE_URL + "/display/FOO/2011/12/02/Blog Post");
       checkUrl("FOO", "PageTitle", "Section", BASE_URL + "/display/FOO/PageTitle#PageTitle-Section");
       checkUrl("FOO", "Page Title", "Section x\u00e4\u00f6\u00fcx", BASE_URL
             + "/display/FOO/Page Title#PageTitle-Sectionx%C3%A4%C3%B6%C3%BCx");

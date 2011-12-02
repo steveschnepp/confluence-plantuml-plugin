@@ -9,7 +9,7 @@ import com.google.common.collect.Lists;
 /**
  * Immutable class to hold a list of {@link LineFunction}s.
  */
-public class StringFunctions implements LineFunction {
+public final class StringFunctions implements LineFunction {
    private final List<LineFunction> _functions;
 
    private StringFunctions(List<LineFunction> functions) {

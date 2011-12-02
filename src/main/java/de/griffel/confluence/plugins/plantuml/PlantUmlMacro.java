@@ -190,8 +190,7 @@ public class PlantUmlMacro extends BaseMacro {
       sb.append("/>");
       sb.append("</div>");
 
-      final String result = sb.toString();
-      return result.toString();
+      return sb.toString();
    }
 
    private final class MyPreprocessingContext implements PreprocessingContext {
