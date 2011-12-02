@@ -27,9 +27,13 @@ package de.griffel.confluence.plugins.plantuml.type;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.atlassian.confluence.pages.BlogPost;
 import com.atlassian.confluence.pages.Page;
 import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.renderer.PageContext;
@@ -192,6 +196,23 @@ public final class ConfluenceLink implements Serializable {
       return _pageTitle.contains("/");
    }
 
+   public String getBlogPostTitle() {
+      return StringUtils.substringAfterLast(getPageTitle(), "/");
+   }
+
+   public Calendar getBlogPostDay() {
+      final String dayString = StringUtils.stripStart(
+            StringUtils.substringBeforeLast(getPageTitle(), "/"), "/");
+      final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+      final Calendar day = Calendar.getInstance();
+      try {
+         day.setTime(sdf.parse(dayString));
+      } catch (ParseException e) {
+         throw new RuntimeException("Cannot parse blog post date string: " + dayString);
+      }
+      return day;
+   }
+
    /**
     * Returns the URL fragment of the Confluence Link. The fragment is the part of the URL after the '#".
     * 
@@ -333,7 +354,11 @@ public final class ConfluenceLink implements Serializable {
             if (_pageManager != null) {
 
                if (result.isBlogPost()) {
-                  // TODO: check if blog post link is valid
+                  final BlogPost blogPost =
+                        _pageManager.getBlogPost(spaceKey, result.getBlogPostTitle(), result.getBlogPostDay());
+                  if (blogPost == null) {
+                     throw new NoSuchBlogPostException(link, spaceKey, result.getPageTitle());
+                  }
                } else {
                   final Page page = _pageManager.getPage(spaceKey, pageTitle);
                   if (page == null) {
@@ -346,12 +371,23 @@ public final class ConfluenceLink implements Serializable {
       }
    }
 
+   public static class NoSuchBlogPostException extends RuntimeException {
+      private static final long serialVersionUID = 1L;
+
+      protected NoSuchBlogPostException(String link, String spaceKey, String pageTitle) {
+         super("Cannot find blog post '" + pageTitle + "' in space '" + spaceKey + "' referenced by link '" + link
+               + "'.");
+      }
+
+   }
+
    public static class NoSuchPageException extends RuntimeException {
       private static final long serialVersionUID = 1L;
 
       protected NoSuchPageException(String link, String spaceKey, String pageTitle) {
          super("Cannot find page '" + pageTitle + "' in space '" + spaceKey + "' referenced by link '" + link + "'.");
       }
+
    }
 
    public static class NoSuchSpaceException extends RuntimeException {
@@ -360,5 +396,6 @@ public final class ConfluenceLink implements Serializable {
       protected NoSuchSpaceException(String link, String spaceKey) {
          super("The space with the key '" + spaceKey + "' from link '" + link + "' does not exists.");
       }
+
    }
 }
