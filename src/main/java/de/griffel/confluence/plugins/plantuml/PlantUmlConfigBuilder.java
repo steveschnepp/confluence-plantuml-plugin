@@ -30,7 +30,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 public class PlantUmlConfigBuilder {
-   final List<String> _config = Lists.newArrayList();
+   private final List<String> _config = Lists.newArrayList();
 
    public List<String> build(PlantUmlMacroParams params) {
       appendTitle(params.getTitle());

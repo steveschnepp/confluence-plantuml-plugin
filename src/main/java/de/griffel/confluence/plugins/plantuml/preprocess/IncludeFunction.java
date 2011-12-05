@@ -38,7 +38,7 @@ public final class IncludeFunction implements LineFunction {
    /**
     * @see net.sourceforge.plantuml.preproc.PreprocessorInclude#includePattern
     */
-   private final Pattern INCLUDE_PATTERN = Pattern.compile("^\\s*!include\\s+\"?([^\"]+)\"?$");
+   private static final Pattern INCLUDE_PATTERN = Pattern.compile("^\\s*!include\\s+\"?([^\"]+)\"?$");
 
    private final UmlSourceLocator _umlSourceLocator;
 

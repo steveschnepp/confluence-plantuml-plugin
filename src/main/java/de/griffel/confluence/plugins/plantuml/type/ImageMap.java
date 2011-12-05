@@ -33,7 +33,7 @@ public final class ImageMap {
    private static final String HTML_MAP_MAGIC = "<map id=\"";
 
    private final String _cmap;
-   private String id; // lazy initialized
+   private String _id; // lazy initialized
 
    /**
     * Constructs a new instance of an image map.
@@ -50,11 +50,11 @@ public final class ImageMap {
     * @return the <tt>id</tt> attribute of the image map.
     */
    public String getId() {
-      if (id == null && isValid()) {
-         id = StringUtils.substringBefore(
+      if (_id == null && isValid()) {
+         _id = StringUtils.substringBefore(
                StringUtils.substringAfter(_cmap, HTML_MAP_MAGIC), "\"");
       }
-      return id;
+      return _id;
    }
 
    /**
@@ -71,7 +71,7 @@ public final class ImageMap {
     */
    @Override
    public String toString() {
-      return "ImageMap [id=" + id + ", _cmap=" + _cmap + "]";
+      return "ImageMap [id=" + _id + ", _cmap=" + _cmap + "]";
    }
 
    /**
