@@ -141,7 +141,7 @@ public class PlantUmlMacroTest {
 
    static class MockExportDownloadResourceManager implements WritableDownloadResourceManager {
 
-      private DownloadResourceWriter downloadResourceWriter;
+      private DownloadResourceWriter _downloadResourceWriter;
 
       public DownloadResourceReader getResourceReader(String arg0, String arg1, @SuppressWarnings("rawtypes") Map arg2)
             throws UnauthorizedDownloadResourceException, DownloadResourceNotFoundException {
@@ -157,11 +157,11 @@ public class PlantUmlMacroTest {
       }
 
       public void setDownloadResourceWriter(DownloadResourceWriter downloadResourceWriter) {
-         this.downloadResourceWriter = downloadResourceWriter;
+         _downloadResourceWriter = downloadResourceWriter;
       }
 
       public DownloadResourceWriter getDownloadResourceWriter() {
-         return downloadResourceWriter;
+         return _downloadResourceWriter;
       }
 
    }

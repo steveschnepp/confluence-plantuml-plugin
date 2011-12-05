@@ -208,7 +208,7 @@ public final class ConfluenceLink implements Serializable {
       try {
          day.setTime(sdf.parse(dayString));
       } catch (ParseException e) {
-         throw new RuntimeException("Cannot parse blog post date string: " + dayString);
+         throw new RuntimeException("Cannot parse blog post date string: " + dayString, e);
       }
       return day;
    }

@@ -74,7 +74,7 @@ import de.griffel.confluence.plugins.plantuml.type.UmlSourceBuilder;
  * @author Michael Griffel
  */
 public class PlantUmlMacro extends BaseMacro {
-   private final Logger logger = Logger.getLogger(PlantUmlMacro.class);
+   private static final Logger logger = Logger.getLogger(PlantUmlMacro.class);
 
    private final WritableDownloadResourceManager _writeableDownloadResourceManager;
 
@@ -194,13 +194,13 @@ public class PlantUmlMacro extends BaseMacro {
    }
 
    private final class MyPreprocessingContext implements PreprocessingContext {
-      private final PageContext pageContext;
+      private final PageContext _pageContext;
 
       /**
        * {@inheritDoc}
        */
       private MyPreprocessingContext(PageContext pageContext) {
-         this.pageContext = pageContext;
+         _pageContext = pageContext;
       }
 
       /**
@@ -217,7 +217,7 @@ public class PlantUmlMacro extends BaseMacro {
        * {@inheritDoc}
        */
       public PageContext getPageContext() {
-         return pageContext;
+         return _pageContext;
       }
 
       public SpaceManager getSpaceManager() {
