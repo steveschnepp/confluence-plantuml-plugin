@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
+import com.atlassian.confluence.importexport.resource.DownloadResourceNotFoundException;
+import com.atlassian.confluence.importexport.resource.UnauthorizedDownloadResourceException;
 import com.atlassian.confluence.importexport.resource.WritableDownloadResourceManager;
 import com.atlassian.confluence.macro.Macro;
 import com.atlassian.confluence.macro.MacroExecutionException;
@@ -69,6 +71,10 @@ public class PlantUmlMacroV4 extends PlantUmlMacro implements Macro {
       } catch (final IOException e) {
          throw new MacroExecutionException(e);
       } catch (MacroException e) {
+         throw new MacroExecutionException(e);
+      } catch (UnauthorizedDownloadResourceException e) {
+         throw new MacroExecutionException(e);
+      } catch (DownloadResourceNotFoundException e) {
          throw new MacroExecutionException(e);
       }
    }

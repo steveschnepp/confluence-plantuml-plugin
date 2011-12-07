@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -40,10 +41,14 @@ import net.sourceforge.plantuml.SourceStringReader;
 import net.sourceforge.plantuml.UmlSource;
 import net.sourceforge.plantuml.preproc.Defines;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
+import com.atlassian.confluence.importexport.resource.DownloadResourceNotFoundException;
+import com.atlassian.confluence.importexport.resource.DownloadResourceReader;
 import com.atlassian.confluence.importexport.resource.DownloadResourceWriter;
+import com.atlassian.confluence.importexport.resource.UnauthorizedDownloadResourceException;
 import com.atlassian.confluence.importexport.resource.WritableDownloadResourceManager;
 import com.atlassian.confluence.pages.Attachment;
 import com.atlassian.confluence.pages.Page;
@@ -121,6 +126,10 @@ public class PlantUmlMacro extends BaseMacro {
          return executeInternal(params, unescapeHtml, renderContext);
       } catch (final IOException e) {
          throw new MacroException(e);
+      } catch (UnauthorizedDownloadResourceException e) {
+         throw new MacroException(e);
+      } catch (DownloadResourceNotFoundException e) {
+         throw new MacroException(e);
       }
    }
 
@@ -132,11 +141,13 @@ public class PlantUmlMacro extends BaseMacro {
 
    protected String executeInternal(Map<String, String> params, final String body,
          final RenderContext renderContext)
-         throws MacroException, IOException {
-      final DownloadResourceWriter resourceWriter = _writeableDownloadResourceManager.getResourceWriter(
-            AuthenticatedUserThreadLocal.getUsername(), "plantuml", ".png");
+         throws MacroException, IOException, UnauthorizedDownloadResourceException, DownloadResourceNotFoundException {
 
       final PlantUmlMacroParams macroParams = new PlantUmlMacroParams(params);
+      final FileFormat fileFormat = macroParams.getFileFormat();
+
+      final DownloadResourceWriter resourceWriter = _writeableDownloadResourceManager.getResourceWriter(
+            AuthenticatedUserThreadLocal.getUsername(), "plantuml", fileFormat.getFileSuffix());
 
       if (!(renderContext instanceof PageContext)) {
          throw new MacroException("This macro can only be used in Confluence pages. (ctx="
@@ -155,7 +166,7 @@ public class PlantUmlMacro extends BaseMacro {
 
       final List<String> config = new PlantUmlConfigBuilder().build(macroParams);
       final MySourceStringReader reader = new MySourceStringReader(new Defines(), umlBlock, config);
-      final ImageMap cmap = reader.renderImage(resourceWriter.getStreamForWriting());
+      final ImageMap cmap = reader.renderImage(resourceWriter.getStreamForWriting(), fileFormat);
 
       final StringBuilder sb = new StringBuilder();
       if (preprocessor.hasExceptions()) {
@@ -176,19 +187,29 @@ public class PlantUmlMacro extends BaseMacro {
          sb.append(new PlantUmlPluginInfo(_pluginAccessor).toHtmlString());
       }
 
-      sb.append("<div class=\"image-wrap\" style=\"" + macroParams.getAlignment().getCssStyle() + "\">");
-      sb.append("<img");
-      if (cmap.isValid()) {
-         sb.append(" usemap=\"#");
-         sb.append(cmap.getId());
-         sb.append("\"");
+      if (FileFormat.SVG == fileFormat) {
+         final DownloadResourceReader resourceReader =
+               _writeableDownloadResourceManager.getResourceReader(AuthenticatedUserThreadLocal.getUsername(),
+                     resourceWriter.getResourcePath(), Collections.emptyMap());
+         final List<String> readLines = IOUtils.readLines(resourceReader.getStreamForReading());
+         for (String line : readLines) {
+            sb.append(line);
+         }
+      } else {
+         sb.append("<div class=\"image-wrap\" style=\"" + macroParams.getAlignment().getCssStyle() + "\">");
+         sb.append("<img");
+         if (cmap.isValid()) {
+            sb.append(" usemap=\"#");
+            sb.append(cmap.getId());
+            sb.append("\"");
+         }
+         sb.append(" src='");
+         sb.append(resourceWriter.getResourcePath());
+         sb.append("'");
+         sb.append(macroParams.getImageStyle());
+         sb.append("/>");
+         sb.append("</div>");
       }
-      sb.append(" src='");
-      sb.append(resourceWriter.getResourcePath());
-      sb.append("'");
-      sb.append(macroParams.getImageStyle());
-      sb.append("/>");
-      sb.append("</div>");
 
       return sb.toString();
    }
@@ -288,7 +309,7 @@ public class PlantUmlMacro extends BaseMacro {
          super(defines, source, config);
       }
 
-      public ImageMap renderImage(OutputStream outputStream) throws IOException {
+      public ImageMap renderImage(OutputStream outputStream, FileFormat format) throws IOException {
          final BlockUml blockUml = getBlocks().iterator().next();
          final PSystem system;
          try {
@@ -299,7 +320,7 @@ public class PlantUmlMacro extends BaseMacro {
             throw x;
          }
          final StringBuilder cmap = new StringBuilder();
-         system.exportDiagram(outputStream, cmap, 0, new FileFormatOption(FileFormat.PNG));
+         system.exportDiagram(outputStream, cmap, 0, new FileFormatOption(format));
          return new ImageMap(cmap.toString());
       }
    }
