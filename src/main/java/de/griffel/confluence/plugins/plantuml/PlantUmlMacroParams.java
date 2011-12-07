@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import net.sourceforge.plantuml.DiagramType;
+import net.sourceforge.plantuml.FileFormat;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
@@ -40,7 +41,7 @@ import com.google.common.collect.Iterators;
 public class PlantUmlMacroParams {
 
    public enum Param {
-      title, type, border, align, hspace, vspace
+      title, type, border, align, hspace, vspace, format;
    }
 
    public enum Alignment {
@@ -124,6 +125,15 @@ public class PlantUmlMacroParams {
       return result;
    }
 
+   public FileFormat getFileFormat() {
+      final String format = get(Param.format);
+      try {
+         return format != null ? FileFormat.valueOf(format) : FileFormat.PNG;
+      } catch (IllegalArgumentException e) {
+         return FileFormat.PNG;
+      }
+   }
+
    /*
     * @see java.lang.Object#toString()
     */
@@ -135,4 +145,5 @@ public class PlantUmlMacroParams {
    private String get(Param param) {
       return (String) _params.get(param.name());
    }
+
 }
