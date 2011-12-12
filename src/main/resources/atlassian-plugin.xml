@@ -21,10 +21,6 @@
             <value name="dot"/>
             <value name="jcckit"/>
          </parameter>
-         <parameter name="format" type="enum" default="PNG">
-            <value name="PNG"/>
-            <value name="SVG"/>
-         </parameter>
          <parameter name="title" type="string"/>
          <parameter name="align" type="enum" default="none">
             <value name="none"/>
@@ -35,6 +31,12 @@
          <parameter name="border" type="string"/>
          <parameter name="hspace" type="string"/>
          <parameter name="vspace" type="string"/>
+         <parameter name="dropshadow" type="boolean" default="true"/>
+         <parameter name="separation" type="boolean" default="true"/>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
       </parameters>
       <resource type="velocity" name="help" location="templates/plant-uml-help.vm">
         <param name="help-section" value="misc"/>
@@ -53,10 +55,6 @@
             <value name="dot"/>
             <value name="jcckit"/>
          </parameter>
-         <parameter name="format" type="enum" default="PNG">
-            <value name="PNG"/>
-            <value name="SVG"/>
-         </parameter>
          <parameter name="title" type="string"/>
          <parameter name="align" type="enum" default="none">
             <value name="none"/>
@@ -67,6 +65,12 @@
          <parameter name="border" type="string"/>
          <parameter name="hspace" type="string"/>
          <parameter name="vspace" type="string"/>
+         <parameter name="dropshadow" type="boolean" default="true"/>
+         <parameter name="separation" type="boolean" default="true"/>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
       </parameters>
       <resource type="velocity" name="help" location="templates/plant-uml-help.vm">
         <param name="help-section" value="misc"/>

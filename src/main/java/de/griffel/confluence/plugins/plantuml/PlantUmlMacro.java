@@ -159,7 +159,10 @@ public class PlantUmlMacro extends BaseMacro {
       final PreprocessingContext preprocessingContext = new MyPreprocessingContext(pageContext);
 
       final DiagramType diagramType = macroParams.getDiagramType();
-      final UmlSourceBuilder builder = new UmlSourceBuilder(diagramType).append(new StringReader(body));
+      final boolean dropShadow = macroParams.getDropShadow();
+      final boolean separation = macroParams.getSeparation();
+      final UmlSourceBuilder builder =
+            new UmlSourceBuilder(diagramType, dropShadow, separation).append(new StringReader(body));
       final PlantUmlPreprocessor preprocessor =
             new PlantUmlPreprocessor(builder.build(), umlSourceLocator, preprocessingContext);
       final String umlBlock = preprocessor.toUmlBlock();
@@ -168,6 +171,7 @@ public class PlantUmlMacro extends BaseMacro {
       final MySourceStringReader reader = new MySourceStringReader(new Defines(), umlBlock, config);
       final ImageMap cmap = reader.renderImage(resourceWriter.getStreamForWriting(), fileFormat);
 
+      // TODO: REFACTOR
       final StringBuilder sb = new StringBuilder();
       if (preprocessor.hasExceptions()) {
          sb.append("<div class=\"error\">");

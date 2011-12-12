@@ -41,7 +41,7 @@ import com.google.common.collect.Iterators;
 public class PlantUmlMacroParams {
 
    public enum Param {
-      title, type, border, align, hspace, vspace, format;
+      title, type, border, align, hspace, vspace, format, dropshadow, separation;
    }
 
    public enum Alignment {
@@ -132,6 +132,17 @@ public class PlantUmlMacroParams {
       } catch (IllegalArgumentException e) {
          return FileFormat.PNG;
       }
+   }
+
+   public boolean getDropShadow() {
+      final String dropShadow = get(Param.dropshadow);
+      return dropShadow != null ? Boolean.valueOf(dropShadow) : true;
+
+   }
+
+   public boolean getSeparation() {
+      final String separation = get(Param.separation);
+      return separation != null ? Boolean.valueOf(separation) : true;
    }
 
    /*
