@@ -44,16 +44,21 @@ import com.google.common.collect.Lists;
 public final class UmlSourceBuilder {
    private final List<String> _lines = Lists.newArrayList();
    private final DiagramType _diagramType;
+   private final boolean _dropShadow;
+   private final boolean _separation;
 
-   public UmlSourceBuilder() {
-      this(null);
-   }
-
-   public UmlSourceBuilder(DiagramType diagramType) {
+   public UmlSourceBuilder(DiagramType diagramType, boolean dropShadow, boolean separation) {
       _diagramType = diagramType;
+      _dropShadow = dropShadow;
+      _separation = separation;
+
       if (diagramType != null) {
          append(getStartTag());
       }
+   }
+
+   public UmlSourceBuilder() {
+      this(null, true, true);
    }
 
    public UmlSourceBuilder append(String lineOrMuliLine) {
@@ -98,11 +103,43 @@ public final class UmlSourceBuilder {
    }
 
    private String getStartTag() {
-      return "@start" + _diagramType.name().toLowerCase(Locale.US);
+      final StringBuilder sb = new StringBuilder();
+      sb.append("@start");
+      sb.append(_diagramType.name().toLowerCase(Locale.US));
+
+      if (DiagramType.UML == _diagramType) {
+         if (!_dropShadow) {
+            sb.append("\n");
+            sb.append("skinparam shadowing ");
+            sb.append(_dropShadow);
+         }
+      } else if (DiagramType.DITAA == _diagramType) {
+         if (!_dropShadow) {
+            // -S,--no-shadows Turns off the drop-shadow effect.
+            sb.append("-S");
+         }
+         if (!_separation) {
+            // -E,--no-separation Prevents the separation of common edges of shapes.
+            sb.append("-E");
+         }
+      }
+      return sb.toString();
    }
 
    private String getEndTag() {
-      return "@end" + _diagramType.name().toLowerCase(Locale.US);
+      final StringBuilder sb = new StringBuilder();
+      sb.append("@end");
+      sb.append(_diagramType.name().toLowerCase(Locale.US));
+
+      if (DiagramType.DITAA == _diagramType) {
+         if (!_dropShadow) {
+            sb.append("-S");
+         }
+         if (!_separation) {
+            sb.append("-E");
+         }
+      }
+      return sb.toString();
    }
 
 }

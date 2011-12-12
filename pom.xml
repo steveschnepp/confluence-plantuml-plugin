@@ -12,7 +12,7 @@
 	<packaging>atlassian-plugin</packaging>
 
 	<organization>
-		<name>Michael Griffel</name>
+		<name>avono AG</name>
 		<url>https://plugins.atlassian.com/plugin/details/41025</url>
 	</organization>
 
@@ -96,7 +96,7 @@
 		<dependency>
 			<groupId>net.sourceforge.plantuml</groupId>
 			<artifactId>plantuml</artifactId>
-			<version>7481</version>
+			<version>7497</version>
 		</dependency>
 	</dependencies>
 
