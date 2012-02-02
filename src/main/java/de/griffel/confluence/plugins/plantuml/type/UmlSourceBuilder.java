@@ -46,11 +46,13 @@ public final class UmlSourceBuilder {
    private final DiagramType _diagramType;
    private final boolean _dropShadow;
    private final boolean _separation;
+   private final boolean _isSvek;
 
-   public UmlSourceBuilder(DiagramType diagramType, boolean dropShadow, boolean separation) {
+   public UmlSourceBuilder(DiagramType diagramType, boolean dropShadow, boolean separation, boolean isSvek) {
       _diagramType = diagramType;
       _dropShadow = dropShadow;
       _separation = separation;
+      _isSvek = isSvek;
 
       if (diagramType != null) {
          append(getStartTag());
@@ -58,7 +60,7 @@ public final class UmlSourceBuilder {
    }
 
    public UmlSourceBuilder() {
-      this(null, true, true);
+      this(null, true, true, true);
    }
 
    public UmlSourceBuilder append(String lineOrMuliLine) {
@@ -113,6 +115,11 @@ public final class UmlSourceBuilder {
             sb.append("skinparam shadowing ");
             sb.append(_dropShadow);
          }
+         if (!_isSvek) {
+            sb.append("\n");
+            sb.append("skinparam svek off");
+         }
+
       } else if (DiagramType.DITAA == _diagramType) {
          if (!_dropShadow) {
             // -S,--no-shadows Turns off the drop-shadow effect.
@@ -128,6 +135,8 @@ public final class UmlSourceBuilder {
 
    private String getEndTag() {
       final StringBuilder sb = new StringBuilder();
+      if (DiagramType.UML == _diagramType) {
+      }
       sb.append("@end");
       sb.append(_diagramType.name().toLowerCase(Locale.US));
 

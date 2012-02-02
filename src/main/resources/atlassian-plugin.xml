@@ -3,10 +3,15 @@
         <description>${project.description}</description>
         <version>${project.version}</version>
         <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <param name="configure.url">/admin/plugins/plantuml/config.action</param>
     </plugin-info>
 
     <resource key="icons" name="icons/" type="download" location="/images/icons/"/>
     <resource name="i18n" type="i18n" location="i18n/plantuml"/>
+
+    <component key="plantuml-configuration-manager"
+               name="plantuml configuration manager"
+               class="de.griffel.confluence.plugins.plantuml.config.DefaultPlantUmlConfigurationManager" />
 
     <!-- Confluence <=3.x -->
     <macro name="plantuml"
@@ -72,8 +77,23 @@
             <value name="SVG"/>
          </parameter>
       </parameters>
-      <resource type="velocity" name="help" location="templates/plant-uml-help.vm">
+      <resource type="velocity" name="help" location="templates/plantuml-help.vm">
         <param name="help-section" value="misc"/>
       </resource>
     </xhtml-macro>
+
+    <xwork name="plantuml xwork actions" key="plantuml-action-xwork">
+        <package name="plantuml-admin-actions" extends="default" namespace="/admin/plugins/plantuml">
+         <default-interceptor-ref name="defaultStack"/>
+         <action name="config" class="de.griffel.confluence.plugins.plantuml.actions.PlantUmlAdminConfigAction" method="load">
+            <result name="error"   type="velocity">/templates/plantuml-admin-config.vm</result>
+            <result name="success" type="velocity">/templates/plantuml-admin-config.vm</result>
+         </action>
+         <action name="save" class="de.griffel.confluence.plugins.plantuml.actions.PlantUmlAdminConfigAction" method="save">
+            <interceptor-ref name="validatingStack"/>
+            <result name="error"   type="velocity">/templates/plantuml-admin-config.vm</result>
+            <result name="success" type="velocity">/templates/plantuml-admin-config.vm</result>
+         </action>
+      </package>
+    </xwork>
 </atlassian-plugin>

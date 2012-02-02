@@ -65,6 +65,7 @@ import com.atlassian.renderer.v2.RenderMode;
 import com.atlassian.renderer.v2.macro.BaseMacro;
 import com.atlassian.renderer.v2.macro.MacroException;
 
+import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationManager;
 import de.griffel.confluence.plugins.plantuml.preprocess.PlantUmlPreprocessor;
 import de.griffel.confluence.plugins.plantuml.preprocess.PreprocessingContext;
 import de.griffel.confluence.plugins.plantuml.preprocess.PreprocessingException;
@@ -92,16 +93,19 @@ public class PlantUmlMacro extends BaseMacro {
    private final PluginAccessor _pluginAccessor;
 
    private final ShortcutLinksManager _shortcutLinksManager;
+   private final PlantUmlConfigurationManager _configurationManager;
 
    public PlantUmlMacro(WritableDownloadResourceManager writeableDownloadResourceManager,
          PageManager pageManager, SpaceManager spaceManager, SettingsManager settingsManager,
-         PluginAccessor pluginAccessor, ShortcutLinksManager shortcutLinksManager) {
+         PluginAccessor pluginAccessor, ShortcutLinksManager shortcutLinksManager,
+         PlantUmlConfigurationManager configurationManager) {
       _writeableDownloadResourceManager = writeableDownloadResourceManager;
       _pageManager = pageManager;
       _spaceManager = spaceManager;
       _settingsManager = settingsManager;
       _pluginAccessor = pluginAccessor;
       _shortcutLinksManager = shortcutLinksManager;
+      _configurationManager = configurationManager;
    }
 
    @Override
@@ -161,8 +165,9 @@ public class PlantUmlMacro extends BaseMacro {
       final DiagramType diagramType = macroParams.getDiagramType();
       final boolean dropShadow = macroParams.getDropShadow();
       final boolean separation = macroParams.getSeparation();
+      final boolean isSvek = _configurationManager.load().isSvek();
       final UmlSourceBuilder builder =
-            new UmlSourceBuilder(diagramType, dropShadow, separation).append(new StringReader(body));
+            new UmlSourceBuilder(diagramType, dropShadow, separation, isSvek).append(new StringReader(body));
       final PlantUmlPreprocessor preprocessor =
             new PlantUmlPreprocessor(builder.build(), umlSourceLocator, preprocessingContext);
       final String umlBlock = preprocessor.toUmlBlock();

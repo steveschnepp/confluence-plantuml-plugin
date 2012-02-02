@@ -74,7 +74,8 @@ public class PlantUmlMacroTest {
       final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null, _mocks.getSpaceManager(),
             _mocks.getSettingsManager(),
             _mocks.getPluginAccessor(),
-            _mocks.getShortcutLinksManager());
+            _mocks.getShortcutLinksManager(),
+            _mocks.getConfigurationManager());
       final Map<Param, String> macroParams = Collections.singletonMap(PlantUmlMacroParams.Param.title, "Sample Title");
       final String macroBody = "A <|-- B\nurl for A is [[Home]]";
       final String result = macro.execute(macroParams, macroBody, new PageContextMock());
@@ -102,7 +103,8 @@ public class PlantUmlMacroTest {
       final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null, _mocks.getSpaceManager(),
             _mocks.getSettingsManager(),
             _mocks.getPluginAccessor(),
-            _mocks.getShortcutLinksManager());
+            _mocks.getShortcutLinksManager(),
+            _mocks.getConfigurationManager());
       final ImmutableMap<String, String> macroParams = new ImmutableMap.Builder<String, String>().put(
             PlantUmlMacroParams.Param.type.name(), DiagramType.DITAA.name().toLowerCase())
             .put(PlantUmlMacroParams.Param.align.name(), PlantUmlMacroParams.Alignment.center.name())

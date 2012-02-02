@@ -1,0 +1,32 @@
+#set ($helper = $params.get("helper"))##
+
+<html>
+   <head>
+      <meta name="decorator" content="atl.admin"/>
+      <meta name="help-path" content="templates/plantuml-admin-config-help.vm"/>
+      <title>$action.getText("plantuml.admin.config.title")</title>
+   </head>
+
+   <body>
+      <p>$action.getText("plantuml.admin.config.description")</p>
+
+      #parse ( "/template/includes/actionmessages.vm" )
+      #parse ( "/template/includes/actionerrors.vm" )
+
+      <form method="POST" action="save.action">
+         <table border="0" class="grid" width="100%">
+            <tr>
+               <td width="40%"><label class="label">$action.getText("plantuml.admin.config.svekrendering.label")</label></td>
+               <td><input type="checkbox" name="svek" value="true" #if ( $action.svek ) checked="checked" #end />
+               </td>
+            </tr>
+         </table>
+         <div style="float: right;">
+            #tag ("Submit" "name='save'" "value='save.name'" "theme='notable'")
+         </div>
+      </form>
+
+      #parse("/breadcrumbs.vm")
+
+   </body>
+</html>

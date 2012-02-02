@@ -1,0 +1,5 @@
+<p>
+    <strong>$action.getText('plantuml.admin.config.svekrendering.label'):</strong><br/>
+            $action.getText('plantuml.admin.config.svekrendering.help')
+    <br/>
+</p>
