@@ -42,6 +42,8 @@ import com.atlassian.plugin.PluginAccessor;
 import com.atlassian.plugin.PluginInformation;
 import com.google.common.collect.ImmutableMap;
 
+import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationBean;
+import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationManager;
 import de.griffel.confluence.plugins.plantuml.preprocess.PageContextMock;
 import de.griffel.confluence.plugins.plantuml.preprocess.PreprocessingContext;
 
@@ -59,6 +61,7 @@ public final class Mocks {
    private final Space _plantUmlSpaceMock = Mockito.mock(Space.class);
    private final PreprocessingContext _preprocessingContext = Mockito.mock(PreprocessingContext.class);
    private final ShortcutLinksManager _shortcutLinksManager = Mockito.mock(ShortcutLinksManager.class);
+   private final PlantUmlConfigurationManager _configurationManager = Mockito.mock(PlantUmlConfigurationManager.class);
 
    public Mocks() {
       Mockito.when(_pluginAccessor.getPlugin(PlantUmlPluginInfo.PLUGIN_KEY)).thenReturn(_plugin);
@@ -82,6 +85,8 @@ public final class Mocks {
       Mockito.when(_preprocessingContext.getPageContext()).thenReturn(new PageContextMock());
       Mockito.when(_preprocessingContext.getSpaceManager()).thenReturn(_spaceManager);
       Mockito.when(_preprocessingContext.getShortcutLinks()).thenReturn(shortcutLinks);
+
+      Mockito.when(_configurationManager.load()).thenReturn(new PlantUmlConfigurationBean());
 
    }
 
@@ -107,6 +112,10 @@ public final class Mocks {
 
    public ShortcutLinksManager getShortcutLinksManager() {
       return _shortcutLinksManager;
+   }
+
+   public PlantUmlConfigurationManager getConfigurationManager() {
+      return _configurationManager;
    }
 
    private static class MockSettingsManager implements SettingsManager {
