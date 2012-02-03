@@ -4,6 +4,9 @@
         <version>${project.version}</version>
         <vendor name="${project.organization.name}" url="${project.organization.url}" />
         <param name="configure.url">/admin/plugins/plantuml/config.action</param>
+        <param name="plugin-icon">images/icons/plantuml-icon.png</param>
+        <param name="plugin-logo">images/plantuml-logo.png</param>
+        <param name="plugin-banner">images/plantuml-banner.png</param>
     </plugin-info>
 
     <resource key="icons" name="icons/" type="download" location="/images/icons/"/>
@@ -17,7 +20,7 @@
     <macro name="plantuml"
            class="de.griffel.confluence.plugins.plantuml.PlantUmlMacro"
            key="plantuml-macro"
-           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/icon.png">
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/plantuml-macro-icon.png">
       <category name="visuals"/>
       <parameters>
          <parameter name="type" type="enum" default="plantuml">
