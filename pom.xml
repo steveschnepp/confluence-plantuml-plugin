@@ -96,7 +96,7 @@
 		<dependency>
 			<groupId>net.sourceforge.plantuml</groupId>
 			<artifactId>plantuml</artifactId>
-			<version>7622</version>
+			<version>7707</version>
 		</dependency>
 	</dependencies>
 
