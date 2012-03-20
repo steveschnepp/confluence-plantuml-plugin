@@ -135,8 +135,6 @@ public final class UmlSourceBuilder {
 
    private String getEndTag() {
       final StringBuilder sb = new StringBuilder();
-      if (DiagramType.UML == _diagramType) {
-      }
       sb.append("@end");
       sb.append(_diagramType.name().toLowerCase(Locale.US));
 
