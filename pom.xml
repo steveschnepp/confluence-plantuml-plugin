@@ -39,9 +39,9 @@
 		<url>https://studio.plugins.atlassian.com/builds/browse/PUML-TRUNK</url>
 	</ciManagement>
 	<scm>
-		<connection>scm:svn:https://studio.plugins.atlassian.com/svn/PUML/trunk/</connection>
-		<developerConnection>scm:svn:https://studio.plugins.atlassian.com/svn/PUML/trunk/</developerConnection>
-		<url>https://studio.plugins.atlassian.com/svn/PUML/trunk</url>
+		<connection>scm:hg:https://bitbucket.org/mgriffel/plantuml</connection>
+		<developerConnection>scm:hg:https://bitbucket.org/mgriffel/plantuml</developerConnection>
+		<url>https://bitbucket.org/mgriffel/plantuml</url>
 	</scm>
 	<developers>
 		<developer>
