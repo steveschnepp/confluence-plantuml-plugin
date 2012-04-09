@@ -42,6 +42,8 @@ import com.google.common.collect.Lists;
  * Builder for {@link UmlSource}.
  */
 public final class UmlSourceBuilder {
+   private static final String EMPTY_LINE_REGEX = "(?m)^[ \t]*\r?\n";
+
    private final List<String> _lines = Lists.newArrayList();
    private final DiagramType _diagramType;
    private final boolean _dropShadow;
@@ -55,7 +57,7 @@ public final class UmlSourceBuilder {
       _isSvek = isSvek;
 
       if (diagramType != null) {
-         append(getStartTag());
+         appendLine(getStartTag());
       }
    }
 
@@ -65,14 +67,14 @@ public final class UmlSourceBuilder {
 
    public UmlSourceBuilder append(String lineOrMuliLine) {
       for (String line : lineOrMuliLine.split("\n")) {
-         _lines.add(line);
+         appendLine(line);
       }
       return this;
    }
 
    public UmlSourceBuilder append(List<String> lines) {
       for (String line : lines) {
-         _lines.add(line);
+         appendLine(line);
       }
       return this;
    }
@@ -81,7 +83,7 @@ public final class UmlSourceBuilder {
       final LineNumberReader reader = new LineNumberReader(stringReader);
       String line = reader.readLine();
       while (line != null) {
-         _lines.add(line);
+         appendLine(line);
          line = reader.readLine();
       }
       return this;
@@ -94,7 +96,7 @@ public final class UmlSourceBuilder {
 
    public UmlSource build() {
       if (_diagramType != null) {
-         append(getEndTag());
+         appendLine(getEndTag());
       }
       return new UmlSource(_lines);
    }
@@ -102,6 +104,15 @@ public final class UmlSourceBuilder {
    @Override
    public String toString() {
       return "UmlSourceBuilder [_lines=" + _lines + "]";
+   }
+
+   private void appendLine(String line) {
+      if (line != null) {
+         final String trimedLine = line.trim();
+         if (!trimedLine.isEmpty()) {
+            _lines.add(trimedLine);
+         }
+      }
    }
 
    private String getStartTag() {
