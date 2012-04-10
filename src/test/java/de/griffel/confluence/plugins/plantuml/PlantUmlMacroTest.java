@@ -85,11 +85,11 @@ public class PlantUmlMacroTest {
       sb.append("<area shape=\"rect\" id=\"cl0002\" ");
       sb.append("href=\"http://localhost:8080/confluence/display/PUML/Home\" ");
       sb.append("title=\"PlantUML Space - Home\" ");
-      sb.append("alt=\"\" coords=\"6,8,46,56\"/>");
+      sb.append("alt=\"\" coords=\"x\"/>");
       sb.append(NEWLINE);
       sb.append("</map><div class=\"image-wrap\" style=\"\">");
       sb.append("<img usemap=\"#unix\" src='junit/resource.png' style=\"\" /></div>");
-      assertEquals(sb.toString(), result);
+      assertEquals(sb.toString(), result.replaceFirst("coords=\"[^\"]*\"", "coords=\"x\""));
       final ByteArrayOutputStream out = (ByteArrayOutputStream) resourceManager.getResourceWriter(null, null, null)
             .getStreamForWriting();
       assertTrue(out.toByteArray().length > 0); // file size depends on installation of graphviz
