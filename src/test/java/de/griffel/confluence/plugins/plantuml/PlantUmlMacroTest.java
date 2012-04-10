@@ -85,7 +85,7 @@ public class PlantUmlMacroTest {
       sb.append("<area shape=\"rect\" id=\"cl0002\" ");
       sb.append("href=\"http://localhost:8080/confluence/display/PUML/Home\" ");
       sb.append("title=\"PlantUML Space - Home\" ");
-      sb.append("alt=\"\" coords=\"7,8,46,56\"/>");
+      sb.append("alt=\"\" coords=\"6,8,46,56\"/>");
       sb.append(NEWLINE);
       sb.append("</map><div class=\"image-wrap\" style=\"\">");
       sb.append("<img usemap=\"#unix\" src='junit/resource.png' style=\"\" /></div>");
