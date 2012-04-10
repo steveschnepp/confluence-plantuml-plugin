@@ -35,33 +35,33 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-public class PlantUmlPreprocessor {
+public final class PlantUmlPreprocessor {
 
-   private final UmlSource _umlSource;
-   private final UmlSourceLocator _umlSourceLocator;
-   private final PreprocessingContext _context;
-   private final List<PreprocessingException> _errors = Lists.newArrayList();
+   private final UmlSource umlSource;
+   private final UmlSourceLocator umlSourceLocator;
+   private final PreprocessingContext context;
+   private final List<PreprocessingException> errors = Lists.newArrayList();
 
    public PlantUmlPreprocessor(UmlSource umlSource, UmlSourceLocator includeFileHandler, PreprocessingContext context)
          throws IOException {
-      _umlSource = umlSource;
-      _umlSourceLocator = includeFileHandler;
-      _context = context;
+      this.umlSource = umlSource;
+      umlSourceLocator = includeFileHandler;
+      this.context = context;
    }
 
    public String toUmlBlock() throws IOException {
       final StringBuilder sb = new StringBuilder();
       final StringFunctions functions = StringFunctions.builder()
-            .add(new IncludeFunction(_umlSourceLocator))
+            .add(new IncludeFunction(umlSourceLocator))
             .add(new UrlReplaceFunction())
             .build();
 
-      for (Iterator<String> iterator = _umlSource.iterator(); iterator.hasNext();) {
+      for (Iterator<String> iterator = umlSource.iterator(); iterator.hasNext();) {
          final String line = iterator.next();
          try {
-            sb.append(functions.apply(_context, line));
+            sb.append(functions.apply(context, line));
          } catch (PreprocessingException e) {
-            _errors.add(e);
+            errors.add(e);
          }
       }
       return sb.toString();
@@ -71,15 +71,15 @@ public class PlantUmlPreprocessor {
     * @return the _includeFileHandler
     */
    public UmlSourceLocator getIncludeFileHandler() {
-      return _umlSourceLocator;
+      return umlSourceLocator;
    }
 
    public void handleExceptions() throws PreprocessingException {
       if (hasExceptions()) {
-         if (_errors.size() == 1) {
-            throw _errors.iterator().next();
+         if (errors.size() == 1) {
+            throw errors.iterator().next();
          } else {
-            throw new PreprocessingException(null, String.valueOf(Iterables.transform(_errors,
+            throw new PreprocessingException(null, String.valueOf(Iterables.transform(errors,
                   new Function<PreprocessingException, String>() {
                      public String apply(PreprocessingException from) {
                         return from.getDetails();
@@ -95,7 +95,7 @@ public class PlantUmlPreprocessor {
     * @return {@code true} if during the pre-processoing at least one error occurred; {@code false} otherwise.
     */
    public boolean hasExceptions() {
-      return !_errors.isEmpty();
+      return !errors.isEmpty();
    }
 
    /**
@@ -104,6 +104,6 @@ public class PlantUmlPreprocessor {
     * @return a immutable list of all errors that are occurred during the pre-processing.
     */
    public List<PreprocessingException> getExceptions() {
-      return Collections.unmodifiableList(_errors);
+      return Collections.unmodifiableList(errors);
    }
 }

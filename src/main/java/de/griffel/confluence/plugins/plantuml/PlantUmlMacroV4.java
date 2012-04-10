@@ -58,15 +58,15 @@ public class PlantUmlMacroV4 extends PlantUmlMacro implements Macro {
             shortcutLinksManager, configurationManager);
    }
 
-   public BodyType getBodyType() {
+   public final BodyType getBodyType() {
       return BodyType.PLAIN_TEXT;
    }
 
-   public OutputType getOutputType() {
+   public final OutputType getOutputType() {
       return OutputType.BLOCK;
    }
 
-   public String execute(Map<String, String> params, String body, ConversionContext context)
+   public final String execute(Map<String, String> params, String body, ConversionContext context)
          throws MacroExecutionException {
       try {
          return executeInternal(params, body, context.getPageContext());

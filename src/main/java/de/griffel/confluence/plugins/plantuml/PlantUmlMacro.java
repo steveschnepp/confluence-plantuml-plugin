@@ -82,42 +82,42 @@ import de.griffel.confluence.plugins.plantuml.type.UmlSourceBuilder;
 public class PlantUmlMacro extends BaseMacro {
    private static final Logger logger = Logger.getLogger(PlantUmlMacro.class);
 
-   private final WritableDownloadResourceManager _writeableDownloadResourceManager;
+   private final WritableDownloadResourceManager writeableDownloadResourceManager;
 
-   private final PageManager _pageManager;
+   private final PageManager pageManager;
 
-   private final SpaceManager _spaceManager;
+   private final SpaceManager spaceManager;
 
-   private final SettingsManager _settingsManager;
+   private final SettingsManager settingsManager;
 
-   private final PluginAccessor _pluginAccessor;
+   private final PluginAccessor pluginAccessor;
 
-   private final ShortcutLinksManager _shortcutLinksManager;
-   private final PlantUmlConfigurationManager _configurationManager;
+   private final ShortcutLinksManager shortcutLinksManager;
+   private final PlantUmlConfigurationManager configurationManager;
 
    public PlantUmlMacro(WritableDownloadResourceManager writeableDownloadResourceManager,
          PageManager pageManager, SpaceManager spaceManager, SettingsManager settingsManager,
          PluginAccessor pluginAccessor, ShortcutLinksManager shortcutLinksManager,
          PlantUmlConfigurationManager configurationManager) {
-      _writeableDownloadResourceManager = writeableDownloadResourceManager;
-      _pageManager = pageManager;
-      _spaceManager = spaceManager;
-      _settingsManager = settingsManager;
-      _pluginAccessor = pluginAccessor;
-      _shortcutLinksManager = shortcutLinksManager;
-      _configurationManager = configurationManager;
+      this.writeableDownloadResourceManager = writeableDownloadResourceManager;
+      this.pageManager = pageManager;
+      this.spaceManager = spaceManager;
+      this.settingsManager = settingsManager;
+      this.pluginAccessor = pluginAccessor;
+      this.shortcutLinksManager = shortcutLinksManager;
+      this.configurationManager = configurationManager;
    }
 
    @Override
-   public boolean isInline() {
+   public final boolean isInline() {
       return false;
    }
 
-   public boolean hasBody() {
+   public final boolean hasBody() {
       return true;
    }
 
-   public RenderMode getBodyRenderMode() {
+   public final RenderMode getBodyRenderMode() {
       return RenderMode.NO_RENDER;
    }
 
@@ -143,14 +143,14 @@ public class PlantUmlMacro extends BaseMacro {
       return sw.toString();
    }
 
-   protected String executeInternal(Map<String, String> params, final String body,
+   protected final String executeInternal(Map<String, String> params, final String body,
          final RenderContext renderContext)
          throws MacroException, IOException, UnauthorizedDownloadResourceException, DownloadResourceNotFoundException {
 
       final PlantUmlMacroParams macroParams = new PlantUmlMacroParams(params);
       final FileFormat fileFormat = macroParams.getFileFormat();
 
-      final DownloadResourceWriter resourceWriter = _writeableDownloadResourceManager.getResourceWriter(
+      final DownloadResourceWriter resourceWriter = writeableDownloadResourceManager.getResourceWriter(
             AuthenticatedUserThreadLocal.getUsername(), "plantuml", fileFormat.getFileSuffix());
 
       if (!(renderContext instanceof PageContext)) {
@@ -165,7 +165,7 @@ public class PlantUmlMacro extends BaseMacro {
       final DiagramType diagramType = macroParams.getDiagramType();
       final boolean dropShadow = macroParams.getDropShadow();
       final boolean separation = macroParams.getSeparation();
-      final boolean isSvek = _configurationManager.load().isSvek();
+      final boolean isSvek = configurationManager.load().isSvek();
       final UmlSourceBuilder builder =
             new UmlSourceBuilder(diagramType, dropShadow, separation, isSvek).append(new StringReader(body));
       final PlantUmlPreprocessor preprocessor =
@@ -193,12 +193,12 @@ public class PlantUmlMacro extends BaseMacro {
       }
 
       if (umlBlock.matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX)) {
-         sb.append(new PlantUmlPluginInfo(_pluginAccessor).toHtmlString());
+         sb.append(new PlantUmlPluginInfo(pluginAccessor).toHtmlString());
       }
 
       if (FileFormat.SVG == fileFormat) {
          final DownloadResourceReader resourceReader =
-               _writeableDownloadResourceManager.getResourceReader(AuthenticatedUserThreadLocal.getUsername(),
+               writeableDownloadResourceManager.getResourceReader(AuthenticatedUserThreadLocal.getUsername(),
                      resourceWriter.getResourcePath(), Collections.emptyMap());
          final List<String> readLines = IOUtils.readLines(resourceReader.getStreamForReading());
          for (String line : readLines) {
@@ -224,13 +224,13 @@ public class PlantUmlMacro extends BaseMacro {
    }
 
    private final class MyPreprocessingContext implements PreprocessingContext {
-      private final PageContext _pageContext;
+      private final PageContext pageContext;
 
       /**
        * {@inheritDoc}
        */
       private MyPreprocessingContext(PageContext pageContext) {
-         _pageContext = pageContext;
+         this.pageContext = pageContext;
       }
 
       /**
@@ -239,7 +239,7 @@ public class PlantUmlMacro extends BaseMacro {
        * @return the base URL from the global settings.
        */
       public String getBaseUrl() {
-         final String baseUrl = _settingsManager.getGlobalSettings().getBaseUrl();
+         final String baseUrl = settingsManager.getGlobalSettings().getBaseUrl();
          return baseUrl;
       }
 
@@ -247,25 +247,25 @@ public class PlantUmlMacro extends BaseMacro {
        * {@inheritDoc}
        */
       public PageContext getPageContext() {
-         return _pageContext;
+         return pageContext;
       }
 
       public SpaceManager getSpaceManager() {
-         return _spaceManager;
+         return spaceManager;
       }
 
       /**
        * {@inheritDoc}
        */
       public PageManager getPageManager() {
-         return _pageManager;
+         return pageManager;
       }
 
       /**
        * {@inheritDoc}
        */
       public Map<String, ShortcutLinkConfig> getShortcutLinks() {
-         return _shortcutLinksManager.getShortcutLinks();
+         return shortcutLinksManager.getShortcutLinks();
       }
    }
 
@@ -273,24 +273,24 @@ public class PlantUmlMacro extends BaseMacro {
     * Gets the UML source either from a Confluence page or from an attachment.
     */
    private final class UmlSourceLocatorConfluence implements UmlSourceLocator {
-      private final PageContext _pageContext;
+      private final PageContext pageContext;
 
       /**
        * @param pageContext
        */
       private UmlSourceLocatorConfluence(PageContext pageContext) {
-         _pageContext = pageContext;
+         this.pageContext = pageContext;
       }
 
       public UmlSource get(String name) throws IOException {
-         final ConfluenceLink.Parser parser = new ConfluenceLink.Parser(_pageContext, _spaceManager, _pageManager);
+         final ConfluenceLink.Parser parser = new ConfluenceLink.Parser(pageContext, spaceManager, pageManager);
          final ConfluenceLink confluenceLink = parser.parse(name);
 
          if (logger.isDebugEnabled()) {
             logger.debug("Link '" + name + "' -> " + confluenceLink);
          }
 
-         final Page page = _pageManager.getPage(confluenceLink.getSpaceKey(), confluenceLink.getPageTitle());
+         final Page page = pageManager.getPage(confluenceLink.getSpaceKey(), confluenceLink.getPageTitle());
          // page cannot be null since it is validated before
          if (confluenceLink.hasAttachmentName()) {
             final Attachment attachment = page.getAttachmentNamed(confluenceLink.getAttachmentName());
@@ -318,7 +318,7 @@ public class PlantUmlMacro extends BaseMacro {
          super(defines, source, config);
       }
 
-      public ImageMap renderImage(OutputStream outputStream, FileFormat format) throws IOException {
+      public final ImageMap renderImage(OutputStream outputStream, FileFormat format) throws IOException {
          final BlockUml blockUml = getBlocks().iterator().next();
          final PSystem system;
          try {

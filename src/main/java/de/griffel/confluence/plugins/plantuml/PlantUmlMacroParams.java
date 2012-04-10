@@ -38,7 +38,7 @@ import com.google.common.collect.Iterators;
 /**
  * Supported PlantUML Macro parameters.
  */
-public class PlantUmlMacroParams {
+public final class PlantUmlMacroParams {
 
    public enum Param {
       title, type, border, align, hspace, vspace, format, dropshadow, separation;
@@ -46,14 +46,14 @@ public class PlantUmlMacroParams {
 
    public enum Alignment {
       none(""), left("float: left;"), center("display: block; text-align: center;"), right("float: right;");
-      private final String _cssStyle;
+      private final String cssStyle;
 
       private Alignment(String cssStyle) {
-         _cssStyle = cssStyle;
+         this.cssStyle = cssStyle;
       }
 
       public String getCssStyle() {
-         return _cssStyle;
+         return cssStyle;
       }
 
       public static Alignment getDefault() {
@@ -62,11 +62,11 @@ public class PlantUmlMacroParams {
    }
 
    @SuppressWarnings("rawtypes")
-   private final Map _params;
+   private final Map params;
 
    @SuppressWarnings("rawtypes")
    public PlantUmlMacroParams(Map params) {
-      _params = params != null ? params : Collections.EMPTY_MAP;
+      this.params = params != null ? params : Collections.EMPTY_MAP;
    }
 
    public String getTitle() {
@@ -120,7 +120,7 @@ public class PlantUmlMacroParams {
             }
          });
       } catch (NoSuchElementException e) {
-         result = DiagramType.UML;
+         result = DiagramType.UML; /* default type */
       }
       return result;
    }
@@ -150,11 +150,11 @@ public class PlantUmlMacroParams {
     */
    @Override
    public String toString() {
-      return "PlantUmlMacroParams [_params=" + _params + "]";
+      return "PlantUmlMacroParams [_params=" + params + "]";
    }
 
    private String get(Param param) {
-      return (String) _params.get(param.name());
+      return (String) params.get(param.name());
    }
 
 }

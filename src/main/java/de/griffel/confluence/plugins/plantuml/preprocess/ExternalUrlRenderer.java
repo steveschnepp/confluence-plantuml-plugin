@@ -28,10 +28,10 @@ import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
 
 public class ExternalUrlRenderer extends AbstractUrlRenderer {
 
-   private final String _baseUrl;
+   private final String baseUrl;
 
    public ExternalUrlRenderer(String baseUrl) {
-      _baseUrl = baseUrl;
+      this.baseUrl = baseUrl;
    }
 
    /**
@@ -40,9 +40,9 @@ public class ExternalUrlRenderer extends AbstractUrlRenderer {
     * @param link the Confluence link for which the external display URL should be generated.
     * @return the external display URL of this Confluence link.
     */
-   public String getHyperlink(ConfluenceLink link) {
+   public final String getHyperlink(ConfluenceLink link) {
       final StringBuilder sb = new StringBuilder();
-      sb.append(_baseUrl);
+      sb.append(baseUrl);
       sb.append("/display/");
       sb.append(link.getSpaceKey());
       sb.append("/");

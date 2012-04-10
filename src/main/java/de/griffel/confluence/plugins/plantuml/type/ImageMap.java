@@ -32,8 +32,8 @@ import com.atlassian.gzipfilter.org.apache.commons.lang.StringUtils;
 public final class ImageMap {
    private static final String HTML_MAP_MAGIC = "<map id=\"";
 
-   private final String _cmap;
-   private String _id; // lazy initialized
+   private final String cmap;
+   private String id; // lazy initialized
 
    /**
     * Constructs a new instance of an image map.
@@ -41,7 +41,7 @@ public final class ImageMap {
     * @param cmap the string representation of the HTML <map> element.
     */
    public ImageMap(String cmap) {
-      _cmap = cmap != null ? cmap.trim() : "";
+      this.cmap = cmap != null ? cmap.trim() : "";
    }
 
    /**
@@ -50,11 +50,11 @@ public final class ImageMap {
     * @return the <tt>id</tt> attribute of the image map.
     */
    public String getId() {
-      if (_id == null && isValid()) {
-         _id = StringUtils.substringBefore(
-               StringUtils.substringAfter(_cmap, HTML_MAP_MAGIC), "\"");
+      if (id == null && isValid()) {
+         id = StringUtils.substringBefore(
+               StringUtils.substringAfter(cmap, HTML_MAP_MAGIC), "\"");
       }
-      return _id;
+      return id;
    }
 
    /**
@@ -63,7 +63,7 @@ public final class ImageMap {
     * @return <tt>true</tt> if this image map is valid; <tt>false</tt> otherwise.
     */
    public boolean isValid() {
-      return _cmap.startsWith(HTML_MAP_MAGIC);
+      return cmap.startsWith(HTML_MAP_MAGIC);
    }
 
    /*
@@ -71,7 +71,7 @@ public final class ImageMap {
     */
    @Override
    public String toString() {
-      return "ImageMap [id=" + _id + ", _cmap=" + _cmap + "]";
+      return "ImageMap [id=" + id + ", cmap=" + cmap + "]";
    }
 
    /**
@@ -80,7 +80,7 @@ public final class ImageMap {
     * @return the HTML <map> element as string.
     */
    public String toHtmlString() {
-      return _cmap;
+      return cmap;
    }
 
 }

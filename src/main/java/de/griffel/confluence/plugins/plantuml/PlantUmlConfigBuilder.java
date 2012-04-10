@@ -29,8 +29,8 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-public class PlantUmlConfigBuilder {
-   private final List<String> _config = Lists.newArrayList();
+public final class PlantUmlConfigBuilder {
+   private final List<String> config = Lists.newArrayList();
 
    public List<String> build(PlantUmlMacroParams params) {
       appendTitle(params.getTitle());
@@ -39,11 +39,11 @@ public class PlantUmlConfigBuilder {
 
    public void appendTitle(String title) {
       if (title != null) {
-         _config.add("title " + title);
+         config.add("title " + title);
       }
    }
 
    public List<String> build() {
-      return Collections.unmodifiableList(_config);
+      return Collections.unmodifiableList(config);
    }
 }

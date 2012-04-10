@@ -30,21 +30,21 @@ package de.griffel.confluence.plugins.plantuml.preprocess;
 public class PreprocessingException extends Exception {
 
    private static final long serialVersionUID = 1L;
-   private final String _line;
+   private final String line;
 
    public PreprocessingException(String line, String message, Throwable cause) {
       super(message, cause);
-      _line = line;
+      this.line = line;
    }
 
    public PreprocessingException(String line, String message) {
       super(message);
-      _line = line;
+      this.line = line;
    }
 
    public PreprocessingException(String line, Throwable cause) {
       super(cause);
-      _line = line;
+      this.line = line;
    }
 
    /**
@@ -53,7 +53,7 @@ public class PreprocessingException extends Exception {
     * @return the line where this exception occurred.
     */
    public final String getLine() {
-      return _line;
+      return line;
    }
 
    /**
@@ -61,7 +61,7 @@ public class PreprocessingException extends Exception {
     * 
     * @return the details error message for the user.
     */
-   public String getDetails() {
+   public final String getDetails() {
       final StringBuilder sb = new StringBuilder();
       if (getLine() != null) {
          sb.append("line: '");

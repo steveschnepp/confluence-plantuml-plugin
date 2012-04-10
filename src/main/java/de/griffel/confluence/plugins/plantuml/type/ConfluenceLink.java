@@ -47,10 +47,10 @@ import com.google.common.base.Preconditions;
  */
 public final class ConfluenceLink implements Serializable {
    private static final long serialVersionUID = 1L;
-   private final String _spaceKey;
-   private final String _pageTitle;
-   private final String _attachmentName;
-   private final String _fragment;
+   private final String spaceKey;
+   private final String pageTitle;
+   private final String attachmentName;
+   private final String fragment;
 
    /**
     * Separator string for shortcut links.
@@ -60,12 +60,12 @@ public final class ConfluenceLink implements Serializable {
    public ConfluenceLink(String spaceKey, String pageTitle, String attachmentName, String fragment) {
       Preconditions.checkNotNull(spaceKey);
       Preconditions.checkNotNull(pageTitle);
-      _spaceKey = spaceKey;
-      _pageTitle = pageTitle;
-      _attachmentName = attachmentName;
-      _fragment = fragment;
+      this.spaceKey = spaceKey;
+      this.pageTitle = pageTitle;
+      this.attachmentName = attachmentName;
+      this.fragment = fragment;
 
-      if (fragment != null && _attachmentName != null) {
+      if (fragment != null && attachmentName != null) {
          throw new IllegalArgumentException(
                "Either attachment name or fragment can be set but not both: attachment name is '" + attachmentName
                      + "' and fragment is '" + fragment + "'");
@@ -148,7 +148,7 @@ public final class ConfluenceLink implements Serializable {
     * @return the space key.
     */
    public String getSpaceKey() {
-      return _spaceKey;
+      return spaceKey;
    }
 
    /**
@@ -157,7 +157,7 @@ public final class ConfluenceLink implements Serializable {
     * @return the page title.
     */
    public String getPageTitle() {
-      return _pageTitle;
+      return pageTitle;
    }
 
    /**
@@ -166,7 +166,7 @@ public final class ConfluenceLink implements Serializable {
     * @return the attachment name or <tt>null</tt> if this link don't reference an attachment.
     */
    public String getAttachmentName() {
-      return _attachmentName;
+      return attachmentName;
    }
 
    /**
@@ -175,7 +175,7 @@ public final class ConfluenceLink implements Serializable {
     * @return the fragment of the URL.
     */
    public String getFragment() {
-      return _fragment;
+      return fragment;
    }
 
    /**
@@ -184,7 +184,7 @@ public final class ConfluenceLink implements Serializable {
     * @return {@code true} if this link contains a shortcut link in the page title.
     */
    public boolean isShortCutLink() {
-      return _pageTitle.contains(SHORTCUT_LINK_SEPARATOR);
+      return pageTitle.contains(SHORTCUT_LINK_SEPARATOR);
    }
 
    /**
@@ -193,24 +193,11 @@ public final class ConfluenceLink implements Serializable {
     * @return {@code true} if this link contains a blog post link in the page title.
     */
    public boolean isBlogPost() {
-      return _pageTitle.contains("/");
+      return pageTitle.contains("/");
    }
 
    public String getBlogPostTitle() {
       return StringUtils.substringAfterLast(getPageTitle(), "/");
-   }
-
-   public Calendar getBlogPostDay() {
-      final String dayString = StringUtils.stripStart(
-            StringUtils.substringBeforeLast(getPageTitle(), "/"), "/");
-      final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-      final Calendar day = Calendar.getInstance();
-      try {
-         day.setTime(sdf.parse(dayString));
-      } catch (ParseException e) {
-         throw new RuntimeException("Cannot parse blog post date string: " + dayString, e);
-      }
-      return day;
    }
 
    /**
@@ -231,6 +218,19 @@ public final class ConfluenceLink implements Serializable {
          throw new RuntimeException("UTF-8 encoding not supported?", e);
       }
       return result;
+   }
+
+   Calendar getBlogPostDay() {
+      final String dayString = StringUtils.stripStart(
+            StringUtils.substringBeforeLast(getPageTitle(), "/"), "/");
+      final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+      final Calendar day = Calendar.getInstance();
+      try {
+         day.setTime(sdf.parse(dayString));
+      } catch (ParseException e) {
+         throw new RuntimeException("Cannot parse blog post date string: " + dayString, e);
+      }
+      return day;
    }
 
    /**
@@ -255,9 +255,9 @@ public final class ConfluenceLink implements Serializable {
        * URL separator for a fragment
        */
       public static final String FRAGMENT_SEPARATOR = "#";
-      private final PageContext _pageContext;
-      private final SpaceManager _spaceManager;
-      private final PageManager _pageManager;
+      private final PageContext pageContext;
+      private final SpaceManager spaceManager;
+      private final PageManager pageManager;
 
       /**
        * Constructs a new Parser. This parser validates if the link references a valid page and a valid space using the
@@ -268,9 +268,9 @@ public final class ConfluenceLink implements Serializable {
        * @param pageManager the page manger.
        */
       public Parser(PageContext context, SpaceManager spaceManager, PageManager pageManager) {
-         _pageContext = context;
-         _spaceManager = spaceManager;
-         _pageManager = pageManager;
+         pageContext = context;
+         this.spaceManager = spaceManager;
+         this.pageManager = pageManager;
       }
 
       /**
@@ -304,13 +304,13 @@ public final class ConfluenceLink implements Serializable {
                   pageTitleWithFragment = parts[1];
                   attachmentName = parts[2];
                } else {
-                  spaceKey = _pageContext.getSpaceKey();
+                  spaceKey = pageContext.getSpaceKey();
                   pageTitleWithFragment = parts[0];
                   attachmentName = parts[1];
                }
             } else {
-               spaceKey = _pageContext.getSpaceKey();
-               pageTitleWithFragment = _pageContext.getPageTitle();
+               spaceKey = pageContext.getSpaceKey();
+               pageTitleWithFragment = pageContext.getPageTitle();
                attachmentName = parts[1];
             }
          } else {
@@ -320,7 +320,7 @@ public final class ConfluenceLink implements Serializable {
                spaceKey = parts[0];
                pageTitleWithFragment = parts[1];
             } else {
-               spaceKey = _pageContext.getSpaceKey();
+               spaceKey = pageContext.getSpaceKey();
                pageTitleWithFragment = link;
             }
          }
@@ -330,7 +330,7 @@ public final class ConfluenceLink implements Serializable {
          final String pageTitle;
          if (pageTitleWithFragment.contains(FRAGMENT_SEPARATOR)) {
             if (pageTitleWithFragment.startsWith(FRAGMENT_SEPARATOR)) {
-               pageTitle = _pageContext.getPageTitle();
+               pageTitle = pageContext.getPageTitle();
                fragment = pageTitleWithFragment.substring(FRAGMENT_SEPARATOR.length());
             } else {
                pageTitle = StringUtils.substringBefore(pageTitleWithFragment, FRAGMENT_SEPARATOR);
@@ -343,24 +343,24 @@ public final class ConfluenceLink implements Serializable {
 
          final ConfluenceLink result = new ConfluenceLink(spaceKey, pageTitle, attachmentName, fragment);
          if (!result.isShortCutLink()) {
-            if (_spaceManager != null) {
+            if (spaceManager != null) {
 
-               final Space space = _spaceManager.getSpace(spaceKey);
+               final Space space = spaceManager.getSpace(spaceKey);
                if (space == null) {
                   throw new NoSuchSpaceException(link, spaceKey);
                }
             }
 
-            if (_pageManager != null) {
+            if (pageManager != null) {
 
                if (result.isBlogPost()) {
                   final BlogPost blogPost =
-                        _pageManager.getBlogPost(spaceKey, result.getBlogPostTitle(), result.getBlogPostDay());
+                        pageManager.getBlogPost(spaceKey, result.getBlogPostTitle(), result.getBlogPostDay());
                   if (blogPost == null) {
                      throw new NoSuchBlogPostException(link, spaceKey, result.getPageTitle());
                   }
                } else {
-                  final Page page = _pageManager.getPage(spaceKey, pageTitle);
+                  final Page page = pageManager.getPage(spaceKey, pageTitle);
                   if (page == null) {
                      throw new NoSuchPageException(link, spaceKey, pageTitle);
                   }
