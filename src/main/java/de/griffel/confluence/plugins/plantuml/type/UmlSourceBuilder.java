@@ -42,19 +42,17 @@ import com.google.common.collect.Lists;
  * Builder for {@link UmlSource}.
  */
 public final class UmlSourceBuilder {
-   private static final String EMPTY_LINE_REGEX = "(?m)^[ \t]*\r?\n";
-
-   private final List<String> _lines = Lists.newArrayList();
-   private final DiagramType _diagramType;
-   private final boolean _dropShadow;
-   private final boolean _separation;
-   private final boolean _isSvek;
+   private final List<String> lines = Lists.newArrayList();
+   private final DiagramType diagramType;
+   private final boolean dropShadow;
+   private final boolean separation;
+   private final boolean isSvek;
 
    public UmlSourceBuilder(DiagramType diagramType, boolean dropShadow, boolean separation, boolean isSvek) {
-      _diagramType = diagramType;
-      _dropShadow = dropShadow;
-      _separation = separation;
-      _isSvek = isSvek;
+      this.diagramType = diagramType;
+      this.dropShadow = dropShadow;
+      this.separation = separation;
+      this.isSvek = isSvek;
 
       if (diagramType != null) {
          appendLine(getStartTag());
@@ -95,22 +93,22 @@ public final class UmlSourceBuilder {
    }
 
    public UmlSource build() {
-      if (_diagramType != null) {
+      if (diagramType != null) {
          appendLine(getEndTag());
       }
-      return new UmlSource(_lines);
+      return new UmlSource(lines);
    }
 
    @Override
    public String toString() {
-      return "UmlSourceBuilder [_lines=" + _lines + "]";
+      return "UmlSourceBuilder [_lines=" + lines + "]";
    }
 
    private void appendLine(String line) {
       if (line != null) {
          final String trimedLine = line.trim();
          if (!trimedLine.isEmpty()) {
-            _lines.add(trimedLine);
+            lines.add(trimedLine);
          }
       }
    }
@@ -118,25 +116,25 @@ public final class UmlSourceBuilder {
    private String getStartTag() {
       final StringBuilder sb = new StringBuilder();
       sb.append("@start");
-      sb.append(_diagramType.name().toLowerCase(Locale.US));
+      sb.append(diagramType.name().toLowerCase(Locale.US));
 
-      if (DiagramType.UML == _diagramType) {
-         if (!_dropShadow) {
+      if (DiagramType.UML == diagramType) {
+         if (!dropShadow) {
             sb.append("\n");
             sb.append("skinparam shadowing ");
-            sb.append(_dropShadow);
+            sb.append(dropShadow);
          }
-         if (!_isSvek) {
+         if (!isSvek) {
             sb.append("\n");
             sb.append("skinparam svek off");
          }
 
-      } else if (DiagramType.DITAA == _diagramType) {
-         if (!_dropShadow) {
+      } else if (DiagramType.DITAA == diagramType) {
+         if (!dropShadow) {
             // -S,--no-shadows Turns off the drop-shadow effect.
             sb.append("-S");
          }
-         if (!_separation) {
+         if (!separation) {
             // -E,--no-separation Prevents the separation of common edges of shapes.
             sb.append("-E");
          }
@@ -147,13 +145,13 @@ public final class UmlSourceBuilder {
    private String getEndTag() {
       final StringBuilder sb = new StringBuilder();
       sb.append("@end");
-      sb.append(_diagramType.name().toLowerCase(Locale.US));
+      sb.append(diagramType.name().toLowerCase(Locale.US));
 
-      if (DiagramType.DITAA == _diagramType) {
-         if (!_dropShadow) {
+      if (DiagramType.DITAA == diagramType) {
+         if (!dropShadow) {
             sb.append("-S");
          }
-         if (!_separation) {
+         if (!separation) {
             sb.append("-E");
          }
       }

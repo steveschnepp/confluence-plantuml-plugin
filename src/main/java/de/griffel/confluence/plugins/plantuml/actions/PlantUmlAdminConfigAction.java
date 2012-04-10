@@ -20,28 +20,28 @@ public final class PlantUmlAdminConfigAction extends ConfluenceActionSupport imp
 
    private static final Logger logger = LoggerFactory.getLogger(PlantUmlAdminConfigAction.class);
 
-   private PlantUmlConfigurationManager _configurationManager;
+   private PlantUmlConfigurationManager configurationManager;
 
-   private boolean _isSvek;
+   private boolean isSvek;
 
    public void setSvek(boolean flag) {
-      _isSvek = flag;
+      isSvek = flag;
    }
 
    public boolean isSvek() {
-      return _isSvek;
+      return isSvek;
    }
 
    public void setConfigurationManager(PlantUmlConfigurationManager configurationManager) {
-      _configurationManager = configurationManager;
+      this.configurationManager = configurationManager;
    }
 
    /**
     * {@inheritDoc}
     */
-   public String load() throws Exception {
-      final PlantUmlConfiguration configuration = _configurationManager.load();
-      _isSvek = configuration.isSvek();
+   public String load() {
+      final PlantUmlConfiguration configuration = configurationManager.load();
+      isSvek = configuration.isSvek();
       logger.debug("Loaded configuration {}", configuration);
       return SUCCESS;
    }
@@ -49,10 +49,10 @@ public final class PlantUmlAdminConfigAction extends ConfluenceActionSupport imp
    /**
     * {@inheritDoc}
     */
-   public String save() throws Exception {
+   public String save() {
       final PlantUmlConfiguration configuration = new PlantUmlConfigurationBean();
-      configuration.setSvek(_isSvek);
-      _configurationManager.save(configuration);
+      configuration.setSvek(isSvek);
+      configurationManager.save(configuration);
       logger.debug("Saved configuration {}", configuration);
       addActionMessage(getText("plantuml.admin.config.saved"));
       return SUCCESS;

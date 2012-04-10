@@ -26,7 +26,7 @@ package de.griffel.confluence.plugins.plantuml.preprocess;
 
 import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
 
-public class UrlOnSamePageUrlRenderer extends AbstractUrlRenderer {
+public final class UrlOnSamePageUrlRenderer extends AbstractUrlRenderer {
 
    public String getHyperlink(ConfluenceLink link) {
       if (!link.hasSection()) {

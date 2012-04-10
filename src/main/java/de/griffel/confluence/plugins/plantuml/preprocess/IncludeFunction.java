@@ -40,7 +40,7 @@ public final class IncludeFunction implements LineFunction {
     */
    private static final Pattern INCLUDE_PATTERN = Pattern.compile("^\\s*!include\\s+\"?([^\"]+)\"?$");
 
-   private final UmlSourceLocator _umlSourceLocator;
+   private final UmlSourceLocator umlSourceLocator;
 
    /**
     * Constructs a new instance using the given umlSourceLocator
@@ -48,7 +48,7 @@ public final class IncludeFunction implements LineFunction {
     * @param umlSourceLocator
     */
    public IncludeFunction(UmlSourceLocator umlSourceLocator) {
-      _umlSourceLocator = umlSourceLocator;
+      this.umlSourceLocator = umlSourceLocator;
    }
 
    /**
@@ -59,9 +59,9 @@ public final class IncludeFunction implements LineFunction {
       final Matcher matcher = INCLUDE_PATTERN.matcher(from);
       if (matcher.find()) {
          final String fileName = matcher.group(1);
-         final UmlSource includeSource = _umlSourceLocator.get(fileName);
+         final UmlSource includeSource = umlSourceLocator.get(fileName);
          final PlantUmlPreprocessor subPreprocessor =
-               new PlantUmlPreprocessor(includeSource, _umlSourceLocator, context);
+               new PlantUmlPreprocessor(includeSource, umlSourceLocator, context);
 
          sb.append(subPreprocessor.toUmlBlock());
 

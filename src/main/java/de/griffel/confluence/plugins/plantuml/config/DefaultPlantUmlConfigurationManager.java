@@ -6,7 +6,7 @@ import com.atlassian.confluence.setup.bandana.ConfluenceBandanaContext;
 /**
  * This class is responsible for loading and storing the configuration for this plugin.
  */
-public class DefaultPlantUmlConfigurationManager implements PlantUmlConfigurationManager {
+public final class DefaultPlantUmlConfigurationManager implements PlantUmlConfigurationManager {
 
    private BandanaManager bandanaManager;
 

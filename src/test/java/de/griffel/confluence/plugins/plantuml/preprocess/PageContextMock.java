@@ -26,7 +26,7 @@ package de.griffel.confluence.plugins.plantuml.preprocess;
 
 import com.atlassian.confluence.renderer.PageContext;
 
-public class PageContextMock extends PageContext {
+public final class PageContextMock extends PageContext {
    @Override
    public String getPageTitle() {
       return "Foo";

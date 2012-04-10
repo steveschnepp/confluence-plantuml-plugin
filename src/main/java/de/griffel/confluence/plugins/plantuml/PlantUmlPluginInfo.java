@@ -31,15 +31,15 @@ import com.atlassian.plugin.PluginInformation;
 /**
  * PlantUML plugin info.
  */
-public class PlantUmlPluginInfo {
+public final class PlantUmlPluginInfo {
    public static final String PLUGIN_KEY = "de.griffel.confluence.plugins.plant-uml";
 
    static final String PLANTUML_VERSION_INFO_REGEX = "@startuml\\s*(version|about|testdot)\\s*@enduml\\s*";
 
-   private final PluginAccessor _pluginAccessor;
+   private final PluginAccessor pluginAccessor;
 
    public PlantUmlPluginInfo(PluginAccessor pluginAccessor) {
-      _pluginAccessor = pluginAccessor;
+      this.pluginAccessor = pluginAccessor;
    }
 
    @Override
@@ -78,6 +78,6 @@ public class PlantUmlPluginInfo {
    }
 
    public Plugin getPlugin() {
-      return _pluginAccessor.getPlugin(PLUGIN_KEY);
+      return pluginAccessor.getPlugin(PLUGIN_KEY);
    }
 }

@@ -10,15 +10,15 @@ import com.google.common.collect.Lists;
  * Immutable class to hold a list of {@link LineFunction}s.
  */
 public final class StringFunctions implements LineFunction {
-   private final List<LineFunction> _functions;
+   private final List<LineFunction> functions;
 
    private StringFunctions(List<LineFunction> functions) {
-      _functions = functions;
+      this.functions = functions;
    }
 
    public String apply(PreprocessingContext context, String line) throws IOException, PreprocessingException {
       String result = line;
-      for (LineFunction function : _functions) {
+      for (LineFunction function : functions) {
          result = function.apply(context, result);
       }
       return result;
@@ -26,23 +26,23 @@ public final class StringFunctions implements LineFunction {
 
    @Override
    public String toString() {
-      return "StringFunctions [_functions=" + _functions + "]";
+      return "StringFunctions [ffunctions=" + functions + "]";
    }
 
    public static StringFunctions.Builder builder() {
       return new Builder();
    }
 
-   public static class Builder {
-      private final List<LineFunction> _functions = Lists.newArrayList();
+   public static final class Builder {
+      private final List<LineFunction> functions = Lists.newArrayList();
 
       public StringFunctions.Builder add(LineFunction function) {
-         _functions.add(function);
+         functions.add(function);
          return this;
       }
 
       public StringFunctions build() {
-         return new StringFunctions(Collections.unmodifiableList(_functions));
+         return new StringFunctions(Collections.unmodifiableList(functions));
       }
    }
 }

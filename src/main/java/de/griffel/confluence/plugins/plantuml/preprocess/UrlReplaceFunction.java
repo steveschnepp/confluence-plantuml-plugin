@@ -59,7 +59,7 @@ public class UrlReplaceFunction implements LineFunction {
 
    private static final Pattern URL_LINE_PATTERN = Pattern.compile(URL_LINE_REGEX);
 
-   public String apply(PreprocessingContext context, final String line) throws PreprocessingException {
+   public final String apply(PreprocessingContext context, final String line) throws PreprocessingException {
       final String result;
       final Matcher matcher = URL_LINE_PATTERN.matcher(line);
       if (!matcher.find()) {
