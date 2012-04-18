@@ -42,10 +42,10 @@ public class ShortcutLinkUrlRenderer extends AbstractUrlRenderer {
 
    private static final String PLACEHOLDER = "%s";
 
-   private final Map<String, ShortcutLinkConfig> _shortcutLinkMap;
+   private final Map<String, ShortcutLinkConfig> shortcutLinkMap;
 
    public ShortcutLinkUrlRenderer(Map<String, ShortcutLinkConfig> shortcutLinkMap) {
-      _shortcutLinkMap = shortcutLinkMap;
+      this.shortcutLinkMap = shortcutLinkMap;
    }
 
    /**
@@ -92,11 +92,11 @@ public class ShortcutLinkUrlRenderer extends AbstractUrlRenderer {
          throw new IllegalArgumentException("Invalid shortcut link. Missing key for link '" + pageTitle + "'.");
       }
 
-      if (!_shortcutLinkMap.containsKey(shortcutKey)) {
+      if (!shortcutLinkMap.containsKey(shortcutKey)) {
          throw new IllegalArgumentException("Unknown shortcut key '" + shortcutKey + "'.");
       }
 
-      final ShortcutLinkConfig shortcutLinkConfig = _shortcutLinkMap.get(shortcutKey);
+      final ShortcutLinkConfig shortcutLinkConfig = shortcutLinkMap.get(shortcutKey);
       return shortcutLinkConfig;
    }
 
