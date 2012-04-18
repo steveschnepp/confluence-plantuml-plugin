@@ -34,10 +34,6 @@
 		<system>JIRA</system>
 		<url>https://studio.plugins.atlassian.com/browse/PUML</url>
 	</issueManagement>
-	<ciManagement>
-		<system>Bamboo</system>
-		<url>https://studio.plugins.atlassian.com/builds/browse/PUML-TRUNK</url>
-	</ciManagement>
 	<scm>
 		<connection>scm:hg:https://bitbucket.org/mgriffel/plantuml</connection>
 		<developerConnection>scm:hg:https://bitbucket.org/mgriffel/plantuml</developerConnection>
@@ -96,7 +92,7 @@
 		<dependency>
 			<groupId>net.sourceforge.plantuml</groupId>
 			<artifactId>plantuml</artifactId>
-			<version>7726</version>
+			<version>7746</version>
 		</dependency>
 	</dependencies>
 
