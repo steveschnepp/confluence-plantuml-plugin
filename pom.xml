@@ -92,7 +92,7 @@
 		<dependency>
 			<groupId>net.sourceforge.plantuml</groupId>
 			<artifactId>plantuml</artifactId>
-			<version>7929</version>
+			<version>7931</version>
 		</dependency>
 	</dependencies>
 
