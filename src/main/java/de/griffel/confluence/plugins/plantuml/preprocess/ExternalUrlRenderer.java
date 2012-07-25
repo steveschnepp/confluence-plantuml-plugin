@@ -51,7 +51,7 @@ public final class ExternalUrlRenderer extends AbstractUrlRenderer {
     * @return the external display URL of this Confluence link.
     * @throws UnsupportedEncodingException
     */
-   public final String getHyperlink(ConfluenceLink link) {
+   public String getHyperlink(ConfluenceLink link) {
       final StringBuilder sb = new StringBuilder();
       sb.append(baseUrl);
       sb.append("/display/");
