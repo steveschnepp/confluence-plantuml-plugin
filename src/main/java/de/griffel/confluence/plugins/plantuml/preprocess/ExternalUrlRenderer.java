@@ -24,12 +24,22 @@
  */
 package de.griffel.confluence.plugins.plantuml.preprocess;
 
+import java.io.UnsupportedEncodingException;
+
 import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
 
-public class ExternalUrlRenderer extends AbstractUrlRenderer {
+/**
+ * Renders a Confluence Link as absolute URL.
+ */
+public final class ExternalUrlRenderer extends AbstractUrlRenderer {
 
    private final String baseUrl;
 
+   /**
+    * Constructs a new instance of this class.
+    * 
+    * @param baseUrl the Confluence Base URL.
+    */
    public ExternalUrlRenderer(String baseUrl) {
       this.baseUrl = baseUrl;
    }
@@ -39,6 +49,7 @@ public class ExternalUrlRenderer extends AbstractUrlRenderer {
     * 
     * @param link the Confluence link for which the external display URL should be generated.
     * @return the external display URL of this Confluence link.
+    * @throws UnsupportedEncodingException
     */
    public final String getHyperlink(ConfluenceLink link) {
       final StringBuilder sb = new StringBuilder();
@@ -46,10 +57,17 @@ public class ExternalUrlRenderer extends AbstractUrlRenderer {
       sb.append("/display/");
       sb.append(link.getSpaceKey());
       sb.append("/");
-      sb.append(link.getPageTitle());
+      if (link.isBlogPost()) {
+         sb.append(link.getBlogPostDate()); // must not be URL encoded!
+         sb.append("/");
+         sb.append(UrlCoder.encode(link.getBlogPostTitle()));
+      } else {
+         sb.append(UrlCoder.encode(link.getPageTitle()));
+      }
       if (link.hasSection()) {
          sb.append(link.toFragmentUrl());
       }
       return sb.toString();
    }
+
 }

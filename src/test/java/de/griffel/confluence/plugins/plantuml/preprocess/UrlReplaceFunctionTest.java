@@ -35,11 +35,11 @@ import de.griffel.confluence.plugins.plantuml.Mocks;
  */
 public class UrlReplaceFunctionTest {
 
-   private Mocks _mocks;
+   private Mocks mocks;
 
    @Before
    public void setup() {
-      _mocks = new Mocks();
+      mocks = new Mocks();
    }
 
    @Test
@@ -64,19 +64,19 @@ public class UrlReplaceFunctionTest {
    @Test
    public void testShortcutLinks() throws Exception {
       checkShortcutUrl("url for Bob is [foo@google]",
-            "url for Bob is [[http://www.google.com/search?q=foo|Google Search with 'foo']]");
+            "url for Bob is [[http://www.google.com/search?q=foo{Google Search with 'foo'}]]");
    }
 
    private void checkShortcutUrl(String line, String expected) throws Exception {
-      Assert.assertEquals(expected, new UrlReplaceFunction().apply(_mocks.getPreprocessingContext(), line));
+      Assert.assertEquals(expected, new UrlReplaceFunction().apply(mocks.getPreprocessingContext(), line));
    }
 
    private void checkConfluencekUrl(String line, String result, String alias) throws Exception {
-      Assert.assertEquals("url for Bob is " + "[[" + _mocks.getBaseUrl() + result + "|" + alias + "]]",
-            new UrlReplaceFunction().apply(_mocks.getPreprocessingContext(), line));
+      Assert.assertEquals("url for Bob is " + "[[" + mocks.getBaseUrl() + result + "{" + alias + "}]]",
+            new UrlReplaceFunction().apply(mocks.getPreprocessingContext(), line));
    }
 
    private void checExternalUrl(String line) throws Exception {
-      Assert.assertEquals(line, new UrlReplaceFunction().apply(_mocks.getPreprocessingContext(), line));
+      Assert.assertEquals(line, new UrlReplaceFunction().apply(mocks.getPreprocessingContext(), line));
    }
 }

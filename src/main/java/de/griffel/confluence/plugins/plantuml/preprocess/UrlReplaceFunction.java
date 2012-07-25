@@ -113,13 +113,14 @@ public class UrlReplaceFunction implements LineFunction {
       final StringBuilder sb = new StringBuilder();
       sb.append("[[");
       sb.append(urlRenderer.getHyperlink(link));
-      sb.append("|");
+      sb.append("{");
       if (alias != null) {
          sb.append(alias);
       } else {
          // PUML-13: nicer move-over text for Confluence URL where no alias was given
          sb.append(urlRenderer.getDefaultAlias(context, link));
       }
+      sb.append("}");
       sb.append("]]");
       // replace original URL with transformed URL
       final String result = line.replaceAll("\\[.*\\]", sb.toString());

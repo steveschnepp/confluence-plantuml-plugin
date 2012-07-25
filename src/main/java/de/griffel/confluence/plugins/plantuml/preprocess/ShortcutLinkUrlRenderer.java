@@ -24,8 +24,6 @@
  */
 package de.griffel.confluence.plugins.plantuml.preprocess;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -38,7 +36,7 @@ import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
 /**
  * Render Shortcut Links like 'foo@google'.
  */
-public class ShortcutLinkUrlRenderer extends AbstractUrlRenderer {
+public final class ShortcutLinkUrlRenderer extends AbstractUrlRenderer {
 
    private static final String PLACEHOLDER = "%s";
 
@@ -102,21 +100,13 @@ public class ShortcutLinkUrlRenderer extends AbstractUrlRenderer {
 
    static String substitude(final String source, final String value) {
       final String result;
-      final String urlEncodedValue = urlEncodeUtf8(value);
+      final String urlEncodedValue = UrlCoder.encode(value);
       if (source.contains(PLACEHOLDER)) {
          result = source.replace(PLACEHOLDER, urlEncodedValue);
       } else {
          result = source + urlEncodedValue;
       }
       return result;
-   }
-
-   private static String urlEncodeUtf8(final String value) {
-      try {
-         return URLEncoder.encode(value, "UTF-8");
-      } catch (UnsupportedEncodingException e) {
-         throw new RuntimeException("UTF-8 encoding not supported?", e);
-      }
    }
 
 }

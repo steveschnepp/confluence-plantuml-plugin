@@ -25,8 +25,6 @@
 package de.griffel.confluence.plugins.plantuml.type;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -41,6 +39,8 @@ import com.atlassian.confluence.spaces.Space;
 import com.atlassian.confluence.spaces.SpaceManager;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+
+import de.griffel.confluence.plugins.plantuml.preprocess.UrlCoder;
 
 /**
  * Represents a Confluence link to a page or attachment. Note: The name of the attachment and section is optional.
@@ -188,16 +188,34 @@ public final class ConfluenceLink implements Serializable {
    }
 
    /**
-    * Returns {@code true} if this link contains a blog post link in the page title.
+    * Returns {@code true} if this link contains a Blog post link in the page title.
     * 
-    * @return {@code true} if this link contains a blog post link in the page title.
+    * @return {@code true} if this link contains a Blog post link in the page title.
     */
    public boolean isBlogPost() {
       return pageTitle.contains("/");
    }
 
+   /**
+    * Returns only the Blog title of this link (w/o the date string).
+    * 
+    * If this link is not a Blog post, the result is undefined.
+    * 
+    * @return only the Blog title of this link (w/o the date string).
+    */
    public String getBlogPostTitle() {
       return StringUtils.substringAfterLast(getPageTitle(), "/");
+   }
+
+   /**
+    * Returns only the date string of the this link (w/o the Blog title).
+    * 
+    * If this link is not a Blog post, the result is undefined.
+    * 
+    * @return only the date string of the this link (w/o the Blog title).
+    */
+   public String getBlogPostDate() {
+      return StringUtils.substringBeforeLast(getPageTitle(), "/");
    }
 
    /**
@@ -211,12 +229,7 @@ public final class ConfluenceLink implements Serializable {
       sb.append("-");
       sb.append(StringUtils.deleteWhitespace(getFragment()));
 
-      final String result;
-      try {
-         result = "#" + URLEncoder.encode(sb.toString(), "UTF-8");
-      } catch (UnsupportedEncodingException e) {
-         throw new RuntimeException("UTF-8 encoding not supported?", e);
-      }
+      final String result = "#" + UrlCoder.encode(sb.toString());
       return result;
    }
 
