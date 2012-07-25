@@ -58,11 +58,11 @@ import de.griffel.confluence.plugins.plantuml.preprocess.PageContextMock;
  */
 public class PlantUmlMacroTest {
    private static final String NEWLINE = "\n";
-   private Mocks _mocks;
+   private Mocks mocks;
 
    @Before
    public void setup() {
-      _mocks = new Mocks();
+      mocks = new Mocks();
    }
 
    @Test
@@ -71,11 +71,11 @@ public class PlantUmlMacroTest {
       Assume.assumeTrue(!GraphvizUtils.dotVersion().startsWith("Error:"));
       final MockExportDownloadResourceManager resourceManager = new MockExportDownloadResourceManager();
       resourceManager.setDownloadResourceWriter(new MockDownloadResourceWriter());
-      final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null, _mocks.getSpaceManager(),
-            _mocks.getSettingsManager(),
-            _mocks.getPluginAccessor(),
-            _mocks.getShortcutLinksManager(),
-            _mocks.getConfigurationManager());
+      final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null, mocks.getSpaceManager(),
+            mocks.getSettingsManager(),
+            mocks.getPluginAccessor(),
+            mocks.getShortcutLinksManager(),
+            mocks.getConfigurationManager());
       final Map<Param, String> macroParams = Collections.singletonMap(PlantUmlMacroParams.Param.title, "Sample Title");
       final String macroBody = "A <|-- B\nurl for A is [[Home]]";
       final String result = macro.execute(macroParams, macroBody, new PageContextMock());
@@ -102,11 +102,11 @@ public class PlantUmlMacroTest {
    public void ditaa() throws Exception {
       final MockExportDownloadResourceManager resourceManager = new MockExportDownloadResourceManager();
       resourceManager.setDownloadResourceWriter(new MockDownloadResourceWriter());
-      final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null, _mocks.getSpaceManager(),
-            _mocks.getSettingsManager(),
-            _mocks.getPluginAccessor(),
-            _mocks.getShortcutLinksManager(),
-            _mocks.getConfigurationManager());
+      final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null, mocks.getSpaceManager(),
+            mocks.getSettingsManager(),
+            mocks.getPluginAccessor(),
+            mocks.getShortcutLinksManager(),
+            mocks.getConfigurationManager());
       final ImmutableMap<String, String> macroParams = new ImmutableMap.Builder<String, String>().put(
             PlantUmlMacroParams.Param.type.name(), DiagramType.DITAA.name().toLowerCase())
             .put(PlantUmlMacroParams.Param.align.name(), PlantUmlMacroParams.Alignment.center.name())
