@@ -24,8 +24,6 @@
  */
 package de.griffel.confluence.plugins.plantuml.preprocess;
 
-import java.io.UnsupportedEncodingException;
-
 import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
 
 /**
@@ -49,7 +47,6 @@ public final class ExternalUrlRenderer extends AbstractUrlRenderer {
     * 
     * @param link the Confluence link for which the external display URL should be generated.
     * @return the external display URL of this Confluence link.
-    * @throws UnsupportedEncodingException
     */
    public String getHyperlink(ConfluenceLink link) {
       final StringBuilder sb = new StringBuilder();
