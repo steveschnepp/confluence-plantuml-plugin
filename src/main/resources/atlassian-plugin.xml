@@ -28,6 +28,7 @@
             <value name="ditaa"/>
             <value name="dot"/>
             <value name="jcckit"/>
+            <value name="salt"/>
          </parameter>
          <parameter name="title" type="string"/>
          <parameter name="align" type="enum" default="none">
@@ -62,6 +63,7 @@
             <value name="ditaa"/>
             <value name="dot"/>
             <value name="jcckit"/>
+            <value name="salt"/>
          </parameter>
          <parameter name="title" type="string"/>
          <parameter name="align" type="enum" default="none">
