@@ -150,10 +150,6 @@ public class PlantUmlMacro extends BaseMacro {
          throws MacroException, IOException, UnauthorizedDownloadResourceException, DownloadResourceNotFoundException {
 
       final PlantUmlMacroParams macroParams = new PlantUmlMacroParams(params);
-      final FileFormat fileFormat = macroParams.getFileFormat();
-
-      final DownloadResourceWriter resourceWriter = writeableDownloadResourceManager.getResourceWriter(
-            AuthenticatedUserThreadLocal.getUsername(), "plantuml", fileFormat.getFileSuffix());
 
       if (!(renderContext instanceof PageContext)) {
          throw new MacroException("This macro can only be used in Confluence pages. (ctx="
@@ -174,12 +170,24 @@ public class PlantUmlMacro extends BaseMacro {
             new PlantUmlPreprocessor(builder.build(), umlSourceLocator, preprocessingContext);
       final String umlBlock = preprocessor.toUmlBlock();
 
+      return render(umlBlock, macroParams, preprocessor);
+   }
+
+   private String render(final String umlBlock, final PlantUmlMacroParams macroParams,
+         final PlantUmlPreprocessor preprocessor) throws IOException,
+         UnauthorizedDownloadResourceException, DownloadResourceNotFoundException {
+
+      final FileFormat fileFormat = macroParams.getFileFormat();
+
+      final DownloadResourceWriter resourceWriter = writeableDownloadResourceManager.getResourceWriter(
+            AuthenticatedUserThreadLocal.getUsername(), "plantuml", fileFormat.getFileSuffix());
+
       final List<String> config = new PlantUmlConfigBuilder().build(macroParams);
       final MySourceStringReader reader = new MySourceStringReader(new Defines(), umlBlock, config);
       final ImageMap cmap = reader.renderImage(resourceWriter.getStreamForWriting(), fileFormat);
 
-      // TODO: REFACTOR
       final StringBuilder sb = new StringBuilder();
+
       if (preprocessor.hasExceptions()) {
          sb.append("<div class=\"error\">");
          for (PreprocessingException exception : preprocessor.getExceptions()) {
@@ -190,6 +198,7 @@ public class PlantUmlMacro extends BaseMacro {
          }
          sb.append("</div>");
       }
+
       if (cmap.isValid()) {
          sb.append(cmap.toHtmlString());
       }
@@ -202,10 +211,9 @@ public class PlantUmlMacro extends BaseMacro {
          final DownloadResourceReader resourceReader =
                writeableDownloadResourceManager.getResourceReader(AuthenticatedUserThreadLocal.getUsername(),
                      resourceWriter.getResourcePath(), Collections.emptyMap());
-         final List<String> readLines = IOUtils.readLines(resourceReader.getStreamForReading());
-         for (String line : readLines) {
-            sb.append(line);
-         }
+         final StringWriter sw = new StringWriter();
+         IOUtils.copy(resourceReader.getStreamForReading(), sw);
+         sb.append(sw.getBuffer());
       } else {
          sb.append("<div class=\"image-wrap\" style=\"" + macroParams.getAlignment().getCssStyle() + "\">");
          sb.append("<img");
