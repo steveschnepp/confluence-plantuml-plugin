@@ -80,15 +80,16 @@ public class PlantUmlMacroTest {
       final String macroBody = "A <|-- B\nurl for A is [[Home]]";
       final String result = macro.execute(macroParams, macroBody, new PageContextMock());
       StringBuilder sb = new StringBuilder();
-      sb.append("<map id=\"x\" name=\"unix\">");
+      sb.append("<map id=\"x\" name=\"plantumlx_map\">");
       sb.append(NEWLINE);
       sb.append("<area shape=\"rect\" id=\"x\" href=\"x\" title=\"x\" alt=\"\" coords=\"x\"/>");
       sb.append(NEWLINE);
       sb.append("</map><div class=\"image-wrap\" style=\"\">");
-      sb.append("<img usemap=\"#unix\" src='junit/resource.png' style=\"\" /></div>");
+      sb.append("<img usemap=\"#plantumlx_map\" src='junit/resource.png' style=\"\" /></div>");
       assertEquals(sb.toString(), result
             // GraphViz Version Specific
             .replaceAll("id=\"[^\"]*\"", "id=\"x\"")
+            .replaceAll("plantuml[^\"]*_map\"", "plantumlx_map\"")
             .replaceFirst("href=\"[^\"]*\"", "href=\"x\"")
             .replaceFirst("title=\"[^\"]*\"", "title=\"x\"")
             .replaceFirst("coords=\"[^\"]*\"", "coords=\"x\""));

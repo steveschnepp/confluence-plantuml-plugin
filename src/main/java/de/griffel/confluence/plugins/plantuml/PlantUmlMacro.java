@@ -31,8 +31,10 @@ import java.io.StringWriter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import net.sourceforge.plantuml.BlockUml;
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.DiagramType;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
@@ -311,6 +313,8 @@ public class PlantUmlMacro extends BaseMacro {
     * Extension to {@link SourceStringReader} to add the function to get the image map for the diagram.
     */
    public static class MySourceStringReader extends SourceStringReader {
+      private static final Random RANDOM = new Random();
+
       /**
        * {@inheritDoc}
        */
@@ -328,9 +332,17 @@ public class PlantUmlMacro extends BaseMacro {
             x.initCause(e);
             throw x;
          }
-         final StringBuilder cmap = new StringBuilder();
+         final CMapData cmap = new CMapData();
          system.exportDiagram(outputStream, cmap, 0, new FileFormatOption(format));
-         return new ImageMap(cmap.toString());
+
+         final ImageMap result;
+         if (cmap.containsData()) {
+            final String randomId = String.valueOf(Math.abs(RANDOM.nextInt()));
+            result = new ImageMap(cmap.asString("plantuml" + randomId));
+         } else {
+            result = ImageMap.NULL;
+         }
+         return result;
       }
    }
 
