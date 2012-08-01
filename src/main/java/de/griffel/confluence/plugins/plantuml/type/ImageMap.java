@@ -32,6 +32,8 @@ import com.atlassian.gzipfilter.org.apache.commons.lang.StringUtils;
 public final class ImageMap {
    private static final String HTML_MAP_MAGIC = "<map id=\"";
 
+   public static final ImageMap NULL = new ImageMap(null);
+
    private final String cmap;
    private String id; // lazy initialized
 
