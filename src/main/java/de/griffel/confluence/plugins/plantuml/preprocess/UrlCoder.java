@@ -51,7 +51,7 @@ public final class UrlCoder {
       try {
          return URLEncoder.encode(value, URL_ENCODING);
       } catch (UnsupportedEncodingException e) {
-         throw new RuntimeException(URL_ENCODING + " encoding not supported?", e);
+         throw new Problem(URL_ENCODING + " encoding not supported?", e);
       }
    }
 
@@ -65,8 +65,15 @@ public final class UrlCoder {
       try {
          return URLDecoder.decode(value, URL_ENCODING);
       } catch (UnsupportedEncodingException e) {
-         throw new RuntimeException(URL_ENCODING + " encoding not supported?", e);
+         throw new Problem(URL_ENCODING + " encoding not supported?", e);
       }
    }
 
+   private static class Problem extends RuntimeException {
+      private static final long serialVersionUID = 1L;
+
+      Problem(String message, Throwable cause) {
+         super(message, cause);
+      }
+   }
 }
