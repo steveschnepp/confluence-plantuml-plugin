@@ -31,6 +31,8 @@ import net.sourceforge.plantuml.DiagramType;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationBean;
+
 /**
  * UmlSourceBuilderTest.
  */
@@ -38,7 +40,8 @@ public class UmlSourceBuilderTest {
 
    @Test
    public void testPuml58() throws Exception {
-      final UmlSourceBuilder builder = new UmlSourceBuilder(DiagramType.DOT, false, false, false);
+      final UmlSourceBuilder builder =
+            new UmlSourceBuilder(DiagramType.DOT, false, false, new PlantUmlConfigurationBean());
       final String body =
             "\ndigraph deschedule_app_confusion {";
       builder.append(new StringReader(body));

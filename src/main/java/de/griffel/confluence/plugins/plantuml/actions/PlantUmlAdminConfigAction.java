@@ -23,6 +23,8 @@ public final class PlantUmlAdminConfigAction extends ConfluenceActionSupport imp
    private PlantUmlConfigurationManager configurationManager;
 
    private boolean isSvek;
+   private String commonHeader;
+   private String commonFooter;
 
    public void setSvek(boolean flag) {
       isSvek = flag;
@@ -30,6 +32,22 @@ public final class PlantUmlAdminConfigAction extends ConfluenceActionSupport imp
 
    public boolean isSvek() {
       return isSvek;
+   }
+
+   public String getCommonHeader() {
+      return commonHeader;
+   }
+
+   public void setCommonHeader(String commonHeader) {
+      this.commonHeader = commonHeader;
+   }
+
+   public String getCommonFooter() {
+      return commonFooter;
+   }
+
+   public void setCommonFooter(String commonFooter) {
+      this.commonFooter = commonFooter;
    }
 
    public void setConfigurationManager(PlantUmlConfigurationManager configurationManager) {
@@ -41,7 +59,11 @@ public final class PlantUmlAdminConfigAction extends ConfluenceActionSupport imp
     */
    public String load() {
       final PlantUmlConfiguration configuration = configurationManager.load();
+
       isSvek = configuration.isSvek();
+      commonHeader = configuration.getCommonHeader();
+      commonFooter = configuration.getCommonFooter();
+
       logger.debug("Loaded configuration {}", configuration);
       return SUCCESS;
    }
@@ -52,7 +74,11 @@ public final class PlantUmlAdminConfigAction extends ConfluenceActionSupport imp
    public String save() {
       final PlantUmlConfiguration configuration = new PlantUmlConfigurationBean();
       configuration.setSvek(isSvek);
+      configuration.setCommonHeader(commonHeader);
+      configuration.setCommonFooter(commonFooter);
+
       configurationManager.save(configuration);
+
       logger.debug("Saved configuration {}", configuration);
       addActionMessage(getText("plantuml.admin.config.saved"));
       return SUCCESS;

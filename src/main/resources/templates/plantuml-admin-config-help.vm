@@ -2,4 +2,10 @@
     <strong>$action.getText('plantuml.admin.config.svekrendering.label'):</strong><br/>
             $action.getText('plantuml.admin.config.svekrendering.help')
     <br/>
+    <strong>$action.getText('plantuml.admin.config.commonHeader.label'):</strong><br/>
+            $action.getText('plantuml.admin.config.commonHeader.help')
+    <br/>
+    <strong>$action.getText('plantuml.admin.config.commonFooter.label'):</strong><br/>
+            $action.getText('plantuml.admin.config.commonFooter.help')
+    <br/>
 </p>

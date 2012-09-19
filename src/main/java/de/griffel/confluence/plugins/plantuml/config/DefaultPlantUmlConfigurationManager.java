@@ -8,7 +8,11 @@ import com.atlassian.confluence.setup.bandana.ConfluenceBandanaContext;
  */
 public final class DefaultPlantUmlConfigurationManager implements PlantUmlConfigurationManager {
 
-   private BandanaManager bandanaManager;
+   private final BandanaManager bandanaManager;
+
+   public DefaultPlantUmlConfigurationManager(BandanaManager bandanaManager) {
+      this.bandanaManager = bandanaManager;
+   }
 
    public PlantUmlConfiguration load() {
       final ConfluenceBandanaContext context = new ConfluenceBandanaContext();
@@ -27,7 +31,4 @@ public final class DefaultPlantUmlConfigurationManager implements PlantUmlConfig
       bandanaManager.setValue(context, PlantUmlConfigurationBean.class.getName(), config);
    }
 
-   public void setBandanaManager(BandanaManager bandanaManager) {
-      this.bandanaManager = bandanaManager;
-   }
 }

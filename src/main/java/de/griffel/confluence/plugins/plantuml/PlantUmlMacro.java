@@ -67,6 +67,7 @@ import com.atlassian.renderer.v2.RenderMode;
 import com.atlassian.renderer.v2.macro.BaseMacro;
 import com.atlassian.renderer.v2.macro.MacroException;
 
+import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfiguration;
 import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationManager;
 import de.griffel.confluence.plugins.plantuml.preprocess.PlantUmlPreprocessor;
 import de.griffel.confluence.plugins.plantuml.preprocess.PreprocessingContext;
@@ -163,9 +164,10 @@ public class PlantUmlMacro extends BaseMacro {
       final DiagramType diagramType = macroParams.getDiagramType();
       final boolean dropShadow = macroParams.getDropShadow();
       final boolean separation = macroParams.getSeparation();
-      final boolean isSvek = configurationManager.load().isSvek();
+      final PlantUmlConfiguration configuration = configurationManager.load();
+      final boolean isSvek = configuration.isSvek();
       final UmlSourceBuilder builder =
-            new UmlSourceBuilder(diagramType, dropShadow, separation, isSvek).append(new StringReader(body));
+            new UmlSourceBuilder(diagramType, dropShadow, separation, configuration).append(new StringReader(body));
       final PlantUmlPreprocessor preprocessor =
             new PlantUmlPreprocessor(builder.build(), umlSourceLocator, preprocessingContext);
       final String umlBlock = preprocessor.toUmlBlock();

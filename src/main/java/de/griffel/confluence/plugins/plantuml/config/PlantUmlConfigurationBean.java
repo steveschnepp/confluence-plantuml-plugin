@@ -2,6 +2,10 @@ package de.griffel.confluence.plugins.plantuml.config;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.google.common.base.Strings;
+
 /**
  * Java Bean holding the {@link PlantUmlConfiguration} properties.
  */
@@ -9,6 +13,8 @@ public final class PlantUmlConfigurationBean implements Serializable, PlantUmlCo
    private static final long serialVersionUID = 1L;
 
    private boolean svek = true;
+   private String commonHeader = StringUtils.EMPTY;
+   private String commonFooter = StringUtils.EMPTY;
 
    public boolean isSvek() {
       return svek;
@@ -18,11 +24,39 @@ public final class PlantUmlConfigurationBean implements Serializable, PlantUmlCo
       svek = bool;
    }
 
+   public String getCommonHeader() {
+      return commonHeader;
+   }
+
+   public void setCommonHeader(String commonHeader) {
+      this.commonHeader = commonHeader;
+   }
+
+   public boolean isSetCommonHeader() {
+      return !Strings.isNullOrEmpty(commonHeader);
+   }
+
+   public String getCommonFooter() {
+      return commonFooter;
+   }
+
+   public void setCommonFooter(String commonFooter) {
+      this.commonFooter = commonFooter;
+   }
+
+   public boolean isSetCommonFooter() {
+      return !Strings.isNullOrEmpty(commonFooter);
+   }
+
    @Override
    public String toString() {
       final StringBuilder sb = new StringBuilder();
       sb.append("PlantUmlConfigurationBean [svek=");
       sb.append(svek);
+      sb.append(", commonHeader=");
+      sb.append(commonHeader);
+      sb.append(", commonFooter=");
+      sb.append(commonFooter);
       sb.append("]");
       return sb.toString();
    }
