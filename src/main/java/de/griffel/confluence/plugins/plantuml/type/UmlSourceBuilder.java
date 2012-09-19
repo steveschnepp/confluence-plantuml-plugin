@@ -38,6 +38,9 @@ import org.apache.commons.io.IOUtils;
 
 import com.google.common.collect.Lists;
 
+import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfiguration;
+import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationBean;
+
 /**
  * Builder for {@link UmlSource}.
  */
@@ -46,21 +49,34 @@ public final class UmlSourceBuilder {
    private final DiagramType diagramType;
    private final boolean dropShadow;
    private final boolean separation;
-   private final boolean isSvek;
+   private final PlantUmlConfiguration configuration;
 
-   public UmlSourceBuilder(DiagramType diagramType, boolean dropShadow, boolean separation, boolean isSvek) {
+   public UmlSourceBuilder(DiagramType diagramType, boolean dropShadow, boolean separation,
+         PlantUmlConfiguration configuration) {
       this.diagramType = diagramType;
       this.dropShadow = dropShadow;
       this.separation = separation;
-      this.isSvek = isSvek;
+      this.configuration = configuration;
 
       if (diagramType != null) {
          appendLine(getStartTag());
+
+         if (DiagramType.UML == diagramType) {
+            if (!dropShadow) {
+               appendLine("skinparam shadowing " + dropShadow);
+            }
+            if (!configuration.isSvek()) {
+               appendLine("skinparam svek off");
+            }
+            if (configuration.isSetCommonHeader()) {
+               append(configuration.getCommonHeader());
+            }
+         }
       }
    }
 
    public UmlSourceBuilder() {
-      this(null, true, true, true);
+      this(null, true, true, new PlantUmlConfigurationBean());
    }
 
    public UmlSourceBuilder append(String lineOrMuliLine) {
@@ -94,6 +110,11 @@ public final class UmlSourceBuilder {
 
    public UmlSource build() {
       if (diagramType != null) {
+         if (DiagramType.UML == diagramType) {
+            if (configuration.isSetCommonFooter()) {
+               append(configuration.getCommonFooter());
+            }
+         }
          appendLine(getEndTag());
       }
       return new UmlSource(lines);
@@ -118,18 +139,7 @@ public final class UmlSourceBuilder {
       sb.append("@start");
       sb.append(diagramType.name().toLowerCase(Locale.US));
 
-      if (DiagramType.UML == diagramType) {
-         if (!dropShadow) {
-            sb.append("\n");
-            sb.append("skinparam shadowing ");
-            sb.append(dropShadow);
-         }
-         if (!isSvek) {
-            sb.append("\n");
-            sb.append("skinparam svek off");
-         }
-
-      } else if (DiagramType.DITAA == diagramType) {
+      if (DiagramType.DITAA == diagramType) {
          if (!dropShadow) {
             // -S,--no-shadows Turns off the drop-shadow effect.
             sb.append("-S");

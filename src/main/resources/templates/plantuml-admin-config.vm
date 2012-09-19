@@ -20,6 +20,16 @@
                <td><input type="checkbox" name="svek" value="true" #if ( $action.svek ) checked="checked" #end />
                </td>
             </tr>
+            <tr>
+               <td width="40%"><label class="label">$action.getText("plantuml.admin.config.commonHeader.label")</label></td>
+               <td><textarea name="commonHeader" rows="5" cols="80" style="width:100%;">$action.commonHeader</textarea>
+               </td>
+            </tr>
+            <tr>
+               <td width="40%"><label class="label">$action.getText("plantuml.admin.config.commonFooter.label")</label></td>
+               <td><textarea name="commonFooter" rows="5" cols="80" style="width:100%;">$action.commonFooter</textarea>
+               </td>
+            </tr>
          </table>
          <div style="float: right;">
             #tag ("Submit" "name='save'" "value='save.name'" "theme='notable'")
