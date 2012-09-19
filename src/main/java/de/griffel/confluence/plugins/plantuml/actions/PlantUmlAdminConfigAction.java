@@ -7,6 +7,7 @@ import com.atlassian.confluence.core.ConfluenceActionSupport;
 import com.atlassian.confluence.util.breadcrumbs.AdminActionBreadcrumb;
 import com.atlassian.confluence.util.breadcrumbs.Breadcrumb;
 import com.atlassian.confluence.util.breadcrumbs.BreadcrumbAware;
+import com.google.common.base.Objects;
 
 import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfiguration;
 import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationBean;
@@ -61,8 +62,8 @@ public final class PlantUmlAdminConfigAction extends ConfluenceActionSupport imp
       final PlantUmlConfiguration configuration = configurationManager.load();
 
       isSvek = configuration.isSvek();
-      commonHeader = configuration.getCommonHeader();
-      commonFooter = configuration.getCommonFooter();
+      commonHeader = Objects.firstNonNull(configuration.getCommonHeader(), "");
+      commonFooter = Objects.firstNonNull(configuration.getCommonFooter(), "");
 
       logger.debug("Loaded configuration {}", configuration);
       return SUCCESS;

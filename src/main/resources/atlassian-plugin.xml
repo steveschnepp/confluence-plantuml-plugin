@@ -97,7 +97,7 @@
          <action name="save" class="de.griffel.confluence.plugins.plantuml.actions.PlantUmlAdminConfigAction" method="save">
             <interceptor-ref name="validatingStack"/>
             <result name="error"   type="velocity">/templates/plantuml-admin-config.vm</result>
-            <result name="success" type="velocity">/templates/plantuml-admin-config.vm</result>
+            <result name="success" type="redirect">/admin/plugins/plantuml/config.action</result>
          </action>
       </package>
     </xwork>
