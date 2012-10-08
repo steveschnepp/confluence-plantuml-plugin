@@ -30,7 +30,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.Collections;
 import java.util.Map;
 
 import net.sourceforge.plantuml.DiagramType;
@@ -48,7 +47,6 @@ import com.atlassian.confluence.importexport.resource.UnauthorizedDownloadResour
 import com.atlassian.confluence.importexport.resource.WritableDownloadResourceManager;
 import com.google.common.collect.ImmutableMap;
 
-import de.griffel.confluence.plugins.plantuml.PlantUmlMacroParams.Param;
 import de.griffel.confluence.plugins.plantuml.preprocess.PageContextMock;
 
 /**
@@ -69,6 +67,7 @@ public class PlantUmlMacroTest {
    public void basic() throws Exception {
       Assume.assumeNotNull(GraphvizUtils.getDotExe());
       Assume.assumeTrue(!GraphvizUtils.dotVersion().startsWith("Error:"));
+
       final MockExportDownloadResourceManager resourceManager = new MockExportDownloadResourceManager();
       resourceManager.setDownloadResourceWriter(new MockDownloadResourceWriter());
       final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null, mocks.getSpaceManager(),
@@ -76,7 +75,10 @@ public class PlantUmlMacroTest {
             mocks.getPluginAccessor(),
             mocks.getShortcutLinksManager(),
             mocks.getConfigurationManager());
-      final Map<Param, String> macroParams = Collections.singletonMap(PlantUmlMacroParams.Param.title, "Sample Title");
+      final Map<String, String> macroParams = ImmutableMap.<String, String> builder()
+            .put(PlantUmlMacroParams.Param.title.name(), "Sample Title")
+            .put(PlantUmlMacroParams.Param.type.name(), DiagramType.UML.name().toLowerCase())
+            .build();
       final String macroBody = "A <|-- B\nurl for A is [[Home]]";
       final String result = macro.execute(macroParams, macroBody, new PageContextMock());
       StringBuilder sb = new StringBuilder();
@@ -131,11 +133,38 @@ public class PlantUmlMacroTest {
    }
 
    @Test
+   public void testAbout() throws Exception {
+      final MockExportDownloadResourceManager resourceManager = new MockExportDownloadResourceManager();
+      resourceManager.setDownloadResourceWriter(new MockDownloadResourceWriter());
+      final PlantUmlMacro macro = new PlantUmlMacro(resourceManager, null, mocks.getSpaceManager(),
+            mocks.getSettingsManager(),
+            mocks.getPluginAccessor(),
+            mocks.getShortcutLinksManager(),
+            mocks.getConfigurationManager());
+      final ImmutableMap<String, String> macroParams = new ImmutableMap.Builder<String, String>().put(
+            PlantUmlMacroParams.Param.type.name(), DiagramType.UML.name().toLowerCase()).build();
+      final String macroBody = new StringBuilder()
+            .append("@startuml\n")
+            .append("about\n")
+            .append("@enduml\n").toString();
+      final String result = macro.execute(macroParams, macroBody, new PageContextMock());
+      assertEquals("<div style=\"margin: 20px 0 15px 0;\">blabla Version: <b>1.x</b> by Vendor. <a href=\"URL\">"
+            + "Plugin Homepage</a></div><div class=\"image-wrap\" style=\"\"><img src='junit/resource.png' style=\"\" "
+            + "/></div>", result);
+      final ByteArrayOutputStream out = (ByteArrayOutputStream) resourceManager.getResourceWriter(null, null, null)
+            .getStreamForWriting();
+      assertTrue(out.toByteArray().length > 0); // file size depends on installation of graphviz
+      IOUtils.write(out.toByteArray(), new FileOutputStream("target/junit-plantuml-about.png"));
+   }
+
+   @Test
    public void testVersionInfo() throws Exception {
       assertTrue("@startuml\nversion\n@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
       assertTrue("@startuml\nabout\n@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
-      assertTrue("@startuml\rversion\r@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
-      assertTrue("@startuml\r\nversion\r\n@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
+      assertTrue("\n@startuml\rversion\r@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
+      assertTrue(" @startuml\r\nversion\r\n@enduml\n".matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
+      assertTrue("@startuml\r\n@startuml\r\nversion\r\n@enduml\n@enduml\n"
+            .matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX));
    }
 
    @Test
