@@ -45,6 +45,7 @@ import net.sourceforge.plantuml.preproc.Defines;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 
 import com.atlassian.confluence.importexport.resource.DownloadResourceNotFoundException;
@@ -150,6 +151,9 @@ public class PlantUmlMacro extends BaseMacro {
          final RenderContext renderContext)
          throws MacroException, IOException, UnauthorizedDownloadResourceException, DownloadResourceNotFoundException {
 
+      final StopWatch stopWatch = new StopWatch();
+      stopWatch.start();
+
       final PlantUmlMacroParams macroParams = new PlantUmlMacroParams(params);
 
       if (!(renderContext instanceof PageContext)) {
@@ -172,7 +176,13 @@ public class PlantUmlMacro extends BaseMacro {
             new PlantUmlPreprocessor(builder.build(), umlSourceLocator, preprocessingContext);
       final String umlBlock = preprocessor.toUmlBlock();
 
-      return render(umlBlock, macroParams, preprocessor);
+      final String result = render(umlBlock, macroParams, preprocessor);
+
+      stopWatch.stop();
+      logger.info(String.format("Rendering %s diagram on page %s:%s took %d ms.", diagramType,
+            pageContext.getSpaceKey(), pageContext.getPageTitle(), stopWatch.getTime()));
+
+      return result;
    }
 
    private String render(final String umlBlock, final PlantUmlMacroParams macroParams,
