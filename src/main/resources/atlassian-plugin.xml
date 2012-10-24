@@ -57,6 +57,7 @@
            key="plantuml-macro-xhtml"
            icon="/download/resources/${project.groupId}.${project.artifactId}/icons/plantuml-macro-icon.png"
            documentation-url="${project.url}">
+      <device-type>mobile</device-type>
       <category name="visuals"/>
       <parameters>
          <parameter name="type" type="enum" default="plantuml">
