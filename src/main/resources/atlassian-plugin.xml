@@ -55,7 +55,8 @@
     <xhtml-macro name="plantuml"
            class="de.griffel.confluence.plugins.plantuml.PlantUmlMacroV4"
            key="plantuml-macro-xhtml"
-           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/plantuml-macro-icon.png">
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/plantuml-macro-icon.png"
+           documentation-url="${project.url}">
       <category name="visuals"/>
       <parameters>
          <parameter name="type" type="enum" default="plantuml">
