@@ -127,9 +127,14 @@ public final class UmlSourceBuilder {
 
    private void appendLine(String line) {
       if (line != null) {
-         final String trimedLine = line.trim();
-         if (!trimedLine.isEmpty()) {
-            lines.add(trimedLine);
+         // preserve white spaces for ditaa diagrams
+         if (diagramType == DiagramType.DITAA) {
+            lines.add(line);
+         } else {
+            final String trimedLine = line.trim();
+            if (!trimedLine.isEmpty()) {
+               lines.add(trimedLine);
+            }
          }
       }
    }
