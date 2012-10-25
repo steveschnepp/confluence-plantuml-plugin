@@ -71,6 +71,8 @@ public final class UmlSourceBuilder {
             if (configuration.isSetCommonHeader()) {
                append(configuration.getCommonHeader());
             }
+         } else if (DiagramType.SALT == diagramType) {
+            appendLine("{");
          }
       }
    }
@@ -114,7 +116,10 @@ public final class UmlSourceBuilder {
             if (configuration.isSetCommonFooter()) {
                append(configuration.getCommonFooter());
             }
+         } else if (DiagramType.SALT == diagramType) {
+            appendLine("}");
          }
+
          appendLine(getEndTag());
       }
       return new UmlSource(lines);
