@@ -83,6 +83,7 @@
             <value name="PNG"/>
             <value name="SVG"/>
          </parameter>
+         <parameter name="debug" type="boolean" default="false"/>
       </parameters>
       <resource type="velocity" name="help" location="templates/plantuml-help.vm">
         <param name="help-section" value="misc"/>

@@ -24,6 +24,7 @@
  */
 package de.griffel.confluence.plugins.plantuml;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -43,6 +44,7 @@ import net.sourceforge.plantuml.SourceStringReader;
 import net.sourceforge.plantuml.UmlSource;
 import net.sourceforge.plantuml.preproc.Defines;
 
+import org.apache.commons.io.HexDump;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.time.StopWatch;
@@ -239,6 +241,16 @@ public class PlantUmlMacro extends BaseMacro {
          sb.append("'");
          sb.append(macroParams.getImageStyle());
          sb.append("/>");
+         sb.append("</div>");
+      }
+
+      if (macroParams.isDebug()) {
+         sb.append("<div class=\"puml-debug\">");
+         sb.append("<pre>");
+         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+         HexDump.dump(umlBlock.getBytes("UTF-8"), 0, baos, 0);
+         sb.append(baos.toString()); // HexDump class writer bytes with JVM default encoding
+         sb.append("</pre");
          sb.append("</div>");
       }
 
