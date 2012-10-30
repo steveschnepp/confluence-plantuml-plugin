@@ -41,7 +41,7 @@ import com.google.common.collect.Iterators;
 public final class PlantUmlMacroParams {
 
    public enum Param {
-      title, type, border, align, hspace, vspace, format, dropshadow, separation;
+      title, type, border, align, hspace, vspace, format, dropshadow, separation, debug;
    }
 
    public enum Alignment {
@@ -137,7 +137,6 @@ public final class PlantUmlMacroParams {
    public boolean getDropShadow() {
       final String dropShadow = get(Param.dropshadow);
       return dropShadow != null ? Boolean.valueOf(dropShadow) : true;
-
    }
 
    public boolean getSeparation() {
@@ -145,9 +144,11 @@ public final class PlantUmlMacroParams {
       return separation != null ? Boolean.valueOf(separation) : true;
    }
 
-   /*
-    * @see java.lang.Object#toString()
-    */
+   public boolean isDebug() {
+      final String debug = get(Param.debug);
+      return debug != null ? Boolean.valueOf(debug) : false;
+   }
+
    @Override
    public String toString() {
       return "PlantUmlMacroParams [_params=" + params + "]";
