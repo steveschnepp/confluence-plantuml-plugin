@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.google.common.base.Strings;
-
 /**
  * Java Bean holding the {@link PlantUmlConfiguration} properties.
  */
@@ -33,7 +31,7 @@ public final class PlantUmlConfigurationBean implements Serializable, PlantUmlCo
    }
 
    public boolean isSetCommonHeader() {
-      return !Strings.isNullOrEmpty(commonHeader);
+      return !StringUtils.isEmpty(commonHeader);
    }
 
    public String getCommonFooter() {
@@ -45,7 +43,7 @@ public final class PlantUmlConfigurationBean implements Serializable, PlantUmlCo
    }
 
    public boolean isSetCommonFooter() {
-      return !Strings.isNullOrEmpty(commonFooter);
+      return !StringUtils.isEmpty(commonFooter);
    }
 
    @Override
