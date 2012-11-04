@@ -1,5 +1,6 @@
 package de.griffel.confluence.plugins.plantuml.actions;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,7 +8,6 @@ import com.atlassian.confluence.core.ConfluenceActionSupport;
 import com.atlassian.confluence.util.breadcrumbs.AdminActionBreadcrumb;
 import com.atlassian.confluence.util.breadcrumbs.Breadcrumb;
 import com.atlassian.confluence.util.breadcrumbs.BreadcrumbAware;
-import com.google.common.base.Objects;
 
 import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfiguration;
 import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationBean;
@@ -62,8 +62,8 @@ public final class PlantUmlAdminConfigAction extends ConfluenceActionSupport imp
       final PlantUmlConfiguration configuration = configurationManager.load();
 
       isSvek = configuration.isSvek();
-      commonHeader = Objects.firstNonNull(configuration.getCommonHeader(), "");
-      commonFooter = Objects.firstNonNull(configuration.getCommonFooter(), "");
+      commonHeader = (String) ObjectUtils.defaultIfNull(configuration.getCommonHeader(), "");
+      commonFooter = (String) ObjectUtils.defaultIfNull(configuration.getCommonFooter(), "");
 
       logger.debug("Loaded configuration {}", configuration);
       return SUCCESS;
