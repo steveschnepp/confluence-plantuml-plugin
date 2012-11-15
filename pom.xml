@@ -25,8 +25,9 @@
 	</licenses>
 
 	<properties>
-		<confluence.version>4.0</confluence.version>
-		<confluence.data.version>3.2</confluence.data.version>
+		<confluence.version>4.3</confluence.version>
+		<confluence.data.version>4.3</confluence.data.version>
+		<amps.version>4.0</amps.version>
 	</properties>
 
 	<url>https://studio.plugins.atlassian.com/wiki/display/PUML</url>
@@ -101,11 +102,12 @@
 			<plugin>
 				<groupId>com.atlassian.maven.plugins</groupId>
 				<artifactId>maven-confluence-plugin</artifactId>
-				<version>3.2.4</version>
+				<version>${amps.version}</version>
 				<extensions>true</extensions>
 				<configuration>
 					<productVersion>${confluence.version}</productVersion>
 					<productDataVersion>${confluence.data.version}</productDataVersion>
+					<allowGoogleTracking>>false</allowGoogleTracking>
 				</configuration>
 			</plugin>
 			<plugin>
