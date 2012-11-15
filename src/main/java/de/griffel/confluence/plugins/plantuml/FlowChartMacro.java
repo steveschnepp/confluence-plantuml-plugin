@@ -57,11 +57,22 @@ public class FlowChartMacro implements Macro {
    public String execute(Map<String, String> params, String body, ConversionContext context)
          throws MacroExecutionException {
 
-      final GraphBuilder graphBuilder = new GraphBuilder().appendGraph(body.trim());
+      final FlowChartMacroParams macroParams = new FlowChartMacroParams(params);
+
+      final GraphBuilder graphBuilder = new GraphBuilder().appendGraph(body.trim())
+            .withEdgeArrowSize(macroParams.getEdgeArrowSize())
+            .withNodeShape(macroParams.getNodeShape())
+            .withNodeStyle(macroParams.getNodeStyle())
+            .withNodeFillColor(macroParams.getNodeFillColor())
+            .withNodeFontname(macroParams.getNodeFontname())
+            .withNodeFontsize(macroParams.getNodeFontsize());
+
       final String dotString = graphBuilder.build();
 
       params.put(PlantUmlMacroParams.Param.type.name(), DiagramType.DOT.name());
-      params.put(PlantUmlMacroParams.Param.debug.name(), Boolean.FALSE.toString());
+      if (macroParams.isDebug()) {
+         params.put(PlantUmlMacroParams.Param.debug.name(), Boolean.TRUE.toString());
+      }
 
       return plantUmlMacro.execute(params, dotString, context);
    }
