@@ -36,23 +36,35 @@ public final class GraphBuilder {
 
    public enum NodeShape {
       rect, ellipse, tab, note, component, folder, box3d, square;
+      public static final NodeShape DEFAULT = rect;
    }
 
    public enum NodeStyle {
-      filled, invisible, diagonals, rounded, dashed, dotted, solid, bold;
+      filled, diagonals, rounded, dashed, dotted, solid, bold;
+      public static final NodeStyle DEFAULT = filled;
+   }
+
+   public static final class Defaults {
+      private Defaults() {
+      }
+
+      public static final BigDecimal EDGE_ARROW_SIZE = new BigDecimal("0.8");
+      public static final String NODE_FILL_COLOR = "lightyellow";
+      public static final String NODE_FONTNAME = "Verdana";
+      public static final BigDecimal NODE_FONTSIZE = BigDecimal.valueOf(9L);
    }
 
    private static final String NEWLINE = System.getProperty("line.separator");
 
    // edge styling
-   private BigDecimal edgeArrowSize = new BigDecimal("0.8");
+   private BigDecimal edgeArrowSize = Defaults.EDGE_ARROW_SIZE;
 
    // node styling
-   private GraphBuilder.NodeShape nodeShape = NodeShape.rect;
-   private GraphBuilder.NodeStyle nodeStyle = NodeStyle.filled;
-   private String nodeFillColor = "lightyellow";
-   private String nodeFontname = "Verdana";
-   private BigDecimal nodeFontsize = BigDecimal.valueOf(9L);
+   private GraphBuilder.NodeShape nodeShape = NodeShape.DEFAULT;
+   private GraphBuilder.NodeStyle nodeStyle = NodeStyle.DEFAULT;
+   private String nodeFillColor = Defaults.NODE_FILL_COLOR;
+   private String nodeFontname = Defaults.NODE_FONTNAME;
+   private BigDecimal nodeFontsize = Defaults.NODE_FONTSIZE;
 
    private final StringBuilder graph = new StringBuilder();
 
