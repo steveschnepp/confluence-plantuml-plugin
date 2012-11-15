@@ -47,10 +47,11 @@
             <value name="SVG"/>
          </parameter>
       </parameters>
-      <resource type="velocity" name="help" location="templates/plant-uml-help.vm">
+      <resource type="velocity" name="help" location="templates/plantuml-help.vm">
         <param name="help-section" value="misc"/>
       </resource>
     </macro>
+
     <!-- Confluence >=4.x -->
     <xhtml-macro name="plantuml"
            class="de.griffel.confluence.plugins.plantuml.PlantUmlMacroV4"
@@ -86,7 +87,21 @@
          <parameter name="debug" type="boolean" default="false"/>
       </parameters>
       <resource type="velocity" name="help" location="templates/plantuml-help.vm">
-        <param name="help-section" value="misc"/>
+         <param name="help-section" value="misc"/>
+      </resource>
+    </xhtml-macro>
+
+    <xhtml-macro name="flowchart"
+           class="de.griffel.confluence.plugins.plantuml.FlowChartMacro"
+           key="flowchart-macro-xhtml"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/flowchart-macro-icon.png"
+           documentation-url="${project.url}">
+      <device-type>mobile</device-type>
+      <category name="visuals"/>
+      <parameters>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/flowchart-help.vm">
+         <param name="help-section" value="misc"/>
       </resource>
     </xhtml-macro>
 

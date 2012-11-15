@@ -116,7 +116,7 @@ public final class PlantUmlMacroParams {
          final String type = get(Param.type);
          result = Iterators.find(Iterators.forArray(DiagramType.values()), new Predicate<DiagramType>() {
             public boolean apply(DiagramType diagramType) {
-               return diagramType.name().toLowerCase(Locale.US).equals(type);
+               return diagramType.name().toLowerCase(Locale.US).equals(type.toLowerCase(Locale.US));
             }
          });
       } catch (NoSuchElementException e) {
