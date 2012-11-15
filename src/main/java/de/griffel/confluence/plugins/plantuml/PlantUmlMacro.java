@@ -171,7 +171,6 @@ public class PlantUmlMacro extends BaseMacro {
       final boolean dropShadow = macroParams.getDropShadow();
       final boolean separation = macroParams.getSeparation();
       final PlantUmlConfiguration configuration = configurationManager.load();
-      final boolean isSvek = configuration.isSvek();
       final UmlSourceBuilder builder =
             new UmlSourceBuilder(diagramType, dropShadow, separation, configuration).append(new StringReader(body));
       final PlantUmlPreprocessor preprocessor =

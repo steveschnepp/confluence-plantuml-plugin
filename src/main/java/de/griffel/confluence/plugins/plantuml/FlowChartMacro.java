@@ -24,12 +24,11 @@
  */
 package de.griffel.confluence.plugins.plantuml;
 
-import java.io.IOException;
 import java.util.Map;
 
+import net.sourceforge.plantuml.DiagramType;
+
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
-import com.atlassian.confluence.importexport.resource.DownloadResourceNotFoundException;
-import com.atlassian.confluence.importexport.resource.UnauthorizedDownloadResourceException;
 import com.atlassian.confluence.importexport.resource.WritableDownloadResourceManager;
 import com.atlassian.confluence.macro.Macro;
 import com.atlassian.confluence.macro.MacroExecutionException;
@@ -38,47 +37,41 @@ import com.atlassian.confluence.renderer.ShortcutLinksManager;
 import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.spaces.SpaceManager;
 import com.atlassian.plugin.PluginAccessor;
-import com.atlassian.renderer.v2.macro.MacroException;
 
 import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationManager;
+import de.griffel.confluence.plugins.plantuml.type.GraphBuilder;
 
 /**
- * PlantUmlMacro for Confluence V 4.x.
+ * This is the {flowchart} Macro.
  */
-public class PlantUmlMacroV4 extends PlantUmlMacro implements Macro {
+public class FlowChartMacro implements Macro {
+   private final PlantUmlMacroV4 plantUmlMacro;
 
-   /**
-    * @see PlantUmlMacro#PlantUmlMacro(WritableDownloadResourceManager, PageManager, SpaceManager, SettingsManager,
-    *      PluginAccessor, ShortcutLinksManager)
-    */
-   public PlantUmlMacroV4(WritableDownloadResourceManager writeableDownloadResourceManager, PageManager pageManager,
+   public FlowChartMacro(WritableDownloadResourceManager writeableDownloadResourceManager, PageManager pageManager,
          SpaceManager spaceManager, SettingsManager settingsManager, PluginAccessor pluginAccessor,
          ShortcutLinksManager shortcutLinksManager, PlantUmlConfigurationManager configurationManager) {
-      super(writeableDownloadResourceManager, pageManager, spaceManager, settingsManager, pluginAccessor,
-            shortcutLinksManager, configurationManager);
-   }
-
-   public final BodyType getBodyType() {
-      return BodyType.PLAIN_TEXT;
-   }
-
-   public final OutputType getOutputType() {
-      return OutputType.BLOCK;
+      plantUmlMacro = new PlantUmlMacroV4(writeableDownloadResourceManager, pageManager, spaceManager, settingsManager,
+            pluginAccessor, shortcutLinksManager, configurationManager);
    }
 
    public String execute(Map<String, String> params, String body, ConversionContext context)
          throws MacroExecutionException {
-      try {
-         return executeInternal(params, body, context.getPageContext());
-      } catch (final IOException e) {
-         throw new MacroExecutionException(e);
-      } catch (MacroException e) {
-         throw new MacroExecutionException(e);
-      } catch (UnauthorizedDownloadResourceException e) {
-         throw new MacroExecutionException(e);
-      } catch (DownloadResourceNotFoundException e) {
-         throw new MacroExecutionException(e);
-      }
+
+      final GraphBuilder graphBuilder = new GraphBuilder().appendGraph(body.trim());
+      final String dotString = graphBuilder.build();
+
+      params.put(PlantUmlMacroParams.Param.type.name(), DiagramType.DOT.name());
+      params.put(PlantUmlMacroParams.Param.debug.name(), Boolean.FALSE.toString());
+
+      return plantUmlMacro.execute(params, dotString, context);
+   }
+
+   public BodyType getBodyType() {
+      return plantUmlMacro.getBodyType();
+   }
+
+   public OutputType getOutputType() {
+      return plantUmlMacro.getOutputType();
    }
 
 }

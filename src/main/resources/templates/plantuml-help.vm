@@ -26,7 +26,7 @@ BaseClass&nbsp;&lt;|--&nbsp;SubClass<br />
        This is the output of the sample on the left side:
     </p>
     <p>
-       <img src="$req.contextPath/download/resources/de.griffel.confluence.plugins.plant-uml/icons/macro-help.png"
+       <img src="$req.contextPath/download/resources/de.griffel.confluence.plugins.plant-uml/icons/plantuml-macro-help.png"
          width="80" height="150" border="0">
     </p>
   </td>
