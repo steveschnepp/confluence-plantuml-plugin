@@ -26,8 +26,6 @@ package de.griffel.confluence.plugins.plantuml;
 
 import java.util.Map;
 
-import net.sourceforge.plantuml.DiagramType;
-
 import com.atlassian.confluence.importexport.resource.WritableDownloadResourceManager;
 import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.renderer.ShortcutLinksManager;
@@ -40,41 +38,29 @@ import com.atlassian.renderer.v2.macro.BaseMacro;
 import com.atlassian.renderer.v2.macro.MacroException;
 
 import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationManager;
-import de.griffel.confluence.plugins.plantuml.type.GraphBuilder;
 
 /**
  * This is the {flowchart} Macro (Confluence < 4.0).
  */
 public class FlowChartMacro extends BaseMacro {
-   protected final PlantUmlMacroV4 plantUmlMacro;
+   protected final PlantUmlMacro plantUmlMacro;
 
    public FlowChartMacro(WritableDownloadResourceManager writeableDownloadResourceManager, PageManager pageManager,
          SpaceManager spaceManager, SettingsManager settingsManager, PluginAccessor pluginAccessor,
          ShortcutLinksManager shortcutLinksManager, PlantUmlConfigurationManager configurationManager) {
-      plantUmlMacro = new PlantUmlMacroV4(writeableDownloadResourceManager, pageManager, spaceManager, settingsManager,
+      plantUmlMacro = new PlantUmlMacro(writeableDownloadResourceManager, pageManager, spaceManager, settingsManager,
             pluginAccessor, shortcutLinksManager, configurationManager);
    }
 
    @SuppressWarnings("unchecked")
    public String execute(Map params, String body, RenderContext context) throws MacroException {
-      final FlowChartMacroParams macroParams = new FlowChartMacroParams(params);
-
-      final GraphBuilder graphBuilder = new GraphBuilder().appendGraph(body.trim())
-            .withEdgeArrowSize(macroParams.getEdgeArrowSize())
-            .withNodeShape(macroParams.getNodeShape())
-            .withNodeStyle(macroParams.getNodeStyle())
-            .withNodeFillColor(macroParams.getNodeFillColor())
-            .withNodeFontname(macroParams.getNodeFontname())
-            .withNodeFontsize(macroParams.getNodeFontsize());
-
-      final String dotString = graphBuilder.build();
-
-      params.put(PlantUmlMacroParams.Param.type.name(), DiagramType.DOT.name());
-      if (macroParams.isDebug()) {
-         params.put(PlantUmlMacroParams.Param.debug.name(), Boolean.TRUE.toString());
-      }
-
-      return plantUmlMacro.execute(params, dotString, context);
+      return new AbstractFlowChartMacroImpl() {
+         @Override
+         protected String executePlantUmlMacro(Map<String, String> params, String dotString, RenderContext context)
+               throws MacroException {
+            return plantUmlMacro.execute(params, dotString, context);
+         }
+      }.execute(params, body, context);
    }
 
    /*

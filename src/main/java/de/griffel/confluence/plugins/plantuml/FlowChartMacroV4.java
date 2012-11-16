@@ -35,6 +35,7 @@ import com.atlassian.confluence.renderer.ShortcutLinksManager;
 import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.spaces.SpaceManager;
 import com.atlassian.plugin.PluginAccessor;
+import com.atlassian.renderer.RenderContext;
 import com.atlassian.renderer.v2.macro.MacroException;
 
 import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationManager;
@@ -42,30 +43,39 @@ import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationManage
 /**
  * This is the {flowchart} Macro (Confluence > 4.0).
  */
-public class FlowChartMacroV4 extends FlowChartMacro implements Macro {
+public class FlowChartMacroV4 implements Macro {
+
+   private final PlantUmlMacroV4 plantUmlMacroV4;
 
    public FlowChartMacroV4(WritableDownloadResourceManager writeableDownloadResourceManager, PageManager pageManager,
          SpaceManager spaceManager, SettingsManager settingsManager, PluginAccessor pluginAccessor,
          ShortcutLinksManager shortcutLinksManager, PlantUmlConfigurationManager configurationManager) {
-      super(writeableDownloadResourceManager, pageManager, spaceManager, settingsManager,
-            pluginAccessor, shortcutLinksManager, configurationManager);
+      plantUmlMacroV4 =
+            new PlantUmlMacroV4(writeableDownloadResourceManager, pageManager, spaceManager, settingsManager,
+                  pluginAccessor, shortcutLinksManager, configurationManager);
    }
 
    public String execute(Map<String, String> params, String body, ConversionContext context)
          throws MacroExecutionException {
       try {
-         return super.execute(params, body, context.getPageContext());
+         return new AbstractFlowChartMacroImpl() {
+            @Override
+            protected String executePlantUmlMacro(Map<String, String> params, String dotString, RenderContext context)
+                  throws MacroException {
+               return plantUmlMacroV4.execute(params, dotString, context);
+            }
+         }.execute(params, body, context.getPageContext());
       } catch (MacroException e) {
          throw new MacroExecutionException(e);
       }
    }
 
    public BodyType getBodyType() {
-      return plantUmlMacro.getBodyType();
+      return plantUmlMacroV4.getBodyType();
    }
 
    public OutputType getOutputType() {
-      return plantUmlMacro.getOutputType();
+      return plantUmlMacroV4.getOutputType();
    }
 
 }
