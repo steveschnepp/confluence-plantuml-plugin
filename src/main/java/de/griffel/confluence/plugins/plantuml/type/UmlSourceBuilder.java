@@ -24,6 +24,8 @@
  */
 package de.griffel.confluence.plugins.plantuml.type;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.LineNumberReader;
@@ -56,7 +58,7 @@ public final class UmlSourceBuilder {
       this.diagramType = diagramType;
       this.dropShadow = dropShadow;
       this.separation = separation;
-      this.configuration = configuration;
+      this.configuration = checkNotNull(configuration);
 
       if (diagramType != null) {
          appendLine(getStartTag());
