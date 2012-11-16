@@ -26,8 +26,6 @@ package de.griffel.confluence.plugins.plantuml;
 
 import java.util.Map;
 
-import net.sourceforge.plantuml.DiagramType;
-
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.importexport.resource.WritableDownloadResourceManager;
 import com.atlassian.confluence.macro.Macro;
@@ -37,44 +35,29 @@ import com.atlassian.confluence.renderer.ShortcutLinksManager;
 import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.spaces.SpaceManager;
 import com.atlassian.plugin.PluginAccessor;
+import com.atlassian.renderer.v2.macro.MacroException;
 
 import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationManager;
-import de.griffel.confluence.plugins.plantuml.type.GraphBuilder;
 
 /**
- * This is the {flowchart} Macro.
+ * This is the {flowchart} Macro (Confluence > 4.0).
  */
-public class FlowChartMacro implements Macro {
-   private final PlantUmlMacroV4 plantUmlMacro;
+public class FlowChartMacroV4 extends FlowChartMacro implements Macro {
 
-   public FlowChartMacro(WritableDownloadResourceManager writeableDownloadResourceManager, PageManager pageManager,
+   public FlowChartMacroV4(WritableDownloadResourceManager writeableDownloadResourceManager, PageManager pageManager,
          SpaceManager spaceManager, SettingsManager settingsManager, PluginAccessor pluginAccessor,
          ShortcutLinksManager shortcutLinksManager, PlantUmlConfigurationManager configurationManager) {
-      plantUmlMacro = new PlantUmlMacroV4(writeableDownloadResourceManager, pageManager, spaceManager, settingsManager,
+      super(writeableDownloadResourceManager, pageManager, spaceManager, settingsManager,
             pluginAccessor, shortcutLinksManager, configurationManager);
    }
 
    public String execute(Map<String, String> params, String body, ConversionContext context)
          throws MacroExecutionException {
-
-      final FlowChartMacroParams macroParams = new FlowChartMacroParams(params);
-
-      final GraphBuilder graphBuilder = new GraphBuilder().appendGraph(body.trim())
-            .withEdgeArrowSize(macroParams.getEdgeArrowSize())
-            .withNodeShape(macroParams.getNodeShape())
-            .withNodeStyle(macroParams.getNodeStyle())
-            .withNodeFillColor(macroParams.getNodeFillColor())
-            .withNodeFontname(macroParams.getNodeFontname())
-            .withNodeFontsize(macroParams.getNodeFontsize());
-
-      final String dotString = graphBuilder.build();
-
-      params.put(PlantUmlMacroParams.Param.type.name(), DiagramType.DOT.name());
-      if (macroParams.isDebug()) {
-         params.put(PlantUmlMacroParams.Param.debug.name(), Boolean.TRUE.toString());
+      try {
+         return super.execute(params, body, context.getPageContext());
+      } catch (MacroException e) {
+         throw new MacroExecutionException(e);
       }
-
-      return plantUmlMacro.execute(params, dotString, context);
    }
 
    public BodyType getBodyType() {

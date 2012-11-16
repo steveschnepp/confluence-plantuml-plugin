@@ -91,8 +91,46 @@
       </resource>
     </xhtml-macro>
 
-    <xhtml-macro name="flowchart"
+    <!-- Confluence <=3.x -->
+    <macro name="flowchart"
            class="de.griffel.confluence.plugins.plantuml.FlowChartMacro"
+           key="flowchart-macro"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/flowchart-macro-icon.png">
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="edgeArrowSize" type="string" default="0.8"/>
+         <parameter name="nodeShape" type="enum" default="rect">
+            <value name="rect"/>
+            <value name="ellipse"/>
+            <value name="tab"/>
+            <value name="note"/>
+            <value name="component"/>
+            <value name="folder"/>
+            <value name="box3d"/>
+            <value name="square"/>
+         </parameter>
+         <parameter name="nodeStyle" type="enum" default="filled">
+            <value name="filled"/>
+            <value name="diagonals"/>
+            <value name="rounded"/>
+            <value name="dashed"/>
+            <value name="dotted"/>
+            <value name="solid"/>
+            <value name="bold"/>
+         </parameter>
+         <parameter name="nodeFillColor" type="string" default="lightyellow"/>
+         <parameter name="nodeFontname" type="string" default="Verdana"/>
+         <parameter name="nodeFontsize" type="string" default="9"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/flowchart-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </macro>
+
+    <!-- Confluence >=4.x -->
+    <xhtml-macro name="flowchart"
+           class="de.griffel.confluence.plugins.plantuml.FlowChartMacroV4"
            key="flowchart-macro-xhtml"
            icon="/download/resources/${project.groupId}.${project.artifactId}/icons/flowchart-macro-icon.png"
            documentation-url="${project.url}">
