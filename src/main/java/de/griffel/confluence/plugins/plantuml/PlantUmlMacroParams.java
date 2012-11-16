@@ -25,7 +25,6 @@
 package de.griffel.confluence.plugins.plantuml;
 
 import java.util.Collections;
-import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -116,7 +115,7 @@ public final class PlantUmlMacroParams {
          final String type = get(Param.type);
          result = Iterators.find(Iterators.forArray(DiagramType.values()), new Predicate<DiagramType>() {
             public boolean apply(DiagramType diagramType) {
-               return diagramType.name().toLowerCase(Locale.US).equals(type.toLowerCase(Locale.US));
+               return diagramType.name().equalsIgnoreCase(type);
             }
          });
       } catch (NoSuchElementException e) {
