@@ -1,0 +1,26 @@
+
+<tr bgcolor=ffffff>
+  <td width="200px">
+    {flowchart}<br />
+Foo -> Bar
+Foo -> Buz
+    {flowchart}
+  </td>
+
+  <td>
+    <p>
+      Generates a flowchart diagram.
+       <ul>
+         <li><b>fontname:</b> - (optional) the node font name. Default: Verdana</li>
+         <li><b>macro body:</b> - (required) the PlantUML block. The <tt>@start</tt> and <tt>@end</tt> tags are not required. The detailed documentation of the syntax is available on the <a href="http://plantuml.sourceforge.net">PlantUML website</a>.</li>
+       </ul>
+    </p>
+    <p>
+       This is the output of the sample on the left side:
+    </p>
+    <p>
+       <img src="$req.contextPath/download/resources/de.griffel.confluence.plugins.plant-uml/icons/flowchart-macro-help.png"
+         width="182" height="161" border="0">
+    </p>
+  </td>
+</tr>
