@@ -47,6 +47,11 @@ import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationBean;
  * Builder for {@link UmlSource}.
  */
 public final class UmlSourceBuilder {
+   /**
+    * NO-BREAK SPACE. (U+00A0, 0xc2a0)
+    */
+   private static final String NO_BREAK_SPACE = "\u00a0";
+
    private final List<String> lines = Lists.newArrayList();
    private final DiagramType diagramType;
    private final boolean dropShadow;
@@ -139,7 +144,10 @@ public final class UmlSourceBuilder {
             lines.add(line);
          } else {
             final String trimedLine = line.trim();
-            if (!trimedLine.isEmpty()) {
+            if (trimedLine.isEmpty()
+                  || trimedLine.equals(NO_BREAK_SPACE)) {
+               // ignore empty line
+            } else {
                lines.add(trimedLine);
             }
          }
