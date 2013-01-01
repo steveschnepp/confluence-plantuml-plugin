@@ -47,4 +47,15 @@ public class UmlSourceBuilderTest {
       builder.append(new StringReader(body));
       Assert.assertEquals("@startdot\ndigraph deschedule_app_confusion {\n@enddot\n", builder.build().getPlainString());
    }
+
+   @Test
+   public void testPuml77() throws Exception {
+      final UmlSourceBuilder builder =
+            new UmlSourceBuilder(DiagramType.UML, false, false, new PlantUmlConfigurationBean());
+      final String body =
+            "class Test\n\u00a0\n";
+      builder.append(new StringReader(body));
+      Assert.assertEquals("@startuml\nskinparam shadowing false\nclass Test\n@enduml\n", builder.build()
+            .getPlainString());
+   }
 }
