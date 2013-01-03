@@ -50,6 +50,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 
+import com.atlassian.confluence.core.ContentEntityObject;
 import com.atlassian.confluence.importexport.resource.DownloadResourceNotFoundException;
 import com.atlassian.confluence.importexport.resource.DownloadResourceReader;
 import com.atlassian.confluence.importexport.resource.DownloadResourceWriter;
@@ -64,6 +65,7 @@ import com.atlassian.confluence.renderer.ShortcutLinksManager;
 import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.spaces.SpaceManager;
 import com.atlassian.confluence.user.AuthenticatedUserThreadLocal;
+import com.atlassian.core.exception.InfrastructureException;
 import com.atlassian.plugin.PluginAccessor;
 import com.atlassian.renderer.RenderContext;
 import com.atlassian.renderer.v2.RenderMode;
@@ -177,7 +179,7 @@ public class PlantUmlMacro extends BaseMacro {
             new PlantUmlPreprocessor(builder.build(), umlSourceLocator, preprocessingContext);
       final String umlBlock = preprocessor.toUmlBlock();
 
-      final String result = render(umlBlock, macroParams, preprocessor);
+      final String result = render(umlBlock, pageContext, macroParams, preprocessor);
 
       stopWatch.stop();
       logger.info(String.format("Rendering %s diagram on page %s:%s took %d ms.", diagramType,
@@ -186,7 +188,7 @@ public class PlantUmlMacro extends BaseMacro {
       return result;
    }
 
-   private String render(final String umlBlock, final PlantUmlMacroParams macroParams,
+   private String render(final String umlBlock, final PageContext pageContext, final PlantUmlMacroParams macroParams,
          final PlantUmlPreprocessor preprocessor) throws IOException,
          UnauthorizedDownloadResourceException, DownloadResourceNotFoundException {
 
@@ -220,7 +222,9 @@ public class PlantUmlMacro extends BaseMacro {
          sb.append(new PlantUmlPluginInfo(pluginAccessor).toHtmlString());
       }
 
-      if (FileFormat.SVG == fileFormat) {
+      if (macroParams.getExportName() != null && !preprocessor.hasExceptions()) {
+         attachImage(pageContext.getEntity(), macroParams, fileFormat, resourceWriter);
+      } else if (FileFormat.SVG == fileFormat) {
          final DownloadResourceReader resourceReader =
                writeableDownloadResourceManager.getResourceReader(AuthenticatedUserThreadLocal.getUsername(),
                      resourceWriter.getResourcePath(), Collections.emptyMap());
@@ -254,6 +258,44 @@ public class PlantUmlMacro extends BaseMacro {
       }
 
       return sb.toString();
+   }
+
+   private void attachImage(final ContentEntityObject page, final PlantUmlMacroParams macroParams,
+         final FileFormat fileFormat, final DownloadResourceWriter resourceWriter)
+         throws UnauthorizedDownloadResourceException, DownloadResourceNotFoundException, IOException {
+
+      final String attachmentName = macroParams.getExportName() + fileFormat.getFileSuffix();
+      Attachment attachment = pageManager.getAttachmentManager().getAttachment(page, attachmentName);
+
+      final Attachment previousVersion;
+      if (attachment == null) {
+         previousVersion = null;
+         attachment = new Attachment();
+         attachment.setFileName(attachmentName);
+         attachment.setContentType("image/" + fileFormat.name().toLowerCase());
+         attachment.setComment("PlantUML Diagram (generated)");
+      } else {
+         try {
+            previousVersion = (Attachment) attachment.clone();
+         } catch (CloneNotSupportedException e) {
+            throw new InfrastructureException(e);
+         }
+      }
+
+      final DownloadResourceReader resourceReader =
+            writeableDownloadResourceManager.getResourceReader(AuthenticatedUserThreadLocal.getUsername(),
+                  resourceWriter.getResourcePath(), Collections.emptyMap());
+
+      if (previousVersion == null
+            || previousVersion.getFileSize() != resourceReader.getContentLength()
+            || !IOUtils.contentEquals(previousVersion.getContentsAsStream(), resourceReader.getStreamForReading())) {
+         attachment.setFileSize(resourceReader.getContentLength());
+         page.addAttachment(attachment);
+         pageManager.getAttachmentManager().saveAttachment(attachment, previousVersion,
+               resourceReader.getStreamForReading());
+
+         logger.debug("Saved image as attachment " + attachmentName);
+      }
    }
 
    private final class MyPreprocessingContext implements PreprocessingContext {

@@ -46,6 +46,8 @@
             <value name="PNG"/>
             <value name="SVG"/>
          </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
       </parameters>
       <resource type="velocity" name="help" location="templates/plantuml-help.vm">
         <param name="help-section" value="misc"/>
@@ -84,6 +86,7 @@
             <value name="PNG"/>
             <value name="SVG"/>
          </parameter>
+         <parameter name="exportName" type="string"/>
          <parameter name="debug" type="boolean" default="false"/>
       </parameters>
       <resource type="velocity" name="help" location="templates/plantuml-help.vm">
@@ -121,6 +124,7 @@
          <parameter name="nodeFillColor" type="string" default="lightyellow"/>
          <parameter name="nodeFontname" type="string" default="Verdana"/>
          <parameter name="nodeFontsize" type="string" default="9"/>
+         <parameter name="exportName" type="string"/>
          <parameter name="debug" type="boolean" default="false"/>
       </parameters>
       <resource type="velocity" name="help" location="templates/flowchart-help.vm">
@@ -160,6 +164,7 @@
          <parameter name="nodeFillColor" type="string" default="lightyellow"/>
          <parameter name="nodeFontname" type="string" default="Verdana"/>
          <parameter name="nodeFontsize" type="string" default="9"/>
+         <parameter name="exportName" type="string"/>
          <parameter name="debug" type="boolean" default="false"/>
       </parameters>
       <resource type="velocity" name="help" location="templates/flowchart-help.vm">

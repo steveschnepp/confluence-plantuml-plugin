@@ -40,7 +40,7 @@ import com.google.common.collect.Iterators;
 public final class PlantUmlMacroParams {
 
    public enum Param {
-      title, type, border, align, hspace, vspace, format, dropshadow, separation, debug;
+      title, type, border, align, hspace, vspace, format, dropshadow, separation, exportName, debug;
    }
 
    public enum Alignment {
@@ -141,6 +141,10 @@ public final class PlantUmlMacroParams {
    public boolean getSeparation() {
       final String separation = get(Param.separation);
       return separation != null ? Boolean.valueOf(separation) : true;
+   }
+
+   public String getExportName() {
+      return get(Param.exportName);
    }
 
    public boolean isDebug() {
