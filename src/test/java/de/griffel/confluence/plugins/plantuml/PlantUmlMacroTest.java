@@ -74,6 +74,7 @@ public class PlantUmlMacroTest {
             mocks.getSettingsManager(),
             mocks.getPluginAccessor(),
             mocks.getShortcutLinksManager(),
+            mocks.getContextPathHolder(),
             mocks.getConfigurationManager());
       final Map<String, String> macroParams = ImmutableMap.<String, String> builder()
             .put(PlantUmlMacroParams.Param.title.name(), "Sample Title")
@@ -109,6 +110,7 @@ public class PlantUmlMacroTest {
             mocks.getSettingsManager(),
             mocks.getPluginAccessor(),
             mocks.getShortcutLinksManager(),
+            mocks.getContextPathHolder(),
             mocks.getConfigurationManager());
       final ImmutableMap<String, String> macroParams = new ImmutableMap.Builder<String, String>().put(
             PlantUmlMacroParams.Param.type.name(), DiagramType.DITAA.name().toLowerCase())
@@ -140,6 +142,7 @@ public class PlantUmlMacroTest {
             mocks.getSettingsManager(),
             mocks.getPluginAccessor(),
             mocks.getShortcutLinksManager(),
+            mocks.getContextPathHolder(),
             mocks.getConfigurationManager());
       final ImmutableMap<String, String> macroParams = new ImmutableMap.Builder<String, String>().put(
             PlantUmlMacroParams.Param.type.name(), DiagramType.UML.name().toLowerCase()).build();
