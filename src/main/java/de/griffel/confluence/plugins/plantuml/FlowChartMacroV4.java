@@ -27,7 +27,6 @@ package de.griffel.confluence.plugins.plantuml;
 import java.util.Map;
 
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
-import com.atlassian.confluence.core.ContextPathHolder;
 import com.atlassian.confluence.importexport.resource.WritableDownloadResourceManager;
 import com.atlassian.confluence.macro.Macro;
 import com.atlassian.confluence.macro.MacroExecutionException;
@@ -50,11 +49,10 @@ public class FlowChartMacroV4 implements Macro {
 
    public FlowChartMacroV4(WritableDownloadResourceManager writeableDownloadResourceManager, PageManager pageManager,
          SpaceManager spaceManager, SettingsManager settingsManager, PluginAccessor pluginAccessor,
-         ShortcutLinksManager shortcutLinksManager, ContextPathHolder contextPathHolder,
-         PlantUmlConfigurationManager configurationManager) {
+         ShortcutLinksManager shortcutLinksManager, PlantUmlConfigurationManager configurationManager) {
       plantUmlMacroV4 =
             new PlantUmlMacroV4(writeableDownloadResourceManager, pageManager, spaceManager, settingsManager,
-                  pluginAccessor, shortcutLinksManager, contextPathHolder, configurationManager);
+                  pluginAccessor, shortcutLinksManager, configurationManager);
    }
 
    public String execute(Map<String, String> params, String body, ConversionContext context)

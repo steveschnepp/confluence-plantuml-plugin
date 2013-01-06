@@ -30,7 +30,6 @@ import static org.mockito.Mockito.when;
 import java.io.Serializable;
 import java.util.Map;
 
-import com.atlassian.confluence.core.ContextPathHolder;
 import com.atlassian.confluence.renderer.ShortcutLinkConfig;
 import com.atlassian.confluence.renderer.ShortcutLinksManager;
 import com.atlassian.confluence.setup.settings.GlobalDescription;
@@ -63,7 +62,6 @@ public final class Mocks {
    private final Space plantUmlSpaceMock = mock(Space.class);
    private final PreprocessingContext preprocessingContext = mock(PreprocessingContext.class);
    private final ShortcutLinksManager shortcutLinksManager = mock(ShortcutLinksManager.class);
-   private final ContextPathHolder contextPathHolder = mock(ContextPathHolder.class);
    private final PlantUmlConfigurationManager configurationManager = mock(PlantUmlConfigurationManager.class);
 
    public Mocks() {
@@ -90,7 +88,6 @@ public final class Mocks {
       when(preprocessingContext.getShortcutLinks()).thenReturn(shortcutLinks);
 
       when(configurationManager.load()).thenReturn(new PlantUmlConfigurationBean());
-
    }
 
    public String getBaseUrl() {
@@ -111,10 +108,6 @@ public final class Mocks {
 
    public SettingsManager getSettingsManager() {
       return new MockSettingsManager();
-   }
-
-   public ContextPathHolder getContextPathHolder() {
-      return contextPathHolder;
    }
 
    public ShortcutLinksManager getShortcutLinksManager() {

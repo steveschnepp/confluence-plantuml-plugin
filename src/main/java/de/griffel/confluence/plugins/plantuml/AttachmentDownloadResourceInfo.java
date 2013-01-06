@@ -27,15 +27,14 @@ package de.griffel.confluence.plugins.plantuml;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.atlassian.confluence.core.ContextPathHolder;
 import com.atlassian.confluence.pages.Attachment;
 
 public final class AttachmentDownloadResourceInfo implements DownloadResourceInfo {
-   private final ContextPathHolder contextPathHolder;
+   private final String baseUrl;
    private final Attachment attachment;
 
-   public AttachmentDownloadResourceInfo(ContextPathHolder contextPathHolder, Attachment attachment) {
-      this.contextPathHolder = contextPathHolder;
+   public AttachmentDownloadResourceInfo(String baseUrl, Attachment attachment) {
+      this.baseUrl = baseUrl;
       this.attachment = attachment;
    }
 
@@ -44,7 +43,7 @@ public final class AttachmentDownloadResourceInfo implements DownloadResourceInf
    }
 
    public String getDownloadPath() {
-      return contextPathHolder.getContextPath() + attachment.getDownloadPath();
+      return baseUrl + attachment.getDownloadPath();
    }
 
 }
