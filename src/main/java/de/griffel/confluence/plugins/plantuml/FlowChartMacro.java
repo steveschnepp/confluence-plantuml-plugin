@@ -26,7 +26,6 @@ package de.griffel.confluence.plugins.plantuml;
 
 import java.util.Map;
 
-import com.atlassian.confluence.core.ContextPathHolder;
 import com.atlassian.confluence.importexport.resource.WritableDownloadResourceManager;
 import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.renderer.ShortcutLinksManager;
@@ -48,10 +47,9 @@ public class FlowChartMacro extends BaseMacro {
 
    public FlowChartMacro(WritableDownloadResourceManager writeableDownloadResourceManager, PageManager pageManager,
          SpaceManager spaceManager, SettingsManager settingsManager, PluginAccessor pluginAccessor,
-         ShortcutLinksManager shortcutLinksManager, ContextPathHolder contextPathHolder,
-         PlantUmlConfigurationManager configurationManager) {
+         ShortcutLinksManager shortcutLinksManager, PlantUmlConfigurationManager configurationManager) {
       plantUmlMacro = new PlantUmlMacro(writeableDownloadResourceManager, pageManager, spaceManager, settingsManager,
-            pluginAccessor, shortcutLinksManager, contextPathHolder, configurationManager);
+            pluginAccessor, shortcutLinksManager, configurationManager);
    }
 
    @SuppressWarnings("unchecked")

@@ -51,7 +51,6 @@ import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 
 import com.atlassian.confluence.core.ContentEntityObject;
-import com.atlassian.confluence.core.ContextPathHolder;
 import com.atlassian.confluence.importexport.resource.DownloadResourceNotFoundException;
 import com.atlassian.confluence.importexport.resource.DownloadResourceReader;
 import com.atlassian.confluence.importexport.resource.DownloadResourceWriter;
@@ -103,14 +102,11 @@ public class PlantUmlMacro extends BaseMacro {
 
    private final ShortcutLinksManager shortcutLinksManager;
 
-   private final ContextPathHolder contextPathHolder;
-
    private final PlantUmlConfigurationManager configurationManager;
 
    public PlantUmlMacro(WritableDownloadResourceManager writeableDownloadResourceManager,
          PageManager pageManager, SpaceManager spaceManager, SettingsManager settingsManager,
          PluginAccessor pluginAccessor, ShortcutLinksManager shortcutLinksManager,
-         ContextPathHolder contextPathHolder,
          PlantUmlConfigurationManager configurationManager) {
       this.writeableDownloadResourceManager = writeableDownloadResourceManager;
       this.pageManager = pageManager;
@@ -118,7 +114,6 @@ public class PlantUmlMacro extends BaseMacro {
       this.settingsManager = settingsManager;
       this.pluginAccessor = pluginAccessor;
       this.shortcutLinksManager = shortcutLinksManager;
-      this.contextPathHolder = contextPathHolder;
       this.configurationManager = configurationManager;
    }
 
@@ -304,7 +299,7 @@ public class PlantUmlMacro extends BaseMacro {
 
          logger.debug("Saved image as attachment " + attachmentName);
       }
-      return new AttachmentDownloadResourceInfo(contextPathHolder, attachment);
+      return new AttachmentDownloadResourceInfo(settingsManager.getGlobalSettings().getBaseUrl(), attachment);
    }
 
    private final class MyPreprocessingContext implements PreprocessingContext {
