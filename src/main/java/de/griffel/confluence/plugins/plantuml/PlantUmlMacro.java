@@ -51,6 +51,7 @@ import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 
 import com.atlassian.confluence.core.ContentEntityObject;
+import com.atlassian.confluence.core.ContextPathHolder;
 import com.atlassian.confluence.importexport.resource.DownloadResourceNotFoundException;
 import com.atlassian.confluence.importexport.resource.DownloadResourceReader;
 import com.atlassian.confluence.importexport.resource.DownloadResourceWriter;
@@ -101,11 +102,15 @@ public class PlantUmlMacro extends BaseMacro {
    private final PluginAccessor pluginAccessor;
 
    private final ShortcutLinksManager shortcutLinksManager;
+
+   private final ContextPathHolder contextPathHolder;
+
    private final PlantUmlConfigurationManager configurationManager;
 
    public PlantUmlMacro(WritableDownloadResourceManager writeableDownloadResourceManager,
          PageManager pageManager, SpaceManager spaceManager, SettingsManager settingsManager,
          PluginAccessor pluginAccessor, ShortcutLinksManager shortcutLinksManager,
+         ContextPathHolder contextPathHolder,
          PlantUmlConfigurationManager configurationManager) {
       this.writeableDownloadResourceManager = writeableDownloadResourceManager;
       this.pageManager = pageManager;
@@ -113,6 +118,7 @@ public class PlantUmlMacro extends BaseMacro {
       this.settingsManager = settingsManager;
       this.pluginAccessor = pluginAccessor;
       this.shortcutLinksManager = shortcutLinksManager;
+      this.contextPathHolder = contextPathHolder;
       this.configurationManager = configurationManager;
    }
 
@@ -222,16 +228,18 @@ public class PlantUmlMacro extends BaseMacro {
          sb.append(new PlantUmlPluginInfo(pluginAccessor).toHtmlString());
       }
 
+      final DownloadResourceInfo resourceInfo;
       if (macroParams.getExportName() != null && !preprocessor.hasExceptions()) {
-         attachImage(pageContext.getEntity(), macroParams, fileFormat, resourceWriter);
-      } else if (FileFormat.SVG == fileFormat) {
-         final DownloadResourceReader resourceReader =
-               writeableDownloadResourceManager.getResourceReader(AuthenticatedUserThreadLocal.getUsername(),
-                     resourceWriter.getResourcePath(), Collections.emptyMap());
-         final StringWriter sw = new StringWriter();
-         IOUtils.copy(resourceReader.getStreamForReading(), sw);
-         sb.append(sw.getBuffer());
+         resourceInfo = attachImage(pageContext.getEntity(), macroParams, fileFormat, resourceWriter);
       } else {
+         resourceInfo = new DefaultDownloadResourceInfo(writeableDownloadResourceManager, resourceWriter);
+      }
+
+      if (FileFormat.SVG == fileFormat) {
+         final StringWriter sw = new StringWriter();
+         IOUtils.copy(resourceInfo.getStreamForReading(), sw);
+         sb.append(sw.getBuffer());
+      } else /* PNG */{
          sb.append("<div class=\"image-wrap\" style=\"" + macroParams.getAlignment().getCssStyle() + "\">");
          sb.append("<img");
          if (cmap.isValid()) {
@@ -240,7 +248,7 @@ public class PlantUmlMacro extends BaseMacro {
             sb.append("\"");
          }
          sb.append(" src='");
-         sb.append(resourceWriter.getResourcePath());
+         sb.append(resourceInfo.getDownloadPath());
          sb.append("'");
          sb.append(macroParams.getImageStyle());
          sb.append("/>");
@@ -260,7 +268,7 @@ public class PlantUmlMacro extends BaseMacro {
       return sb.toString();
    }
 
-   private void attachImage(final ContentEntityObject page, final PlantUmlMacroParams macroParams,
+   private DownloadResourceInfo attachImage(final ContentEntityObject page, final PlantUmlMacroParams macroParams,
          final FileFormat fileFormat, final DownloadResourceWriter resourceWriter)
          throws UnauthorizedDownloadResourceException, DownloadResourceNotFoundException, IOException {
 
@@ -296,6 +304,7 @@ public class PlantUmlMacro extends BaseMacro {
 
          logger.debug("Saved image as attachment " + attachmentName);
       }
+      return new AttachmentDownloadResourceInfo(contextPathHolder, attachment);
    }
 
    private final class MyPreprocessingContext implements PreprocessingContext {

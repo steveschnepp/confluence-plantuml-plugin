@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
+import com.atlassian.confluence.core.ContextPathHolder;
 import com.atlassian.confluence.importexport.resource.DownloadResourceNotFoundException;
 import com.atlassian.confluence.importexport.resource.UnauthorizedDownloadResourceException;
 import com.atlassian.confluence.importexport.resource.WritableDownloadResourceManager;
@@ -47,15 +48,12 @@ import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationManage
  */
 public class PlantUmlMacroV4 extends PlantUmlMacro implements Macro {
 
-   /**
-    * @see PlantUmlMacro#PlantUmlMacro(WritableDownloadResourceManager, PageManager, SpaceManager, SettingsManager,
-    *      PluginAccessor, ShortcutLinksManager)
-    */
    public PlantUmlMacroV4(WritableDownloadResourceManager writeableDownloadResourceManager, PageManager pageManager,
          SpaceManager spaceManager, SettingsManager settingsManager, PluginAccessor pluginAccessor,
-         ShortcutLinksManager shortcutLinksManager, PlantUmlConfigurationManager configurationManager) {
+         ShortcutLinksManager shortcutLinksManager, ContextPathHolder contextPathHolder,
+         PlantUmlConfigurationManager configurationManager) {
       super(writeableDownloadResourceManager, pageManager, spaceManager, settingsManager, pluginAccessor,
-            shortcutLinksManager, configurationManager);
+            shortcutLinksManager, contextPathHolder, configurationManager);
    }
 
    public final BodyType getBodyType() {
