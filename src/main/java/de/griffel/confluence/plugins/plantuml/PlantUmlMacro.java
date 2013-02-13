@@ -401,14 +401,7 @@ public class PlantUmlMacro extends BaseMacro {
 
       public final ImageMap renderImage(OutputStream outputStream, FileFormat format) throws IOException {
          final BlockUml blockUml = getBlocks().iterator().next();
-         final PSystem system;
-         try {
-            system = blockUml.getSystem();
-         } catch (InterruptedException e) {
-            final IOException x = new IOException();
-            x.initCause(e);
-            throw x;
-         }
+         final PSystem system = blockUml.getSystem();
          final CMapData cmap = new CMapData();
          system.exportDiagram(outputStream, cmap, 0, new FileFormatOption(format));
 
