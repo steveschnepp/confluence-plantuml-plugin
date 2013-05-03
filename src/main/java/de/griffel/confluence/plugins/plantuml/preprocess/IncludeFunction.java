@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sourceforge.plantuml.UmlSource;
+import net.sourceforge.plantuml.core.UmlSource;
 
 /**
  * 

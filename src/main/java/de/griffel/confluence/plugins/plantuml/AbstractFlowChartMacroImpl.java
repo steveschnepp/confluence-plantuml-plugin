@@ -26,7 +26,7 @@ package de.griffel.confluence.plugins.plantuml;
 
 import java.util.Map;
 
-import net.sourceforge.plantuml.DiagramType;
+import net.sourceforge.plantuml.core.DiagramType;
 
 import com.atlassian.renderer.RenderContext;
 import com.atlassian.renderer.v2.macro.MacroException;

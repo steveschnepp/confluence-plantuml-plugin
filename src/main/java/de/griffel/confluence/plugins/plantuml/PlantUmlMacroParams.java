@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import net.sourceforge.plantuml.DiagramType;
+import net.sourceforge.plantuml.core.DiagramType;
 import net.sourceforge.plantuml.FileFormat;
 
 import com.google.common.base.Predicate;

@@ -26,7 +26,7 @@ package de.griffel.confluence.plugins.plantuml.type;
 
 import java.io.StringReader;
 
-import net.sourceforge.plantuml.DiagramType;
+import net.sourceforge.plantuml.core.DiagramType;
 
 import org.junit.Assert;
 import org.junit.Test;
