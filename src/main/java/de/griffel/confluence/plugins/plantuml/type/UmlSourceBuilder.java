@@ -33,8 +33,8 @@ import java.io.StringReader;
 import java.util.List;
 import java.util.Locale;
 
-import net.sourceforge.plantuml.DiagramType;
-import net.sourceforge.plantuml.UmlSource;
+import net.sourceforge.plantuml.core.DiagramType;
+import net.sourceforge.plantuml.core.UmlSource;
 
 import org.apache.commons.io.IOUtils;
 
@@ -129,7 +129,8 @@ public final class UmlSourceBuilder {
 
          appendLine(getEndTag());
       }
-      return new UmlSource(lines);
+      boolean checkEndingBackslash = true;
+      return new UmlSource(lines, checkEndingBackslash);
    }
 
    @Override

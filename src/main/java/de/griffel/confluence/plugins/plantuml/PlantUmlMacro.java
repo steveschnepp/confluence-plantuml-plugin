@@ -36,12 +36,12 @@ import java.util.Random;
 
 import net.sourceforge.plantuml.BlockUml;
 import net.sourceforge.plantuml.CMapData;
-import net.sourceforge.plantuml.DiagramType;
+import net.sourceforge.plantuml.core.DiagramType;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
-import net.sourceforge.plantuml.PSystem;
+import net.sourceforge.plantuml.core.Diagram;
 import net.sourceforge.plantuml.SourceStringReader;
-import net.sourceforge.plantuml.UmlSource;
+import net.sourceforge.plantuml.core.UmlSource;
 import net.sourceforge.plantuml.preproc.Defines;
 
 import org.apache.commons.io.HexDump;
@@ -401,9 +401,9 @@ public class PlantUmlMacro extends BaseMacro {
 
       public final ImageMap renderImage(OutputStream outputStream, FileFormat format) throws IOException {
          final BlockUml blockUml = getBlocks().iterator().next();
-         final PSystem system = blockUml.getSystem();
+         final Diagram system = blockUml.getSystem();
          final CMapData cmap = new CMapData();
-         system.exportDiagram(outputStream, cmap, 0, new FileFormatOption(format));
+         system.exportDiagram(outputStream, /* cmap not available any more , */ 0, new FileFormatOption(format));
 
          final ImageMap result;
          if (cmap.containsData()) {

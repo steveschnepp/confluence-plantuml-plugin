@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.plantuml.UmlSource;
+import net.sourceforge.plantuml.core.UmlSource;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;

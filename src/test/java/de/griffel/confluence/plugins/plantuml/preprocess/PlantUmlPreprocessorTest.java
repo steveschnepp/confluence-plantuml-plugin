@@ -26,7 +26,7 @@ package de.griffel.confluence.plugins.plantuml.preprocess;
 
 import java.util.Map;
 
-import net.sourceforge.plantuml.UmlSource;
+import net.sourceforge.plantuml.core.UmlSource;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -41,11 +41,11 @@ import com.google.common.collect.ImmutableList;
 public class PlantUmlPreprocessorTest {
    @Test
    public void testInlining() throws Exception {
-      final UmlSource umlSource = new UmlSource(ImmutableList.of("!include x", "buz", "eof"));
+      final UmlSource umlSource = new UmlSource(ImmutableList.of("!include x", "buz", "eof"), true);
       Assert.assertEquals("foo\nbar\nbuz\neof\n",
             new PlantUmlPreprocessor(umlSource, new UmlSourceLocator() {
                public UmlSource get(String name) {
-                  return new UmlSource(ImmutableList.of("foo", "bar"));
+                  return new UmlSource(ImmutableList.of("foo", "bar"), true);
                }
             }, new PreprocessingContext() {
 

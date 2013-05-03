@@ -26,7 +26,7 @@ package de.griffel.confluence.plugins.plantuml.preprocess;
 
 import java.io.IOException;
 
-import net.sourceforge.plantuml.UmlSource;
+import net.sourceforge.plantuml.core.UmlSource;
 
 /**
  * Interface to locate a UML source.
