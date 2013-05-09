@@ -1,13 +1,13 @@
 {namespace plantuml.wizard}
 
 /**
- * Chooser form: First step of the wizard gives user a choice of two pages to go to next.
+ * Chooser form: Select UML template
  */
-{template .page1Form}
+{template .page1FormUml}
     <form action="#" method="post" class="aui">
         <fieldset>
             <div class="field-group">
-                <label for="template-key">{getText('plantuml.blueprint.wizard.page1.select')}</label>
+                <label for="template-key">{getText('plantuml.blueprint.wizard.uml.page1.select')}</label>
                 <select id="template-key" class="select" name="contentTemplateKey">
                     <option value="plantuml_template_activity_diagram_simple">{getText('plantuml.blueprint.templates.activity_diagram_simple.name')}</option>
                     <option value="plantuml_template_class_diagram_simple">{getText('plantuml.blueprint.templates.class_diagram_simple.name')}</option>
@@ -15,6 +15,23 @@
                     <option value="plantuml_template_state_diagram_simple">{getText('plantuml.blueprint.templates.state_diagram_simple.name')}</option>
                     <option value="plantuml_template_sequence_diagram_simple">{getText('plantuml.blueprint.templates.sequence_diagram_simple.name')}</option>
                     <option value="plantuml_template_usecase_diagram_simple">{getText('plantuml.blueprint.templates.usecase_diagram_simple.name')}</option>
+                </select>
+            </div>
+        </fieldset>
+    </form>
+{/template}
+
+/**
+ * Chooser form: Select Graphviz template
+ */
+{template .page1FormGraphviz}
+    <form action="#" method="post" class="aui">
+        <fieldset>
+            <div class="field-group">
+                <label for="template-key">{getText('plantuml.blueprint.wizard.graphviz.page1.select')}</label>
+                <select id="template-key" class="select" name="contentTemplateKey">
+                    <option value="plantuml_template_graphviz_diagram_simple">{getText('plantuml.blueprint.templates.graphviz_diagram_simple.name')}</option>
+                    <option value="plantuml_template_flowchart_diagram_simple">{getText('plantuml.blueprint.templates.flowchart_diagram_simple.name')}</option>
                 </select>
             </div>
         </fieldset>

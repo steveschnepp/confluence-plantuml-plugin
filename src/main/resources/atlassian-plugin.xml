@@ -188,6 +188,10 @@
     </xwork>
 
     <!-- Blueprints -->
+    <content-template key="plantuml-index-template" i18n-name-key="plantuml.blueprint.templates.index.name">
+      <resource name="template" type="download" location="xml/index.xml"/>
+    </content-template>
+
     <content-template key="plantuml_template_activity_diagram_simple" i18n-name-key="plantuml.blueprint.templates.activity_diagram_simple.name">
       <resource name="template" type="download" location="xml/template_activity_diagram_simple.xml"/>
     </content-template>
@@ -212,11 +216,15 @@
       <resource name="template" type="download" location="xml/template_usecase_diagram_simple.xml"/>
     </content-template>
 
-    <content-template key="plantuml-index-template" i18n-name-key="plantuml.blueprint.templates.index.name">
-      <resource name="template" type="download" location="xml/index.xml"/>
+    <content-template key="plantuml_template_graphviz_diagram_simple" i18n-name-key="plantuml.blueprint.templates.graphviz_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_graphviz_diagram_simple.xml"/>
     </content-template>
 
-    <blueprint key="plantuml-blueprint" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
+    <content-template key="plantuml_template_flowchart_diagram_simple" i18n-name-key="plantuml.blueprint.templates.flowchart_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_flowchart_diagram_simple.xml"/>
+    </content-template>
+
+    <blueprint key="plantuml-blueprint-uml" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
       <content-template ref="plantuml_template_activity_diagram_simple"/>
       <content-template ref="plantuml_template_class_diagram_simple"/>
       <content-template ref="plantuml_template_component_diagram_simple"/>
@@ -224,14 +232,28 @@
       <content-template ref="plantuml_template_state_diagram_simple"/>
       <content-template ref="plantuml_template_usecase_diagram_simple"/>
       <dialog-wizard key="plantuml-wizard">
-        <dialog-page id="page1Id" template-key="plantuml.wizard.page1Form" title-key="plantuml.blueprint.wizard.page1.title"/>
+        <dialog-page id="page1Id" template-key="plantuml.wizard.page1FormUml" title-key="plantuml.blueprint.wizard.uml.page1.title"/>
       </dialog-wizard>
     </blueprint>
 
-    <web-item key="blueprint-item" i18n-name-key="plantuml.blueprint.plugin.title" section="system.create.dialog/content">
-      <description key="plantuml.blueprint.plugin.description"/>
+    <blueprint key="plantuml-blueprint-graphviz" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
+      <content-template ref="plantuml_template_graphviz_diagram_simple"/>
+      <content-template ref="plantuml_template_flowchart_diagram_simple"/>
+      <dialog-wizard key="plantuml-wizard-graphviz">
+        <dialog-page id="page1Id" template-key="plantuml.wizard.page1FormGraphviz" title-key="plantuml.blueprint.wizard.graphviz.page1.title"/>
+      </dialog-wizard>
+    </blueprint>
+
+    <web-item key="blueprint-item-uml" i18n-name-key="plantuml.blueprint.plugin.uml.title" section="system.create.dialog/content">
+      <description key="plantuml.blueprint.plugin.uml.description"/>
       <resource name="icon" type="download" location="images/icons/blueprint-uml-icon.png"/>
-      <param name="blueprintKey" value="plantuml-blueprint"/>
+      <param name="blueprintKey" value="plantuml-blueprint-uml"/>
+    </web-item>
+
+    <web-item key="blueprint-item-graphviz" i18n-name-key="plantuml.blueprint.plugin.graphviz.title" section="system.create.dialog/content">
+      <description key="plantuml.blueprint.plugin.graphviz.description"/>
+      <resource name="icon" type="download" location="images/icons/blueprint-graphviz-icon.png"/>
+      <param name="blueprintKey" value="plantuml-blueprint-graphviz"/>
     </web-item>
 
     <web-resource name="Resources" key="plantuml-resources">
