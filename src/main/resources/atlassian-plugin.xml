@@ -210,7 +210,7 @@
 
     <web-item key="blueprint-item" i18n-name-key="plantuml.blueprint.plugin.title" section="system.create.dialog/content">
       <description key="plantuml.blueprint.plugin.description"/>
-      <resource name="icon" type="download" location="images/puml-blueprint-icon.png"/>
+      <resource name="icon" type="download" location="images/icons/blueprint-uml-icon.png"/>
       <param name="blueprintKey" value="plantuml-blueprint"/>
     </web-item>
 
