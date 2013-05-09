@@ -188,11 +188,11 @@
     </xwork>
 
     <!-- Blueprints -->
-    <content-template key="plantuml_template_class_diagram_simple" i18n-name-key="plantuml.blueprint.templates.class_diagram_simple.content.name">
+    <content-template key="plantuml_template_class_diagram_simple" i18n-name-key="plantuml.blueprint.templates.class_diagram_simple.name">
       <resource name="template" type="download" location="xml/template_class_diagram_simple.xml"/>
     </content-template>
 
-    <content-template key="plantuml_template_sequence_diagram_simple" i18n-name-key="plantuml.blueprint.templates.sequence_diagram_simple.content.name">
+    <content-template key="plantuml_template_sequence_diagram_simple" i18n-name-key="plantuml.blueprint.templates.sequence_diagram_simple.name">
       <resource name="template" type="download" location="xml/template_sequence_diagram_simple.xml"/>
     </content-template>
 
@@ -200,7 +200,7 @@
       <resource name="template" type="download" location="xml/index.xml"/>
     </content-template>
 
-    <blueprint key="plantuml-blueprint" index-key="plantuml" index-template-key="plantuml-index-template">
+    <blueprint key="plantuml-blueprint" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
       <content-template ref="plantuml_template_class_diagram_simple"/>
       <content-template ref="plantuml_template_sequence_diagram_simple"/>
       <dialog-wizard key="plantuml-wizard">
