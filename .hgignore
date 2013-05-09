@@ -11,3 +11,5 @@ syntax: regexp
 ^target$
 syntax: regexp
 ^install\.sh$
+syntax: regexp
+^.*\.swp$
