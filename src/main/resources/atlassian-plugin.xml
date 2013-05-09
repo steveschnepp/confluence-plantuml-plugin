@@ -188,12 +188,28 @@
     </xwork>
 
     <!-- Blueprints -->
+    <content-template key="plantuml_template_activity_diagram_simple" i18n-name-key="plantuml.blueprint.templates.activity_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_activity_diagram_simple.xml"/>
+    </content-template>
+
     <content-template key="plantuml_template_class_diagram_simple" i18n-name-key="plantuml.blueprint.templates.class_diagram_simple.name">
       <resource name="template" type="download" location="xml/template_class_diagram_simple.xml"/>
     </content-template>
 
+    <content-template key="plantuml_template_component_diagram_simple" i18n-name-key="plantuml.blueprint.templates.component_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_component_diagram_simple.xml"/>
+    </content-template>
+
     <content-template key="plantuml_template_sequence_diagram_simple" i18n-name-key="plantuml.blueprint.templates.sequence_diagram_simple.name">
       <resource name="template" type="download" location="xml/template_sequence_diagram_simple.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_state_diagram_simple" i18n-name-key="plantuml.blueprint.templates.state_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_state_diagram_simple.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_usecase_diagram_simple" i18n-name-key="plantuml.blueprint.templates.usecase_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_usecase_diagram_simple.xml"/>
     </content-template>
 
     <content-template key="plantuml-index-template" i18n-name-key="plantuml.blueprint.templates.index.name">
@@ -201,8 +217,12 @@
     </content-template>
 
     <blueprint key="plantuml-blueprint" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
+      <content-template ref="plantuml_template_activity_diagram_simple"/>
       <content-template ref="plantuml_template_class_diagram_simple"/>
+      <content-template ref="plantuml_template_component_diagram_simple"/>
       <content-template ref="plantuml_template_sequence_diagram_simple"/>
+      <content-template ref="plantuml_template_state_diagram_simple"/>
+      <content-template ref="plantuml_template_usecase_diagram_simple"/>
       <dialog-wizard key="plantuml-wizard">
         <dialog-page id="page1Id" template-key="plantuml.wizard.page1Form" title-key="plantuml.blueprint.wizard.page1.title"/>
       </dialog-wizard>
