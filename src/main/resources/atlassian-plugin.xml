@@ -224,6 +224,23 @@
       <resource name="template" type="download" location="xml/template_flowchart_diagram_simple.xml"/>
     </content-template>
 
+    <content-template key="plantuml_template_ditaa_diagram_simple" i18n-name-key="plantuml.blueprint.templates.ditaa_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_ditaa_simple.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_jcckit_diagram_simple" i18n-name-key="plantuml.blueprint.templates.jcckit_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_jcckit_simple.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_plantuml_version" i18n-name-key="plantuml.blueprint.templates.plantuml_version.name">
+      <resource name="template" type="download" location="xml/template_plantuml_version.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_salt_diagram_simple" i18n-name-key="plantuml.blueprint.templates.salt_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_salt_basic_widgets.xml"/>
+    </content-template>
+
+
     <blueprint key="plantuml-blueprint-uml" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
       <content-template ref="plantuml_template_activity_diagram_simple"/>
       <content-template ref="plantuml_template_class_diagram_simple"/>
@@ -244,6 +261,34 @@
       </dialog-wizard>
     </blueprint>
 
+    <blueprint key="plantuml-blueprint-ditaa" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
+      <content-template ref="plantuml_template_ditaa_diagram_simple"/>
+      <dialog-wizard key="plantuml-wizard-ditaa">
+        <dialog-page id="page1Id" template-key="plantuml.wizard.page1FormDitaa" title-key="plantuml.blueprint.wizard.ditaa.page1.title"/>
+      </dialog-wizard>
+    </blueprint>
+
+    <blueprint key="plantuml-blueprint-jcckit" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
+      <content-template ref="plantuml_template_jcckit_diagram_simple"/>
+      <dialog-wizard key="plantuml-wizard-jcckit">
+        <dialog-page id="page1Id" template-key="plantuml.wizard.page1FormJcckit" title-key="plantuml.blueprint.wizard.jcckit.page1.title"/>
+      </dialog-wizard>
+    </blueprint>
+
+    <blueprint key="plantuml-blueprint-plantuml" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
+      <content-template ref="plantuml_template_plantuml_version"/>
+      <dialog-wizard key="plantuml-wizard-puml">
+        <dialog-page id="page1Id" template-key="plantuml.wizard.page1FormPlantuml" title-key="plantuml.blueprint.wizard.plantuml.page1.title"/>
+      </dialog-wizard>
+    </blueprint>
+
+    <blueprint key="plantuml-blueprint-salt" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
+      <content-template ref="plantuml_template_salt_diagram_simple"/>
+      <dialog-wizard key="plantuml-wizard-salt">
+        <dialog-page id="page1Id" template-key="plantuml.wizard.page1FormSalt" title-key="plantuml.blueprint.wizard.salt.page1.title"/>
+      </dialog-wizard>
+    </blueprint>
+
     <web-item key="blueprint-item-uml" i18n-name-key="plantuml.blueprint.plugin.uml.title" section="system.create.dialog/content">
       <description key="plantuml.blueprint.plugin.uml.description"/>
       <resource name="icon" type="download" location="images/icons/blueprint-uml-icon.png"/>
@@ -254,6 +299,30 @@
       <description key="plantuml.blueprint.plugin.graphviz.description"/>
       <resource name="icon" type="download" location="images/icons/blueprint-graphviz-icon.png"/>
       <param name="blueprintKey" value="plantuml-blueprint-graphviz"/>
+    </web-item>
+
+    <web-item key="blueprint-item-ditaa" i18n-name-key="plantuml.blueprint.plugin.ditaa.title" section="system.create.dialog/content">
+      <description key="plantuml.blueprint.plugin.ditaa.description"/>
+      <resource name="icon" type="download" location="images/icons/blueprint-ditaa-icon.png"/>
+      <param name="blueprintKey" value="plantuml-blueprint-ditaa"/>
+    </web-item>
+
+    <web-item key="blueprint-item-jcckit" i18n-name-key="plantuml.blueprint.plugin.jcckit.title" section="system.create.dialog/content">
+      <description key="plantuml.blueprint.plugin.jcckit.description"/>
+      <resource name="icon" type="download" location="images/icons/blueprint-jcckit-icon.png"/>
+      <param name="blueprintKey" value="plantuml-blueprint-jcckit"/>
+    </web-item>
+
+    <web-item key="blueprint-item-plantuml" i18n-name-key="plantuml.blueprint.plugin.plantuml.title" section="system.create.dialog/content">
+      <description key="plantuml.blueprint.plugin.plantuml.description"/>
+      <resource name="icon" type="download" location="images/icons/blueprint-plantuml-icon.png"/>
+      <param name="blueprintKey" value="plantuml-blueprint-plantuml"/>
+    </web-item>
+
+    <web-item key="blueprint-item-salt" i18n-name-key="plantuml.blueprint.plugin.salt.title" section="system.create.dialog/content">
+      <description key="plantuml.blueprint.plugin.salt.description"/>
+      <resource name="icon" type="download" location="images/icons/blueprint-salt-icon.png"/>
+      <param name="blueprintKey" value="plantuml-blueprint-salt"/>
     </web-item>
 
     <web-resource name="Resources" key="plantuml-resources">
