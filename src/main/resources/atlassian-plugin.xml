@@ -236,6 +236,10 @@
       <resource name="template" type="download" location="xml/template_plantuml_version.xml"/>
     </content-template>
 
+    <content-template key="plantuml_template_plantuml_xearth" i18n-name-key="plantuml.blueprint.templates.plantuml_xearth.name">
+      <resource name="template" type="download" location="xml/template_plantuml_xearth.xml"/>
+    </content-template>
+
     <content-template key="plantuml_template_salt_diagram_simple" i18n-name-key="plantuml.blueprint.templates.salt_diagram_simple.name">
       <resource name="template" type="download" location="xml/template_salt_basic_widgets.xml"/>
     </content-template>
@@ -277,6 +281,7 @@
 
     <blueprint key="plantuml-blueprint-plantuml" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
       <content-template ref="plantuml_template_plantuml_version"/>
+      <content-template ref="plantuml_template_plantuml_xearth"/>
       <dialog-wizard key="plantuml-wizard-puml">
         <dialog-page id="page1Id" template-key="plantuml.wizard.page1FormPlantuml" title-key="plantuml.blueprint.wizard.plantuml.page1.title"/>
       </dialog-wizard>
