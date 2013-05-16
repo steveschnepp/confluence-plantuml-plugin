@@ -72,6 +72,7 @@ import com.atlassian.renderer.v2.RenderMode;
 import com.atlassian.renderer.v2.macro.BaseMacro;
 import com.atlassian.renderer.v2.macro.MacroException;
 
+import de.griffel.confluence.plugins.plantuml.PlantUmlMacro.MySourceStringReader.ImageInfo;
 import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfiguration;
 import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationManager;
 import de.griffel.confluence.plugins.plantuml.preprocess.PlantUmlPreprocessor;
@@ -195,12 +196,8 @@ public class PlantUmlMacro extends BaseMacro {
 
       final FileFormat fileFormat = macroParams.getFileFormat();
 
-      final DownloadResourceWriter resourceWriter = writeableDownloadResourceManager.getResourceWriter(
-            AuthenticatedUserThreadLocal.getUsername(), "plantuml", fileFormat.getFileSuffix());
-
       final List<String> config = new PlantUmlConfigBuilder().build(macroParams);
       final MySourceStringReader reader = new MySourceStringReader(new Defines(), umlBlock, config);
-      final ImageMap cmap = reader.renderImage(resourceWriter.getStreamForWriting(), fileFormat);
 
       final StringBuilder sb = new StringBuilder();
 
@@ -215,39 +212,48 @@ public class PlantUmlMacro extends BaseMacro {
          sb.append("</div>");
       }
 
-      if (cmap.isValid()) {
-         sb.append(cmap.toHtmlString());
-      }
+      while (reader.hasNext()) {
+         final DownloadResourceWriter resourceWriter = writeableDownloadResourceManager.getResourceWriter(
+               AuthenticatedUserThreadLocal.getUsername(), "plantuml", fileFormat.getFileSuffix());
 
-      if (umlBlock.matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX)) {
-         sb.append(new PlantUmlPluginInfo(pluginAccessor).toHtmlString());
-      }
+         final ImageInfo imageInfo = reader.renderImage(resourceWriter.getStreamForWriting(), fileFormat);
+         final ImageMap cmap = imageInfo.getImageMap();
 
-      final DownloadResourceInfo resourceInfo;
-      if (macroParams.getExportName() != null && !preprocessor.hasExceptions()) {
-         resourceInfo = attachImage(pageContext.getEntity(), macroParams, fileFormat, resourceWriter);
-      } else {
-         resourceInfo = new DefaultDownloadResourceInfo(writeableDownloadResourceManager, resourceWriter);
-      }
-
-      if (FileFormat.SVG == fileFormat) {
-         final StringWriter sw = new StringWriter();
-         IOUtils.copy(resourceInfo.getStreamForReading(), sw);
-         sb.append(sw.getBuffer());
-      } else /* PNG */{
-         sb.append("<div class=\"image-wrap\" style=\"" + macroParams.getAlignment().getCssStyle() + "\">");
-         sb.append("<img");
          if (cmap.isValid()) {
-            sb.append(" usemap=\"#");
-            sb.append(cmap.getId());
-            sb.append("\"");
+            sb.append(cmap.toHtmlString());
          }
-         sb.append(" src='");
-         sb.append(resourceInfo.getDownloadPath());
-         sb.append("'");
-         sb.append(macroParams.getImageStyle());
-         sb.append("/>");
-         sb.append("</div>");
+
+         if (umlBlock.matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX)) {
+            sb.append(new PlantUmlPluginInfo(pluginAccessor).toHtmlString());
+         }
+
+         final DownloadResourceInfo resourceInfo;
+         if (macroParams.getExportName() != null && !preprocessor.hasExceptions()) {
+            resourceInfo = attachImage(pageContext.getEntity(), macroParams, imageInfo, fileFormat, resourceWriter);
+         } else {
+            resourceInfo = new DefaultDownloadResourceInfo(writeableDownloadResourceManager, resourceWriter);
+         }
+
+         if (FileFormat.SVG == fileFormat) {
+            final StringWriter sw = new StringWriter();
+            IOUtils.copy(resourceInfo.getStreamForReading(), sw);
+            sb.append(sw.getBuffer());
+         } else /* PNG */{
+            sb.append("<div class=\"image-wrap\" style=\"" + macroParams.getAlignment().getCssStyle() + "\">");
+            sb.append("<img");
+            if (cmap.isValid()) {
+               sb.append(" usemap=\"#");
+               sb.append(cmap.getId());
+               sb.append("\"");
+            }
+            sb.append(" src='");
+            sb.append(resourceInfo.getDownloadPath());
+            sb.append("'");
+            sb.append(macroParams.getImageStyle());
+            sb.append("/>");
+            sb.append("</div>");
+         }
+
       }
 
       if (macroParams.isDebug()) {
@@ -264,10 +270,15 @@ public class PlantUmlMacro extends BaseMacro {
    }
 
    private DownloadResourceInfo attachImage(final ContentEntityObject page, final PlantUmlMacroParams macroParams,
-         final FileFormat fileFormat, final DownloadResourceWriter resourceWriter)
+         ImageInfo imageInfo, final FileFormat fileFormat, final DownloadResourceWriter resourceWriter)
          throws UnauthorizedDownloadResourceException, DownloadResourceNotFoundException, IOException {
 
-      final String attachmentName = macroParams.getExportName() + fileFormat.getFileSuffix();
+      final String attachmentName;
+      if (imageInfo.isSplitImage()) {
+         attachmentName = macroParams.getExportName() + "-" + imageInfo.getIndex() + fileFormat.getFileSuffix();
+      } else {
+         attachmentName = macroParams.getExportName() + fileFormat.getFileSuffix();
+      }
       Attachment attachment = pageManager.getAttachmentManager().getAttachment(page, attachmentName);
 
       final Attachment previousVersion;
@@ -391,27 +402,56 @@ public class PlantUmlMacro extends BaseMacro {
     */
    public static class MySourceStringReader extends SourceStringReader {
       private static final Random RANDOM = new Random();
+      private final BlockUml blockUml;
+      private final Diagram system;
+      private int index = 0;
 
       /**
        * {@inheritDoc}
        */
       public MySourceStringReader(Defines defines, String source, List<String> config) {
          super(defines, source, config);
+         blockUml = getBlocks().iterator().next();
+         system = blockUml.getSystem();
       }
 
-      public final ImageMap renderImage(OutputStream outputStream, FileFormat format) throws IOException {
-         final BlockUml blockUml = getBlocks().iterator().next();
-         final Diagram system = blockUml.getSystem();
-         final ImageData imageData = system.exportDiagram(outputStream, 0, new FileFormatOption(format));
+      public boolean hasNext() {
+         return index < system.getNbImages();
+      }
 
-         final ImageMap result;
+      public final ImageInfo renderImage(OutputStream outputStream, FileFormat format) throws IOException {
+         final ImageData imageData = system.exportDiagram(outputStream, index, new FileFormatOption(format));
+
+         final ImageMap imageMap;
          if (imageData.containsCMapData()) {
             final String randomId = String.valueOf(Math.abs(RANDOM.nextInt()));
-            result = new ImageMap(imageData.getCMapData("plantuml" + randomId));
+            imageMap = new ImageMap(imageData.getCMapData("plantuml" + randomId));
          } else {
-            result = ImageMap.NULL;
+            imageMap = ImageMap.NULL;
          }
-         return result;
+         return new ImageInfo(imageMap, index++);
+      }
+
+      public final class ImageInfo {
+         private final ImageMap imageMap;
+         private final int index;
+
+         ImageInfo(ImageMap imageMap, int index) {
+            this.imageMap = imageMap;
+            this.index = index;
+         }
+
+         public boolean isSplitImage() {
+            return system.getNbImages() > 1;
+         }
+
+         public ImageMap getImageMap() {
+            return imageMap;
+         }
+
+         public int getIndex() {
+            return index;
+         }
       }
    }
 
