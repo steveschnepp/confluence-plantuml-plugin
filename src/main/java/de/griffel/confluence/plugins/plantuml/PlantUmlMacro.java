@@ -35,12 +35,12 @@ import java.util.Map;
 import java.util.Random;
 
 import net.sourceforge.plantuml.BlockUml;
-import net.sourceforge.plantuml.CMapData;
-import net.sourceforge.plantuml.core.DiagramType;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
-import net.sourceforge.plantuml.core.Diagram;
 import net.sourceforge.plantuml.SourceStringReader;
+import net.sourceforge.plantuml.core.Diagram;
+import net.sourceforge.plantuml.core.DiagramType;
+import net.sourceforge.plantuml.core.ImageData;
 import net.sourceforge.plantuml.core.UmlSource;
 import net.sourceforge.plantuml.preproc.Defines;
 
@@ -402,13 +402,12 @@ public class PlantUmlMacro extends BaseMacro {
       public final ImageMap renderImage(OutputStream outputStream, FileFormat format) throws IOException {
          final BlockUml blockUml = getBlocks().iterator().next();
          final Diagram system = blockUml.getSystem();
-         final CMapData cmap = new CMapData();
-         system.exportDiagram(outputStream, /* cmap not available any more , */ 0, new FileFormatOption(format));
+         final ImageData imageData = system.exportDiagram(outputStream, 0, new FileFormatOption(format));
 
          final ImageMap result;
-         if (cmap.containsData()) {
+         if (imageData.containsCMapData()) {
             final String randomId = String.valueOf(Math.abs(RANDOM.nextInt()));
-            result = new ImageMap(cmap.asString("plantuml" + randomId));
+            result = new ImageMap(imageData.getCMapData("plantuml" + randomId));
          } else {
             result = ImageMap.NULL;
          }
