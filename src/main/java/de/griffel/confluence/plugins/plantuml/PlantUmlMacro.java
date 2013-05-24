@@ -202,14 +202,14 @@ public class PlantUmlMacro extends BaseMacro {
       final StringBuilder sb = new StringBuilder();
 
       if (preprocessor.hasExceptions()) {
-         sb.append("<div class=\"error\">");
+         sb.append("<span class=\"error\">");
          for (PreprocessingException exception : preprocessor.getExceptions()) {
             sb.append("<span class=\"error\">");
             sb.append("plantuml: ");
             sb.append(exception.getDetails());
             sb.append("</span><br/>");
          }
-         sb.append("</div>");
+         sb.append("</span>");
       }
 
       while (reader.hasNext()) {
@@ -239,7 +239,7 @@ public class PlantUmlMacro extends BaseMacro {
             IOUtils.copy(resourceInfo.getStreamForReading(), sw);
             sb.append(sw.getBuffer());
          } else /* PNG */{
-            sb.append("<div class=\"image-wrap\" style=\"" + macroParams.getAlignment().getCssStyle() + "\">");
+            sb.append("<span class=\"image-wrap\" style=\"" + macroParams.getAlignment().getCssStyle() + "\">");
             sb.append("<img");
             if (cmap.isValid()) {
                sb.append(" usemap=\"#");
@@ -251,7 +251,7 @@ public class PlantUmlMacro extends BaseMacro {
             sb.append("'");
             sb.append(macroParams.getImageStyle());
             sb.append("/>");
-            sb.append("</div>");
+            sb.append("</span>");
          }
 
       }
