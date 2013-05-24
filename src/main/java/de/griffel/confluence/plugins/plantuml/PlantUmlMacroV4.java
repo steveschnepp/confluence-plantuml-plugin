@@ -59,7 +59,7 @@ public class PlantUmlMacroV4 extends PlantUmlMacro implements Macro {
    }
 
    public final OutputType getOutputType() {
-      return OutputType.BLOCK;
+      return OutputType.INLINE;
    }
 
    public String execute(Map<String, String> params, String body, ConversionContext context)

@@ -86,8 +86,8 @@ public class PlantUmlMacroTest {
       sb.append(NEWLINE);
       sb.append("<area shape=\"rect\" id=\"x\" href=\"x\" title=\"x\" alt=\"\" coords=\"x\"/>");
       sb.append(NEWLINE);
-      sb.append("</map><div class=\"image-wrap\" style=\"\">");
-      sb.append("<img usemap=\"#plantumlx_map\" src='junit/resource.png' style=\"\" /></div>");
+      sb.append("</map><span class=\"image-wrap\" style=\"\">");
+      sb.append("<img usemap=\"#plantumlx_map\" src='junit/resource.png' style=\"\" /></span>");
       assertEquals(sb.toString(), result
             // GraphViz Version Specific
             .replaceAll("id=\"[^\"]*\"", "id=\"x\"")
@@ -123,8 +123,8 @@ public class PlantUmlMacroTest {
             .append("\\---+----/\n").toString();
       final String result = macro.execute(macroParams, macroBody, new PageContextMock());
       assertEquals(
-            "<div class=\"image-wrap\" style=\"display: block; text-align: center;\"><img src='junit/resource.png' " +
-                  "style=\"border:3px solid black;\" /></div>",
+            "<span class=\"image-wrap\" style=\"display: block; text-align: center;\"><img src='junit/resource.png' " +
+                  "style=\"border:3px solid black;\" /></span>",
             result);
       final ByteArrayOutputStream out = (ByteArrayOutputStream) resourceManager.getResourceWriter(null, null, null)
             .getStreamForWriting();
@@ -149,8 +149,8 @@ public class PlantUmlMacroTest {
             .append("@enduml\n").toString();
       final String result = macro.execute(macroParams, macroBody, new PageContextMock());
       assertEquals("<div style=\"margin: 20px 0 15px 0;\">blabla Version: <b>1.x</b> by Vendor. <a href=\"URL\">"
-            + "Plugin Homepage</a></div><div class=\"image-wrap\" style=\"\"><img src='junit/resource.png' style=\"\" "
-            + "/></div>", result);
+            + "Plugin Homepage</a></div><span class=\"image-wrap\" style=\"\"><img src='junit/resource.png' style=\"\" "
+            + "/></span>", result);
       final ByteArrayOutputStream out = (ByteArrayOutputStream) resourceManager.getResourceWriter(null, null, null)
             .getStreamForWriting();
       assertTrue(out.toByteArray().length > 0); // file size depends on installation of graphviz
