@@ -383,7 +383,8 @@ public class PlantUmlMacro extends BaseMacro {
          final Page page = pageManager.getPage(confluenceLink.getSpaceKey(), confluenceLink.getPageTitle());
          // page cannot be null since it is validated before
          if (confluenceLink.hasAttachmentName()) {
-            final Attachment attachment = page.getAttachmentNamed(confluenceLink.getAttachmentName());
+            final Attachment attachment =
+                  pageManager.getAttachmentManager().getAttachment(page, confluenceLink.getAttachmentName());
             if (attachment == null) {
                throw new IOException("Cannot find attachment '" + confluenceLink.getAttachmentName()
                      + "' on page '" + confluenceLink.getPageTitle()
