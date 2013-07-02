@@ -172,6 +172,57 @@
       </resource>
     </xhtml-macro>
 
+    <!-- Confluence <=3.x -->
+    <macro name="spacegraph" 
+           class="de.griffel.confluence.plugins.plantuml.SpaceGraphMacro" 
+           key="spacegraph-macro"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/spacegraph-macro-icon.png"
+           documentation-url="${project.url}">
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="space" type="spacekey" />
+         <parameter name="page" type="string"/>
+         <parameter name="depth" type="string" default="3"/>
+         <parameter name="nodeFontsize" type="string" default="9"/>
+         <parameter name="direction" type="enum" default="LR">
+            <value name="LR"/>
+            <value name="TB"/>
+         </parameter>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+    </macro>
+
+    <!-- Confluence >=4.x -->
+    <xhtml-macro name="spacegraph" 
+           class="de.griffel.confluence.plugins.plantuml.SpaceGraphMacroV4" 
+           key="spacegraph-macro-xhtml"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/spacegraph-macro-icon.png"
+           documentation-url="${project.url}">
+      <device-type>mobile</device-type>
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="space" type="spacekey" />
+         <parameter name="page"  type="confluence-content"/>
+         <parameter name="depth" type="string" default="3"/>
+         <parameter name="nodeFontsize" type="string" default="9"/>
+         <parameter name="direction"    type="enum" default="LR">
+            <value name="LR"/>
+            <value name="TB"/>
+         </parameter>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+    </xhtml-macro>
+
     <xwork name="plantuml xwork actions" key="plantuml-action-xwork">
         <package name="plantuml-admin-actions" extends="default" namespace="/admin/plugins/plantuml">
          <default-interceptor-ref name="defaultStack"/>
