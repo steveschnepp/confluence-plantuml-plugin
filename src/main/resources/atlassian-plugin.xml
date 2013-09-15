@@ -283,6 +283,10 @@
       <resource name="template" type="download" location="xml/template_jcckit_simple.xml"/>
     </content-template>
 
+    <content-template key="plantuml_template_plantuml_spacegraph" i18n-name-key="plantuml.blueprint.templates.plantuml_spacegraph.name">
+      <resource name="template" type="download" location="xml/template_plantuml_spacegraph.xml"/>
+    </content-template>
+
     <content-template key="plantuml_template_plantuml_version" i18n-name-key="plantuml.blueprint.templates.plantuml_version.name">
       <resource name="template" type="download" location="xml/template_plantuml_version.xml"/>
     </content-template>
@@ -331,6 +335,7 @@
     </blueprint>
 
     <blueprint key="plantuml-blueprint-plantuml" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
+      <content-template ref="plantuml_template_plantuml_spacegraph"/>
       <content-template ref="plantuml_template_plantuml_version"/>
       <content-template ref="plantuml_template_plantuml_xearth"/>
       <dialog-wizard key="plantuml-wizard-puml">
