@@ -1,4 +1,4 @@
 <h1>UML Diagramme</h1>
 <p>
-<ac:macro ac:name="content-report-table"><ac:parameter ac:name="labels">plantuml</ac:parameter></ac:macro>
+<ac:macro ac:name="content-report-table"><ac:parameter ac:name="labels">plantuml</ac:parameter><ac:parameter ac:name="spaces"><at:var at:name="spaceKey"/></ac:parameter></ac:macro>
 </p>
