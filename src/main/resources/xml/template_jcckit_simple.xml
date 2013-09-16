@@ -1,0 +1,21 @@
+<ac:macro ac:name="plantuml">
+  <ac:parameter ac:name="type">jcckit</ac:parameter>
+  <ac:plain-text-body><![CDATA[data/curves = c1 c2
+
+data/c1/title = Europe
+data/c1/x = 1998 1999 2000 2001 2002
+data/c1/y = 31 32 44 61 55
+
+data/c2/title = Asia
+data/c2/x = 1998 1999 2000 2001 2002
+data/c2/y = 54 59 50 31 38
+
+plot/coordinateSystem/xAxis/minimum = 1997.5
+plot/coordinateSystem/xAxis/maximum = 2002.5
+plot/coordinateSystem/xAxis/ticLabelFormat = %d%
+plot/coordinateSystem/xAxis/axisLabel = year
+
+plot/coordinateSystem/yAxis/minimum = 0
+plot/coordinateSystem/yAxis/maximum = 100
+plot/coordinateSystem/yAxis/axisLabel = sold]]></ac:plain-text-body>
+</ac:macro>
