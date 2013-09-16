@@ -94,7 +94,7 @@
 		<dependency>
 			<groupId>net.sourceforge.plantuml</groupId>
 			<artifactId>plantuml</artifactId>
-			<version>7965</version>
+			<version>7978</version>
 		</dependency>
 	</dependencies>
 
@@ -174,18 +174,5 @@
 			</build>
 		</profile>
 	</profiles>
-
-	<repositories>
-		<repository>
-			<id>atlassian-m2-public</id>
-			<name>Atlassian Maven Public Repository</name>
-			<url>https://maven.atlassian.com/public</url>
-		</repository>
-      <repository>
-         <id>atlassian-m2-contrib</id>
-         <name>Atlassian Maven 2 Contributor Repository</name>
-         <url>http://maven.atlassian.com/contrib</url>
-      </repository>
-	</repositories>
 
 </project>

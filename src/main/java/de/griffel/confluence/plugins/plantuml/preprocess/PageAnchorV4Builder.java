@@ -24,26 +24,14 @@
  */
 package de.griffel.confluence.plugins.plantuml.preprocess;
 
-import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
+/**
+ * Page Anchor Builder for Confluence version >= 4.
+ */
+public class PageAnchorV4Builder extends PageAnchorBuilder {
 
-public final class UrlOnSamePageUrlRenderer extends AbstractUrlRenderer {
-
-   private final PageAnchorBuilder pageAnchorBuilder;
-
-   /**
-    * @param createPageAnchorBuilder
-    */
-   public UrlOnSamePageUrlRenderer(PageAnchorBuilder pageAnchorBuilder) {
-      this.pageAnchorBuilder = pageAnchorBuilder;
-   }
-
-   public String getHyperlink(ConfluenceLink link) {
-      if (!link.hasFragment()) {
-         throw new IllegalArgumentException(
-               "This renderer can only be used for links on the same page,"
-                     + " but the Confluence link has no URL fragment: " + link);
-      }
-      return pageAnchorBuilder.generateAnchor(link);
+   @Override
+   protected String encodeFragment(String s) {
+      return s;
    }
 
 }

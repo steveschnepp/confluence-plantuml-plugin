@@ -41,6 +41,8 @@ import com.atlassian.plugin.PluginAccessor;
 import com.atlassian.renderer.v2.macro.MacroException;
 
 import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationManager;
+import de.griffel.confluence.plugins.plantuml.preprocess.PageAnchorBuilder;
+import de.griffel.confluence.plugins.plantuml.preprocess.PageAnchorV4Builder;
 
 /**
  * PlantUmlMacro for Confluence V 4.x.
@@ -60,6 +62,11 @@ public class PlantUmlMacroV4 extends PlantUmlMacro implements Macro {
 
    public final OutputType getOutputType() {
       return OutputType.INLINE;
+   }
+
+   @Override
+   public final PageAnchorBuilder createPageAnchorBuilder() {
+      return new PageAnchorV4Builder();
    }
 
    public String execute(Map<String, String> params, String body, ConversionContext context)

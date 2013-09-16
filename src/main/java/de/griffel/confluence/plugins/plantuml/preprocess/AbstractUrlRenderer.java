@@ -46,6 +46,10 @@ public abstract class AbstractUrlRenderer implements UrlRenderer {
       sb.append(space.getName());
       sb.append(" - ");
       sb.append(link.getPageTitle());
+      if (link.hasFragment()) {
+         sb.append("#");
+         sb.append(link.getFragment());
+      }
       return sb.toString();
    }
 

@@ -130,11 +130,11 @@ public class UrlReplaceFunction implements LineFunction {
    private static UrlRenderer selectUrlRenderer(PreprocessingContext context, final String url) {
       final UrlRenderer urlRenderer;
       if (url.startsWith(ConfluenceLink.Parser.FRAGMENT_SEPARATOR)) {
-         urlRenderer = new UrlOnSamePageUrlRenderer();
+         urlRenderer = new UrlOnSamePageUrlRenderer(context.getPageAnchorBuilder());
       } else if (url.contains(ConfluenceLink.SHORTCUT_LINK_SEPARATOR)) {
          urlRenderer = new ShortcutLinkUrlRenderer(context.getShortcutLinks());
       } else {
-         urlRenderer = new ExternalUrlRenderer(context.getBaseUrl());
+         urlRenderer = new ExternalUrlRenderer(context.getBaseUrl(), context.getPageAnchorBuilder());
       }
       return urlRenderer;
    }

@@ -75,6 +75,7 @@ import com.atlassian.renderer.v2.macro.MacroException;
 import de.griffel.confluence.plugins.plantuml.PlantUmlMacro.MySourceStringReader.ImageInfo;
 import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfiguration;
 import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationManager;
+import de.griffel.confluence.plugins.plantuml.preprocess.PageAnchorBuilder;
 import de.griffel.confluence.plugins.plantuml.preprocess.PlantUmlPreprocessor;
 import de.griffel.confluence.plugins.plantuml.preprocess.PreprocessingContext;
 import de.griffel.confluence.plugins.plantuml.preprocess.PreprocessingException;
@@ -129,6 +130,10 @@ public class PlantUmlMacro extends BaseMacro {
 
    public final RenderMode getBodyRenderMode() {
       return RenderMode.NO_RENDER;
+   }
+
+   public PageAnchorBuilder createPageAnchorBuilder() {
+      return new PageAnchorBuilder();
    }
 
    @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -357,6 +362,13 @@ public class PlantUmlMacro extends BaseMacro {
       public Map<String, ShortcutLinkConfig> getShortcutLinks() {
          return shortcutLinksManager.getShortcutLinks();
       }
+
+      /**
+       * {@inheritDoc}
+       */
+      public PageAnchorBuilder getPageAnchorBuilder() {
+         return createPageAnchorBuilder();
+      }
    }
 
    /**
@@ -413,7 +425,7 @@ public class PlantUmlMacro extends BaseMacro {
       public MySourceStringReader(Defines defines, String source, List<String> config) {
          super(defines, source, config);
          blockUml = getBlocks().iterator().next();
-         system = blockUml.getSystem();
+         system = blockUml.getDiagram();
       }
 
       public boolean hasNext() {

@@ -69,6 +69,10 @@ public class PlantUmlPreprocessorTest {
                   return null;
                }
 
+               public PageAnchorBuilder getPageAnchorBuilder() {
+                  return new PageAnchorBuilder();
+               }
+
             }).toUmlBlock());
    }
 }

@@ -30,6 +30,7 @@ import org.junit.Test;
 import com.atlassian.confluence.renderer.PageContext;
 
 import de.griffel.confluence.plugins.plantuml.preprocess.ExternalUrlRenderer;
+import de.griffel.confluence.plugins.plantuml.preprocess.PageAnchorBuilder;
 
 /**
  * ConfluenceLinkTest.
@@ -85,13 +86,14 @@ public class ConfluenceLinkTest {
       checkUrl("FOO", "Page with spaces", null, BASE_URL + "/display/FOO/Page+with+spaces");
       checkUrl("FOO", "2011/12/02/Blog Post", null, BASE_URL + "/display/FOO/2011/12/02/Blog+Post");
       checkUrl("FOO", "PageTitle", "Section", BASE_URL + "/display/FOO/PageTitle#PageTitle-Section");
+      checkUrl("FOO", "Page-Title_1", "Section_A", BASE_URL + "/display/FOO/Page-Title_1#Page-Title_1-SectionA");
       checkUrl("FOO", "Page Title", "Section x\u00e4\u00f6\u00fcx", BASE_URL
             + "/display/FOO/Page+Title#PageTitle-Sectionx%C3%A4%C3%B6%C3%BCx");
    }
 
    private void checkUrl(String spaceKey, String pageTitle, String section, String url) {
       final ConfluenceLink link = new ConfluenceLink(spaceKey, pageTitle, null, section);
-      Assert.assertEquals(url, new ExternalUrlRenderer(BASE_URL).getHyperlink(link));
+      Assert.assertEquals(url, new ExternalUrlRenderer(BASE_URL, new PageAnchorBuilder()).getHyperlink(link));
 
    }
 

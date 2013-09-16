@@ -32,14 +32,17 @@ import de.griffel.confluence.plugins.plantuml.type.ConfluenceLink;
 public final class ExternalUrlRenderer extends AbstractUrlRenderer {
 
    private final String baseUrl;
+   private final PageAnchorBuilder pageAnchorBuilder;
 
    /**
     * Constructs a new instance of this class.
     * 
     * @param baseUrl the Confluence Base URL.
+    * @param sectionLinkRenderer the section link renderer to use.
     */
-   public ExternalUrlRenderer(String baseUrl) {
+   public ExternalUrlRenderer(String baseUrl, PageAnchorBuilder pageAnchorBuilder) {
       this.baseUrl = baseUrl;
+      this.pageAnchorBuilder = pageAnchorBuilder;
    }
 
    /**
@@ -61,8 +64,8 @@ public final class ExternalUrlRenderer extends AbstractUrlRenderer {
       } else {
          sb.append(UrlCoder.encode(link.getPageTitle()));
       }
-      if (link.hasSection()) {
-         sb.append(link.toFragmentUrl());
+      if (link.hasFragment()) {
+         sb.append(pageAnchorBuilder.generateAnchor(link));
       }
       return sb.toString();
    }

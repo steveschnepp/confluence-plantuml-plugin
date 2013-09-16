@@ -70,4 +70,11 @@ public interface PreprocessingContext {
     * @return the shortcut link map.
     */
    Map<String, ShortcutLinkConfig> getShortcutLinks();
+
+   /**
+    * Returns the page anchor builder for this confluence version.
+    * 
+    * @return the page anchor builder.
+    */
+   PageAnchorBuilder getPageAnchorBuilder();
 }

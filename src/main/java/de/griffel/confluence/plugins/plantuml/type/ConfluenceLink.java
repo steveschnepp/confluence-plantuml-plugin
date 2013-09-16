@@ -40,8 +40,6 @@ import com.atlassian.confluence.spaces.SpaceManager;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
-import de.griffel.confluence.plugins.plantuml.preprocess.UrlCoder;
-
 /**
  * Represents a Confluence link to a page or attachment. Note: The name of the attachment and section is optional.
  */
@@ -94,7 +92,7 @@ public final class ConfluenceLink implements Serializable {
     * 
     * @return <tt>true</tt> if this Confluence link references an section within a page.; <tt>false</tt> otherwise.
     */
-   public boolean hasSection() {
+   public boolean hasFragment() {
       return getFragment() != null;
    }
 
@@ -216,21 +214,6 @@ public final class ConfluenceLink implements Serializable {
     */
    public String getBlogPostDate() {
       return StringUtils.substringBeforeLast(getPageTitle(), "/");
-   }
-
-   /**
-    * Returns the URL fragment of the Confluence Link. The fragment is the part of the URL after the '#".
-    * 
-    * @return the URL fragment of the Confluence Link. This URL always starts with the '#' and is URL-encoded. .
-    */
-   public String toFragmentUrl() {
-      final StringBuilder sb = new StringBuilder();
-      sb.append(StringUtils.deleteWhitespace(getPageTitle()));
-      sb.append("-");
-      sb.append(StringUtils.deleteWhitespace(getFragment()));
-
-      final String result = "#" + UrlCoder.encode(sb.toString());
-      return result;
    }
 
    Calendar getBlogPostDay() {
