@@ -74,7 +74,8 @@ public class PlantUmlMacroTest {
             mocks.getSettingsManager(),
             mocks.getPluginAccessor(),
             mocks.getShortcutLinksManager(),
-            mocks.getConfigurationManager());
+            mocks.getConfigurationManager(),
+            mocks.getI18NBeanFactory());
       final Map<String, String> macroParams = ImmutableMap.<String, String> builder()
             .put(PlantUmlMacroParams.Param.title.name(), "Sample Title")
             .put(PlantUmlMacroParams.Param.type.name(), DiagramType.UML.name().toLowerCase())
@@ -109,7 +110,8 @@ public class PlantUmlMacroTest {
             mocks.getSettingsManager(),
             mocks.getPluginAccessor(),
             mocks.getShortcutLinksManager(),
-            mocks.getConfigurationManager());
+            mocks.getConfigurationManager(),
+            mocks.getI18NBeanFactory());
       final ImmutableMap<String, String> macroParams = new ImmutableMap.Builder<String, String>().put(
             PlantUmlMacroParams.Param.type.name(), DiagramType.DITAA.name().toLowerCase())
             .put(PlantUmlMacroParams.Param.align.name(), PlantUmlMacroParams.Alignment.center.name())
@@ -140,7 +142,8 @@ public class PlantUmlMacroTest {
             mocks.getSettingsManager(),
             mocks.getPluginAccessor(),
             mocks.getShortcutLinksManager(),
-            mocks.getConfigurationManager());
+            mocks.getConfigurationManager(),
+            mocks.getI18NBeanFactory());
       final ImmutableMap<String, String> macroParams = new ImmutableMap.Builder<String, String>().put(
             PlantUmlMacroParams.Param.type.name(), DiagramType.UML.name().toLowerCase()).build();
       final String macroBody = new StringBuilder()
@@ -148,9 +151,10 @@ public class PlantUmlMacroTest {
             .append("about\n")
             .append("@enduml\n").toString();
       final String result = macro.execute(macroParams, macroBody, new PageContextMock());
-      assertEquals("<div style=\"margin: 20px 0 15px 0;\">blabla Version: <b>1.x</b> by Vendor. <a href=\"URL\">"
-            + "Plugin Homepage</a></div><span class=\"image-wrap\" style=\"\"><img src='junit/resource.png' style=\"\" "
-            + "/></span>", result);
+      assertEquals(
+            "<div style=\"margin: 20px 0 15px 0;\">blabla Version: <b>1.x</b> by Vendor. <a href=\"URL\">"
+                  + "Plugin Homepage</a>__plugin.info.feedback__</div><span class=\"image-wrap\" style=\"\">"
+                  + "<img src='junit/resource.png' style=\"\" /></span>", result);
       final ByteArrayOutputStream out = (ByteArrayOutputStream) resourceManager.getResourceWriter(null, null, null)
             .getStreamForWriting();
       assertTrue(out.toByteArray().length > 0); // file size depends on installation of graphviz

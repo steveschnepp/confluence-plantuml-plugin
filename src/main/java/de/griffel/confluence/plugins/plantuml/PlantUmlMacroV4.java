@@ -37,6 +37,7 @@ import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.renderer.ShortcutLinksManager;
 import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.spaces.SpaceManager;
+import com.atlassian.confluence.util.i18n.I18NBeanFactory;
 import com.atlassian.plugin.PluginAccessor;
 import com.atlassian.renderer.v2.macro.MacroException;
 
@@ -51,9 +52,10 @@ public class PlantUmlMacroV4 extends PlantUmlMacro implements Macro {
 
    public PlantUmlMacroV4(WritableDownloadResourceManager writeableDownloadResourceManager, PageManager pageManager,
          SpaceManager spaceManager, SettingsManager settingsManager, PluginAccessor pluginAccessor,
-         ShortcutLinksManager shortcutLinksManager, PlantUmlConfigurationManager configurationManager) {
+         ShortcutLinksManager shortcutLinksManager, PlantUmlConfigurationManager configurationManager,
+         I18NBeanFactory i18NBeanFactory) {
       super(writeableDownloadResourceManager, pageManager, spaceManager, settingsManager, pluginAccessor,
-            shortcutLinksManager, configurationManager);
+            shortcutLinksManager, configurationManager, i18NBeanFactory);
    }
 
    public final BodyType getBodyType() {

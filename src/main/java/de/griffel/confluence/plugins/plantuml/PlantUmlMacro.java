@@ -65,6 +65,7 @@ import com.atlassian.confluence.renderer.ShortcutLinksManager;
 import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.spaces.SpaceManager;
 import com.atlassian.confluence.user.AuthenticatedUserThreadLocal;
+import com.atlassian.confluence.util.i18n.I18NBeanFactory;
 import com.atlassian.core.exception.InfrastructureException;
 import com.atlassian.plugin.PluginAccessor;
 import com.atlassian.renderer.RenderContext;
@@ -106,10 +107,13 @@ public class PlantUmlMacro extends BaseMacro {
 
    private final PlantUmlConfigurationManager configurationManager;
 
+   private final I18NBeanFactory i18NBeanFactory;
+
    public PlantUmlMacro(WritableDownloadResourceManager writeableDownloadResourceManager,
          PageManager pageManager, SpaceManager spaceManager, SettingsManager settingsManager,
          PluginAccessor pluginAccessor, ShortcutLinksManager shortcutLinksManager,
-         PlantUmlConfigurationManager configurationManager) {
+         PlantUmlConfigurationManager configurationManager,
+         I18NBeanFactory i18NBeanFactory) {
       this.writeableDownloadResourceManager = writeableDownloadResourceManager;
       this.pageManager = pageManager;
       this.spaceManager = spaceManager;
@@ -117,6 +121,7 @@ public class PlantUmlMacro extends BaseMacro {
       this.pluginAccessor = pluginAccessor;
       this.shortcutLinksManager = shortcutLinksManager;
       this.configurationManager = configurationManager;
+      this.i18NBeanFactory = i18NBeanFactory;
    }
 
    @Override
@@ -229,7 +234,7 @@ public class PlantUmlMacro extends BaseMacro {
          }
 
          if (umlBlock.matches(PlantUmlPluginInfo.PLANTUML_VERSION_INFO_REGEX)) {
-            sb.append(new PlantUmlPluginInfo(pluginAccessor).toHtmlString());
+            sb.append(new PlantUmlPluginInfo(pluginAccessor, i18NBeanFactory.getI18NBean()).toHtmlString());
          }
 
          final DownloadResourceInfo resourceInfo;

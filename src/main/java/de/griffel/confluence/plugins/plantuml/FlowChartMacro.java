@@ -31,6 +31,7 @@ import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.renderer.ShortcutLinksManager;
 import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.spaces.SpaceManager;
+import com.atlassian.confluence.util.i18n.I18NBeanFactory;
 import com.atlassian.plugin.PluginAccessor;
 import com.atlassian.renderer.RenderContext;
 import com.atlassian.renderer.v2.RenderMode;
@@ -47,9 +48,10 @@ public class FlowChartMacro extends BaseMacro {
 
    public FlowChartMacro(WritableDownloadResourceManager writeableDownloadResourceManager, PageManager pageManager,
          SpaceManager spaceManager, SettingsManager settingsManager, PluginAccessor pluginAccessor,
-         ShortcutLinksManager shortcutLinksManager, PlantUmlConfigurationManager configurationManager) {
+         ShortcutLinksManager shortcutLinksManager, PlantUmlConfigurationManager configurationManager,
+         I18NBeanFactory i18NBeanFactory) {
       plantUmlMacro = new PlantUmlMacro(writeableDownloadResourceManager, pageManager, spaceManager, settingsManager,
-            pluginAccessor, shortcutLinksManager, configurationManager);
+            pluginAccessor, shortcutLinksManager, configurationManager, i18NBeanFactory);
    }
 
    @SuppressWarnings("unchecked")
