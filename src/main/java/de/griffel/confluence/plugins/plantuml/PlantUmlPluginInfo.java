@@ -24,6 +24,7 @@
  */
 package de.griffel.confluence.plugins.plantuml;
 
+import com.atlassian.confluence.util.i18n.I18NBean;
 import com.atlassian.plugin.Plugin;
 import com.atlassian.plugin.PluginAccessor;
 import com.atlassian.plugin.PluginInformation;
@@ -38,8 +39,11 @@ public final class PlantUmlPluginInfo {
 
    private final PluginAccessor pluginAccessor;
 
-   public PlantUmlPluginInfo(PluginAccessor pluginAccessor) {
+   private final I18NBean i18NBean;
+
+   public PlantUmlPluginInfo(PluginAccessor pluginAccessor, I18NBean i18NBean) {
       this.pluginAccessor = pluginAccessor;
+      this.i18NBean = i18NBean;
    }
 
    @Override
@@ -59,6 +63,7 @@ public final class PlantUmlPluginInfo {
    public String toHtmlString() {
       final PluginInformation info = getPluginInformation();
       final StringBuilder sb = new StringBuilder();
+
       sb.append("<div style=\"margin: 20px 0 15px 0;\">");
       sb.append(info.getDescription());
       sb.append(" Version: <b>");
@@ -69,6 +74,7 @@ public final class PlantUmlPluginInfo {
       sb.append("<a href=\"");
       sb.append(info.getVendorUrl());
       sb.append("\">Plugin Homepage</a>");
+      sb.append(i18NBean.getText("plugin.info.feedback"));
       sb.append("</div>");
       return sb.toString();
    }

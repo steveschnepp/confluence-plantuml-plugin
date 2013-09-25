@@ -36,6 +36,7 @@ import com.atlassian.confluence.renderer.ShortcutLinksManager;
 import com.atlassian.confluence.security.PermissionManager;
 import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.spaces.SpaceManager;
+import com.atlassian.confluence.util.i18n.I18NBeanFactory;
 import com.atlassian.plugin.PluginAccessor;
 import com.atlassian.renderer.RenderContext;
 import com.atlassian.renderer.v2.macro.MacroException;
@@ -48,24 +49,24 @@ import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationManage
 public class SpaceGraphMacroV4 implements Macro {
    private final PlantUmlMacroV4 plantUmlMacroV4;
 
-   private SpaceManager _spaceManager;
-   private PageManager  _pageManager;
-   private SettingsManager _settingsManager;
-   private PermissionManager _permissionManager;
-   
+   private final SpaceManager _spaceManager;
+   private final PageManager _pageManager;
+   private final SettingsManager _settingsManager;
+   private final PermissionManager _permissionManager;
+
    public SpaceGraphMacroV4(WritableDownloadResourceManager writeableDownloadResourceManager, PageManager pageManager,
          SpaceManager spaceManager, SettingsManager settingsManager, PluginAccessor pluginAccessor,
-         ShortcutLinksManager shortcutLinksManager, PlantUmlConfigurationManager configurationManager, 
-         PermissionManager permissionManager) {
-      
+         ShortcutLinksManager shortcutLinksManager, PlantUmlConfigurationManager configurationManager,
+         PermissionManager permissionManager, I18NBeanFactory i18NBeanFactory) {
+
       _spaceManager = spaceManager;
       _pageManager = pageManager;
       _settingsManager = settingsManager;
       _permissionManager = permissionManager;
-      
+
       plantUmlMacroV4 =
             new PlantUmlMacroV4(writeableDownloadResourceManager, pageManager, spaceManager, settingsManager,
-                  pluginAccessor, shortcutLinksManager, configurationManager);
+                  pluginAccessor, shortcutLinksManager, configurationManager, i18NBeanFactory);
    }
 
    public String execute(Map<String, String> params, String body, ConversionContext context)
@@ -75,7 +76,7 @@ public class SpaceGraphMacroV4 implements Macro {
             @Override
             protected String executePlantUmlMacro(Map<String, String> params, String dotString, RenderContext context)
                   throws MacroException {
-               String realString = createDotForSpaceGraph(params, (PageContext)context, 
+               String realString = createDotForSpaceGraph(params, (PageContext) context,
                      _spaceManager, _pageManager, _settingsManager, _permissionManager);
                return plantUmlMacroV4.execute(params, realString, context);
             }

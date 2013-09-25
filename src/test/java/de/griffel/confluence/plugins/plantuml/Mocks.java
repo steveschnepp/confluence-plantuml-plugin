@@ -30,6 +30,10 @@ import static org.mockito.Mockito.when;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.mockito.Matchers;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
 import com.atlassian.confluence.renderer.ShortcutLinkConfig;
 import com.atlassian.confluence.renderer.ShortcutLinksManager;
 import com.atlassian.confluence.setup.settings.GlobalDescription;
@@ -38,6 +42,8 @@ import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.setup.settings.SpaceSettings;
 import com.atlassian.confluence.spaces.Space;
 import com.atlassian.confluence.spaces.SpaceManager;
+import com.atlassian.confluence.util.i18n.I18NBean;
+import com.atlassian.confluence.util.i18n.I18NBeanFactory;
 import com.atlassian.plugin.Plugin;
 import com.atlassian.plugin.PluginAccessor;
 import com.atlassian.plugin.PluginInformation;
@@ -116,6 +122,19 @@ public final class Mocks {
 
    public PlantUmlConfigurationManager getConfigurationManager() {
       return configurationManager;
+   }
+
+   public I18NBeanFactory getI18NBeanFactory() {
+      I18NBeanFactory mock = mock(I18NBeanFactory.class);
+      I18NBean i18NBeanMock = mock(I18NBean.class);
+      when(i18NBeanMock.getText(Matchers.anyString())).thenAnswer(new Answer<String>() {
+         public String answer(InvocationOnMock invocation) throws Throwable {
+            Object[] args = invocation.getArguments();
+            return "__" + args[0] + "__";
+         }
+      });
+      when(mock.getI18NBean()).thenReturn(i18NBeanMock);
+      return mock;
    }
 
    private static class MockSettingsManager implements SettingsManager {

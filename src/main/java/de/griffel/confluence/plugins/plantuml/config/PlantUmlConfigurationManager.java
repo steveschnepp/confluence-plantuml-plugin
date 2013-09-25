@@ -16,4 +16,5 @@ public interface PlantUmlConfigurationManager {
     * @param config the configuration to save.
     */
    void save(PlantUmlConfiguration config);
+
 }
