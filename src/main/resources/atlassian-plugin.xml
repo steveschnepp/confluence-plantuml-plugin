@@ -20,7 +20,8 @@
     <macro name="plantuml"
            class="de.griffel.confluence.plugins.plantuml.PlantUmlMacro"
            key="plantuml-macro"
-           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/plantuml-macro-icon.png">
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/plantuml-macro-icon.png"
+           documentation-url="${project.url}/Macro plantuml">
       <category name="visuals"/>
       <parameters>
          <parameter name="type" type="enum" default="plantuml">
@@ -59,7 +60,7 @@
            class="de.griffel.confluence.plugins.plantuml.PlantUmlMacroV4"
            key="plantuml-macro-xhtml"
            icon="/download/resources/${project.groupId}.${project.artifactId}/icons/plantuml-macro-icon.png"
-           documentation-url="${project.url}">
+           documentation-url="${project.url}/Macro plantuml">
       <device-type>mobile</device-type>
       <category name="visuals"/>
       <parameters>
@@ -98,7 +99,8 @@
     <macro name="flowchart"
            class="de.griffel.confluence.plugins.plantuml.FlowChartMacro"
            key="flowchart-macro"
-           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/flowchart-macro-icon.png">
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/flowchart-macro-icon.png"
+           documentation-url="${project.url}/Macro flowchart">
       <category name="visuals"/>
       <parameters>
          <parameter name="edgeArrowSize" type="string" default="0.8"/>
@@ -141,7 +143,7 @@
            class="de.griffel.confluence.plugins.plantuml.FlowChartMacroV4"
            key="flowchart-macro-xhtml"
            icon="/download/resources/${project.groupId}.${project.artifactId}/icons/flowchart-macro-icon.png"
-           documentation-url="${project.url}">
+           documentation-url="${project.url}/Macro flowchart">
       <device-type>mobile</device-type>
       <category name="visuals"/>
       <parameters>
@@ -185,7 +187,7 @@
            class="de.griffel.confluence.plugins.plantuml.SpaceGraphMacro" 
            key="spacegraph-macro"
            icon="/download/resources/${project.groupId}.${project.artifactId}/icons/spacegraph-macro-icon.png"
-           documentation-url="${project.url}">
+           documentation-url="${project.url}/Macro spacegraph">
       <category name="visuals"/>
       <parameters>
          <parameter name="space" type="spacekey" />
@@ -210,7 +212,7 @@
            class="de.griffel.confluence.plugins.plantuml.SpaceGraphMacroV4" 
            key="spacegraph-macro-xhtml"
            icon="/download/resources/${project.groupId}.${project.artifactId}/icons/spacegraph-macro-icon.png"
-           documentation-url="${project.url}">
+           documentation-url="${project.url}/Macro spacegraph">
       <device-type>mobile</device-type>
       <category name="visuals"/>
       <parameters>
