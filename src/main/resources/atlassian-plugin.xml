@@ -205,6 +205,9 @@
          <parameter name="exportName" type="string"/>
          <parameter name="debug" type="boolean" default="false"/>
       </parameters>
+      <resource type="velocity" name="help" location="templates/spacegraph-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
     </macro>
 
     <!-- Confluence >=4.x -->
@@ -231,6 +234,9 @@
          <parameter name="exportName" type="string"/>
          <parameter name="debug" type="boolean" default="false"/>
       </parameters>
+      <resource type="velocity" name="help" location="templates/spacegraph-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
     </xhtml-macro>
 
     <xwork name="plantuml xwork actions" key="plantuml-action-xwork">

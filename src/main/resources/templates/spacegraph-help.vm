@@ -1,0 +1,37 @@
+
+<tr bgcolor=ffffff>
+  <td width="200px">
+    {spacegraph:space=ds|page=Home|depth=2}<br />
+  </td>
+
+  <td>
+    <p>
+      Generates a graphical overview of wiki pages in a Confluence space.
+       <ul>
+         <li><b>space:</b> - (optional) Key of space to create graph for. Default: current space</li>
+         <li><b>page:</b> - (optional) Title of page that will be treated as root of the graph.  Only its descendants will be shown in graph. 
+Supported are</br>
+            <tt>@self</tt> start at the current page,<br/>
+            <tt>pagetitle</tt> and<br/>
+            <tt>spacekey:pagetitle</tt>.<br/>
+            The parameter space will be ignored if a spacekey is given here. Default: use all top level pages</li>
+         <li><b>depth:</b> - (optional) Number of levels descendent pages will be shown. <tt>0</tt> only root pages, <tt>1</tt> only direct children. Value must bei integer. Default: not restricted, show all</li>
+         <li><b>nodeFontsize:</b> - (optional) Size of font. Value must be integer. Default: 9</li>
+         <li><b>direction:</b> - (optional) Layout of graph. Supported are<br/>
+            <tt>TB</tt> top to bottom and<br/>
+            <tt>LR</tt> left to right.<br/>
+            Default: <tt>LR</tt></li>
+         <li><b>format:</b> - (optional) Image output format. <tt>SVG</tt> or <tt>PNG</tt>. Default: <tt>PNG</tt></li>
+         <li><b>exportName:</b> - (optional) stores the generated image as attachment if a name is given.</li>
+         <li><b>debug:</b> - (optional) show debug information when set to <tt>true</tt></li>
+       </ul>
+    </p>
+    <p>
+       This is the output of the sample on the left side:
+    </p>
+    <p>
+       <img src="$req.contextPath/download/resources/de.griffel.confluence.plugins.plant-uml/icons/spacegraph-macro-help.png"
+         width="182" height="161" border="0">
+    </p>
+  </td>
+</tr>
