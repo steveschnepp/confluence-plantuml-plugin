@@ -18,7 +18,9 @@ BaseClass&nbsp;&lt;|--&nbsp;SubClass<br />
          <li><b>title:</b> - (optional) the title of the diagram, default is none title. Only valid if type=plantuml.</li>
          <li><b>dropshadow:</b> - (optional) drop shadow. Only valid if type=ditaa.</li>
          <li><b>separation:</b> - (optional) separation of common edges of shapes. Only valid if type=ditaa.</li>
-         <li><b>format:</b> - (optional) the image output format. Only valid if type=plantuml.</li>
+         <li><b>format:</b> - (optional) Image output format. <tt>SVG</tt> or <tt>PNG</tt>. Default: <tt>PNG</tt></li>
+         <li><b>exportName:</b> - (optional) stores the generated image as attachment if a name is given.</li>
+         <li><b>debug:</b> - (optional) show debug information when set to <tt>true</tt>.</li>
          <li><b>macro body:</b> - (required) the PlantUML block. The <tt>@start</tt> and <tt>@end</tt> tags are not required. The detailed documentation of the syntax is available on the <a href="http://plantuml.sourceforge.net">PlantUML website</a>.</li>
        </ul>
     </p>

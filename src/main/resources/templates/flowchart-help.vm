@@ -11,8 +11,16 @@ Foo -> Buz
     <p>
       Generates a flowchart diagram.
        <ul>
-         <li><b>fontname:</b> - (optional) the node font name. Default: Verdana</li>
-         <li><b>macro body:</b> - (required) the PlantUML block. The <tt>@start</tt> and <tt>@end</tt> tags are not required. The detailed documentation of the syntax is available on the <a href="http://plantuml.sourceforge.net">PlantUML website</a>.</li>
+         <li><b>edgeArrowSize:</b> - (optional) Size of arrows. Value must be number. Default: 0.8</li>
+         <li><b>nodeShape:</b> - (optional) Supported values are: <tt>rect, ellipse, tab, note, component, folder, box3d</tt> and <tt>square</tt>. Default: <tt>rect</tt></li>
+         <li><b>nodeStyle:</b> - (optional) Supported values are: <tt>diagonals, rounded, dashed, dotted, solid</tt> and <tt>bold</tt>. Default: <tt>filled</tt></li>
+         <li><b>nodeFillColor:</b> - (optional) Background color if <tt>nodeStyle=filled</tt>. Colors might be defined by name or as RGB values (#RRGGBB). Default: <tt>lightyellow</tt></li>
+         <li><b>nodeFontname:</b> - (optional) Name of the node font. Default: Verdana</li>
+         <li><b>nodeFontsize:</b> - (optional) Size of font. Value must be integer. Default: 9</li>
+         <li><b>format:</b> - (optional) Image output format. <tt>SVG</tt> or <tt>PNG</tt>. Default: <tt>PNG</tt></li>
+         <li><b>exportName:</b> - (optional) stores the generated image as attachment if a name is given.</li>
+         <li><b>debug:</b> - (optional) show debug information when set to <tt>true</tt></li>
+         <li><b>macro body:</b> - (required) the Dot block. The starting <tt>digraph {</tt> and ending <tt>}</tt> must not be given. The detailed documentation of the syntax is available on the <a href="http://www.graphviz.org/Documentation.php">Graphviz website</a>.</li>
        </ul>
     </p>
     <p>
