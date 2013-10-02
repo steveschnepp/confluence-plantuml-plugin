@@ -15,7 +15,7 @@ Supported are</br>
             <tt>pagetitle</tt> and<br/>
             <tt>spacekey:pagetitle</tt>.<br/>
             The parameter space will be ignored if a spacekey is given here. Default: use all top level pages</li>
-         <li><b>depth:</b> - (optional) Number of levels descendent pages will be shown. <tt>0</tt> only root pages, <tt>1</tt> only direct children. Value must bei integer. Default: not restricted, show all</li>
+         <li><b>depth:</b> - (optional) Number of levels descendent pages will be shown. <tt>0</tt> only root pages, <tt>1</tt> only direct children. Value must bei integer. Default: 3</li>
          <li><b>nodeFontsize:</b> - (optional) Size of font. Value must be integer. Default: 9</li>
          <li><b>direction:</b> - (optional) Layout of graph. Supported are<br/>
             <tt>TB</tt> top to bottom and<br/>
