@@ -171,20 +171,23 @@ abstract class AbstractSpaceGraphMacroImpl {
     }
 
     public String buildDotNode(Page page, String baseUrl) {
-        // "node" [ label = "node"
+        // "WO-META" [ label = "WO"
         // URL="url"];
         // 
-        // "node" [ label = "node" | {{A|B|C} | {1|2|3} }" 
-        // shape = "record"
+        // "TOP-DOWN" [ label = "{TD | {Key 1|Value 1} | {Key 2|Value 2}}" 
+        // shape="record"
         // URL="url"];
+        //
+        // "LEFT-RIGHT" [ label = "LR | {{Key 1|Key2} | {Value 1|Value 2}}" 
+        // shape="record"
+        //URL="url"];
+
         
-        String s = new StringBuilder("\"").append(page.getDisplayTitle())
+        return new StringBuilder("\"").append(page.getDisplayTitle())
                 .append("\" [ label = \"").append(page.getDisplayTitle())
                 .append(buildMetadataString(page))
                 .append("\"\n")
                 .append("URL=\"").append(baseUrl).append(page.getUrlPath()).append("\"];\n").toString();
-        System.out.println(s);
-        return s;
     }
     
     public String buildDotNode(String node) {
