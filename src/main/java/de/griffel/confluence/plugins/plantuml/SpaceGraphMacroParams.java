@@ -24,9 +24,6 @@
  */
 package de.griffel.confluence.plugins.plantuml;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +39,7 @@ public final class SpaceGraphMacroParams {
       depth,
       nodeFontsize,
       direction,
+      metadata,
       debug;
    }
 
@@ -80,7 +78,12 @@ public final class SpaceGraphMacroParams {
       final String value = get(Param.direction);
       return value != null ? value : "";
    }
-
+   
+   public String getMetadata() {
+      final String value = get(Param.metadata);
+      return value != null ? value : "";
+   }
+   
    public boolean isDebug() {
       final String debug = get(Param.debug);
       return debug != null ? Boolean.valueOf(debug) : false;

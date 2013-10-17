@@ -32,6 +32,7 @@ import com.atlassian.confluence.renderer.PageContext;
 import com.atlassian.confluence.renderer.ShortcutLinksManager;
 import com.atlassian.confluence.security.PermissionManager;
 import com.atlassian.confluence.setup.settings.SettingsManager;
+import com.atlassian.confluence.core.ContentPropertyManager;
 import com.atlassian.confluence.spaces.SpaceManager;
 import com.atlassian.confluence.util.i18n.I18NBeanFactory;
 import com.atlassian.plugin.PluginAccessor;
@@ -51,16 +52,18 @@ public class SpaceGraphMacro extends BaseMacro {
    private final PageManager _pageManager;
    private final SettingsManager _settingsManager;
    private final PermissionManager _permissionManager;
-
+   private final ContentPropertyManager _contentPropertyManager;
+   
    public SpaceGraphMacro(WritableDownloadResourceManager writeableDownloadResourceManager, PageManager pageManager,
          SpaceManager spaceManager, SettingsManager settingsManager, PluginAccessor pluginAccessor,
          ShortcutLinksManager shortcutLinksManager, PlantUmlConfigurationManager configurationManager,
-         PermissionManager permissionManager, I18NBeanFactory i18NBeanFactory) {
+         PermissionManager permissionManager, ContentPropertyManager contentPropertyManager, I18NBeanFactory i18NBeanFactory) {
 
       _spaceManager = spaceManager;
       _pageManager = pageManager;
       _settingsManager = settingsManager;
       _permissionManager = permissionManager;
+      _contentPropertyManager = contentPropertyManager;
 
       plantUmlMacro = new PlantUmlMacro(writeableDownloadResourceManager, pageManager, spaceManager, settingsManager,
             pluginAccessor, shortcutLinksManager, configurationManager, i18NBeanFactory);
@@ -73,7 +76,7 @@ public class SpaceGraphMacro extends BaseMacro {
          protected String executePlantUmlMacro(Map<String, String> params, String dotString, RenderContext context)
                throws MacroException {
             String realString = createDotForSpaceGraph(params, (PageContext) context,
-                  _spaceManager, _pageManager, _settingsManager, _permissionManager);
+                  _spaceManager, _pageManager, _settingsManager, _permissionManager, _contentPropertyManager);
             return plantUmlMacro.execute(params, realString, context);
          }
       }.execute(params, body, context);
