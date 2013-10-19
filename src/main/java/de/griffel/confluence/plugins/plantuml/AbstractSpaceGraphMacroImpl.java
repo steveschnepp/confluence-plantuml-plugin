@@ -52,6 +52,8 @@ import org.apache.commons.lang.StringUtils;
  * This is the abstract implementation class of the {spacegraph} macro.
  */
 abstract class AbstractSpaceGraphMacroImpl {
+    public static final String TB = "TB";
+    public static final String LR = "LR";
 
     protected ContentPropertyManager _cpm;
     protected PermissionManager _pm;
@@ -95,10 +97,10 @@ abstract class AbstractSpaceGraphMacroImpl {
         sb.append("node [shape=\"rect\", style=\"filled\", fillcolor=\"lightyellow\", fontname=\"Verdana\", fontsize=\"");
         sb.append(_macroParams.getNodeFontsize()).append("\"];\n");
         sb.append("rankdir=");
-        if ("TB".equals(_macroParams.getDirection())) {
-            sb.append("TB\n");
+        if (TB.equals(_macroParams.getDirection())) {
+            sb.append(TB + "\n");
         } else {
-            sb.append("LR\n");
+            sb.append(LR + "\n");
         }
 
         final List<Page> rootPages = new ArrayList<Page>();
@@ -171,10 +173,7 @@ abstract class AbstractSpaceGraphMacroImpl {
     }
 
     public String buildDotNode(Page page, String baseUrl) {
-        // "WO-META" [ label = "WO"
-        // URL="url"];
-        // 
-        // "TOP-DOWN" [ label = "{TD | {Key 1|Value 1} | {Key 2|Value 2}}" 
+        // "TOP-DOWN" [ label = "{TD | {{Key 1|Key 555}|{Value 1|Value 2}} }" 
         // shape="record"
         // URL="url"];
         //
@@ -182,12 +181,19 @@ abstract class AbstractSpaceGraphMacroImpl {
         // shape="record"
         //URL="url"];
 
-        
-        return new StringBuilder("\"").append(page.getDisplayTitle())
-                .append("\" [ label = \"").append(page.getDisplayTitle())
-                .append(buildMetadataString(page))
-                .append("\"\n")
-                .append("URL=\"").append(baseUrl).append(page.getUrlPath()).append("\"];\n").toString();
+        final String metadataString = buildMetadataString(page);
+        StringBuilder sb = new StringBuilder("\"");
+        sb.append(page.getDisplayTitle()).append("\" [ label = \"");
+        if (metadataString.length() > 0 && TB.equals(_macroParams.getDirection())) {
+            sb.append("{");
+        }
+        sb.append(page.getDisplayTitle()).append(buildMetadataString(page));
+        if (metadataString.length() > 0 && TB.equals(_macroParams.getDirection())) {
+            sb.append("}");
+        }
+        sb.append("\"\nshape=\"record\"\n")
+          .append("URL=\"").append(baseUrl).append(page.getUrlPath()).append("\"];\n").toString();
+        return sb.toString();
     }
     
     public String buildDotNode(String node) {
@@ -199,74 +205,72 @@ abstract class AbstractSpaceGraphMacroImpl {
         return _pm.hasPermission(AuthenticatedUserThreadLocal.getUser(), Permission.VIEW, page);
     }
 
-    /**
-     * 
-     * @param page
-     * @return
-     */
+    
     private String buildMetadataString(Page page) {
         if (_macroParams.getMetadata() == null || _macroParams.getMetadata().length() == 0) {
             return "";
         }
-        
-        final Map<String, String> metadata = getMetadataValues(page);
+
+        final Map<String, String> metadata = filterMetadataValues(getMetadataValues(page), getMetadataKeysToShow());
         if (metadata.isEmpty()) {
             return "";
         }
 
-        final Set<String> t = new HashSet<String>();
-        for (String x : _macroParams.getMetadata().split(",")) {
-            t.add(x.trim());
-        }
-        
+        // {{Key 1|Key 2|Key 3} | {Value 1|Value 2|Value 3}}" 
+        final String[] keys = new String[metadata.size()];
+        final String[] values = new String[metadata.size()];
         int i = 0;
         for (String key : metadata.keySet()) {
-            if (t.contains(key.trim()) || t.contains("@all")) {
-                i++;
-            }
-        }
-        
-        final String[] keys = new String[i];
-        final String[] values = new String[i];
-        i=0;
-        for (String key : metadata.keySet()) {
-            if (t.contains(key.trim()) || t.contains("@all")) {
-                keys[i] = key;
-                values[i] = metadata.get(key);
-                i++;
-            }
+            keys[i] = key;
+            values[i++] = metadata.get(key);
         }
 
-        // TODO: works currently only for LR
-        // TODO: remove invalid characters from value (maybe key to)
-        // TODO: clean up this mess :(
-        //
-        //  | {{Key|Key|Key} | {Value|Value|Value} }" 
-        // shape = "record
-        final StringBuilder sb = new StringBuilder(" | {{");
-        sb.append(StringUtils.join(keys, "|"))
-          .append("} | {")
-          .append(StringUtils.join(values, "|")).append("} }\" \nshape=\"record");
-        return sb.toString();
+        return new StringBuilder().append(" | {{")
+                .append(StringUtils.join(keys, "|"))
+                .append("} | {")
+                .append(StringUtils.join(values, "|"))
+                .append("}}").toString();
+    }
+
+    private Set<String> getMetadataKeysToShow() {
+        final Set<String> result = new HashSet<String>();
+        for (String metadataKey : _macroParams.getMetadata().split(",")) {
+            result.add(metadataKey.trim());
+        }
+        return result;
+    }
+
+    /**
+     * Filters map.
+     * @param map
+     * @param allowedKeys Set of keys that are allowed in map.
+     *        "@all" allows all keys.
+     * @return New map that contains only allowed keys.
+     */
+    private Map<String, String> filterMetadataValues(Map<String, String> map, Set<String> allowedKeys) {
+        final Map<String, String> result = new HashMap<String, String>();
+        for (String key : map.keySet()) {
+            if (allowedKeys.contains(key) || allowedKeys.contains("@all")) {
+                result.put(key, map.get(key));
+            }
+        }
+        return result;
     }
 
     /**
      * Retrieves Metadata of a given page.
      *
-     * @param page
-     * @return
+     * @param page Page to get metadata keys for
+     * @return Map with metadata.
      */
     private Map<String, String> getMetadataValues(Page page) {
         final String metadataprefix = "metadata.";
         final Map<String, String> map = new HashMap<String, String>();
 
-        final String[] keys = getMetadataKeys(page);
-        if (keys != null) {
-            for (String k : keys) {
-                final String value = _cpm.getTextProperty(page, metadataprefix + k);
-                if (value != null && value.length() > 0) {
-                    map.put(k, value);
-                }
+        for (String k : getMetadataKeysForPage(page)) {
+            final String value = _cpm.getTextProperty(page, metadataprefix + k);
+            if (value != null && value.length() > 0) {
+                map.put(k, value);
             }
         }
         return map;
@@ -276,22 +280,22 @@ abstract class AbstractSpaceGraphMacroImpl {
      * Get all Metadata keys of a page.
      *
      * The Metadata Plugin stores all its data in OS_PROPERTYENTRY.
-     * It is accessible via the ContentPropertyManager. As it doesn't have
+     * They are accessible via the ContentPropertyManager. As it doesn't have
      * a method to retrieve all properties of a given page, the list of
-     * metdatata keys is stored in a property called "metadatakeys".
+     * metadata keys is stored in a property called "metadatakeys".
      * The keys itself are separated by |
      *
-     * @param page - Page to get metadata keys for
+     * @param page Page to get metadata keys for
      *
-     * @return null if no keys were found, otherwise array of keys
+     * @return Array with Metadata keys
      */
-    private String[] getMetadataKeys(Page page) {
+    private String[] getMetadataKeysForPage(Page page) {
         final String metadatakeys = "metadatakeys";
         final String keys = _cpm.getTextProperty(page, metadatakeys);
         if (keys == null || keys.length() == 0) {
-            return null;
-        } else {
-            return keys.split("\\|");
+            return new String[0];
         }
+        return keys.split("\\|");
     }
+
 }
