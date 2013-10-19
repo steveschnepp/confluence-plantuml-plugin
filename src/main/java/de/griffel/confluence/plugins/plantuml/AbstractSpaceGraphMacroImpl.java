@@ -222,7 +222,7 @@ abstract class AbstractSpaceGraphMacroImpl {
         int i = 0;
         for (String key : metadata.keySet()) {
             keys[i] = key;
-            values[i++] = cleanMetadataValues(metadata.get(key));
+            values[i++] = quoteMetadataValues(metadata.get(key));
         }
 
         return new StringBuilder().append(" | {{")
@@ -233,14 +233,13 @@ abstract class AbstractSpaceGraphMacroImpl {
     }
 
     /**
-     * Removes characters from input which cause problems in DOT file.
-     * 
+     * Quotes special characters in metadata values.
+     * @see http://www.graphviz.org/doc/info/shapes.html#record
      * @param s String to clean
      * @return  Cleaned string
      */
-    private String cleanMetadataValues(String s) {
-        // TODO: this is more a hack than a clean solution :(
-        return s.replaceAll("[{<]", "(").replaceAll("[}>]", ")").replaceAll("[\"|]", "" );
+    private String quoteMetadataValues(String s) {
+        return s.replaceAll("([<>{}|\"])", "\\\\$1");
     }
 
     private Set<String> getMetadataKeysToShow() {
