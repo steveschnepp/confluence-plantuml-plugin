@@ -205,7 +205,7 @@ abstract class AbstractSpaceGraphMacroImpl {
         return _pm.hasPermission(AuthenticatedUserThreadLocal.getUser(), Permission.VIEW, page);
     }
 
-    
+        
     private String buildMetadataString(Page page) {
         if (_macroParams.getMetadata() == null || _macroParams.getMetadata().length() == 0) {
             return "";
@@ -222,7 +222,7 @@ abstract class AbstractSpaceGraphMacroImpl {
         int i = 0;
         for (String key : metadata.keySet()) {
             keys[i] = key;
-            values[i++] = metadata.get(key);
+            values[i++] = cleanMetadataValues(metadata.get(key));
         }
 
         return new StringBuilder().append(" | {{")
@@ -230,6 +230,17 @@ abstract class AbstractSpaceGraphMacroImpl {
                 .append("} | {")
                 .append(StringUtils.join(values, "|"))
                 .append("}}").toString();
+    }
+
+    /**
+     * Removes characters from input which cause problems in DOT file.
+     * 
+     * @param s String to clean
+     * @return  Cleaned string
+     */
+    private String cleanMetadataValues(String s) {
+        // TODO: this is more a hack than a clean solution :(
+        return s.replaceAll("[{<]", "(").replaceAll("[}>]", ")").replaceAll("[\"|]", "" );
     }
 
     private Set<String> getMetadataKeysToShow() {
