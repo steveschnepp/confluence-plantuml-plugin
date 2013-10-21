@@ -37,15 +37,17 @@ import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationBean;
  * UmlSourceBuilderTest.
  */
 public class UmlSourceBuilderTest {
+   private static final String NEWLINE = System.getProperty("line.separator");
 
    @Test
    public void testPuml58() throws Exception {
       final UmlSourceBuilder builder =
             new UmlSourceBuilder(DiagramType.DOT, false, false, new PlantUmlConfigurationBean());
       final String body =
-            "\ndigraph deschedule_app_confusion {";
+            NEWLINE + "digraph deschedule_app_confusion {" + NEWLINE;
       builder.append(new StringReader(body));
-      Assert.assertEquals("@startdot\ndigraph deschedule_app_confusion {\n@enddot\n", builder.build().getPlainString());
+      Assert.assertEquals("@startdot" + NEWLINE + "digraph deschedule_app_confusion {" + NEWLINE + "@enddot" + NEWLINE,
+            builder.build().getPlainString());
    }
 
    @Test
@@ -55,7 +57,7 @@ public class UmlSourceBuilderTest {
       final String body =
             "class Test\n\u00a0\n";
       builder.append(new StringReader(body));
-      Assert.assertEquals("@startuml\nskinparam shadowing false\nclass Test\n@enduml\n", builder.build()
-            .getPlainString());
+      Assert.assertEquals("@startuml" + NEWLINE + "skinparam shadowing false" + NEWLINE + "class Test" + NEWLINE
+            + "@enduml" + NEWLINE, builder.build().getPlainString());
    }
 }
