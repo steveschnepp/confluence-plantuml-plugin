@@ -37,7 +37,7 @@ import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationBean;
  * UmlSourceBuilderTest.
  */
 public class UmlSourceBuilderTest {
-   private static final String NEWLINE = System.getProperty("line.separator");
+   private static final String NEWLINE = "\r\n";
 
    @Test
    public void testPuml58() throws Exception {
