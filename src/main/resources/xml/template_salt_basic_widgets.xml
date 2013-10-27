@@ -1,0 +1,13 @@
+<ac:macro ac:name="plantuml">
+  <ac:parameter ac:name="type">salt</ac:parameter>
+  <ac:plain-text-body><![CDATA[{
+  Just plain text
+  [This is my button]
+  ()  Unchecked radio
+  (X) Checked radio
+  []  Unchecked box
+  [X] Checked box
+  "Enter text here   "
+  ^This is a droplist^
+}]]></ac:plain-text-body>
+</ac:macro>

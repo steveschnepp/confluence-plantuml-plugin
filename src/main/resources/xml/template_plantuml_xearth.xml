@@ -1,0 +1,26 @@
+<ac:macro ac:name="plantuml">
+  <ac:plain-text-body><![CDATA[xearth(640,480)
+ 48.7756  9.1828 "Stuttgart"         # that's where we are from ;-)
+ 38.00   23.73 "Athens"              # Greece
+ 52.53   13.42 "Berlin"              # Germany
+ 50.4    30.5  "Kiev"                # Ukraine
+ 51.50   -0.17 "London"              # United Kingdom
+ 40.42   -3.72 "Madrid"              # Spain
+ 55.75   37.70 "Moscow"              # Russia
+ 48.87    2.33 "Paris"               # France
+ 64.15  -21.97 "Reykjavik"           # Iceland
+ 41.88   12.50 "Rome"                # Italy
+ 42.67   23.30 "Sofia"               # Bulgaria
+ 59.33   18.08 "Stockholm"           # Sweden
+ 48.22   16.37 "Vienna"              # Austria
+ 90.00    0.00 "North Pole"          # North Pole
+-90.00    0.00 "South Pole"          # South Pole
+
+viewPositionType = Fixed
+viewPosLat = 48.775556
+viewPosLong = 9.182778
+viewMagnification = 3.1
+daySideBrightness = 100
+nightSideBrightness = 50
+terminatorDiscontinuity = 30]]></ac:plain-text-body>
+</ac:macro>
