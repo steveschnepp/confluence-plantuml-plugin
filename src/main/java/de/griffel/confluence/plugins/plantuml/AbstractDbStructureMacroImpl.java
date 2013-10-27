@@ -40,9 +40,8 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.LinkedList;
+import java.util.List;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -55,6 +54,7 @@ abstract class AbstractDbStructureMacroImpl {
     protected PermissionManager _pm;
     protected String _baseUrl;
     protected DbStructureMacroParams _macroParams;
+    protected String _errorMessage;
             
 
     public String execute(Map<String, String> params, String dotString, RenderContext context) throws MacroException {
@@ -71,6 +71,7 @@ abstract class AbstractDbStructureMacroImpl {
     protected abstract String executePlantUmlMacro(Map<String, String> params, String dotString, RenderContext context)
             throws MacroException;
 
+  
     /**
      * Create dot-String {dbstructure}
      */
@@ -78,45 +79,197 @@ abstract class AbstractDbStructureMacroImpl {
             PageManager pageManager, SettingsManager settingsManager, PermissionManager permissionManager,
             ContentPropertyManager contentPropertyManager) {
         
-        
-        
         _baseUrl = settingsManager.getGlobalSettings().getBaseUrl();
-        _pm = permissionManager;
-        _cpm = contentPropertyManager;
-        _macroParams = new DbStructureMacroParams(params);
+        _macroParams = new DbStructureMacroParams(params);        
         
-        ClassLoader x = Thread.currentThread().getContextClassLoader();
+        final DatabaseMetaData dbmd = getDatabaseConnection(_macroParams.getJdbcName());
+        List<TableDef> tables = getTables(dbmd);
+        List<ColumnDef> columns = getColumn(dbmd);        
+        try { dbmd.getConnection().close(); } catch (SQLException ex) { /* do nothing */ }
         
-        final Map<String,String> m = new HashMap<String,String>();
-        try {
-            Context jndiContext = new InitialContext();
-            javax.sql.DataSource ds = (javax.sql.DataSource) jndiContext.lookup("java:comp/env/jdbc/" + _macroParams.getJdbcName());
-            Connection con = ds.getConnection();
-            DatabaseMetaData dbmd = con.getMetaData();
-            ResultSet  t = dbmd.getTables(null, null, null, null);
-            
-            while (t.next()) {
-                  m.put(t.getString(3), t.getString(4));
-            }   
-            t.close();
-            con.close();
-        } catch (NamingException ex) {
-            Logger.getLogger(AbstractDbStructureMacroImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(AbstractDbStructureMacroImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        
         final StringBuilder sb = new StringBuilder("digraph g {\n");
         sb.append("edge [arrowsize=\"0.8\"];");
         sb.append("node [shape=\"rect\", style=\"filled\", fillcolor=\"lightyellow\", fontname=\"Verdana\", fontsize=\"");
         sb.append(_macroParams.getNodeFontsize()).append("\"];\n");
-        sb.append("rankdir=TB");
-        for (String name : m.keySet()) {
-            sb.append(name + " <- " + m.get(name) + "\n" );
+        sb.append("rankdir=LR\n");
+        
+        if (_errorMessage != null){
+            sb.append("\"").append(_errorMessage).append("\"");
+        } else { 
+            sb.append(createDbDot(tables, columns));
         }
         sb.append("}\n");
 
         return sb.toString();
     }
+    
+    private String createDbDot(List<TableDef> tables, List<ColumnDef> columns) {
+        StringBuilder sb = new StringBuilder();
+        
+        for (TableDef t : tables) {
+            sb.append(t.tableType).append(" -> ").append(t.tableName).append(";\n");
+        }
+        return sb.toString();
+    }
 
+    private class ColumnDef {
+        String tableCatalog; // may be null
+        String tableSchema;  // may be null
+        String tableName;
+        String columnName;
+        int    dataType; // SQL type from java.sql.Types
+        
+        String typeName;  // Data source dependent type name, for a UDT the type name is fully qualified
+        int    columnSize;
+        // int bufferLength; // not used
+        int decimalDigits; // the number of fractional digits. Null is returned for data types where DECIMAL_DIGITS is not applicable.
+        int numPrecRadix; //  Radix (typically either 10 or 2)
+        int nullable; // is NULL allowed. columnNoNulls - might not allow NULL values,  columnNullable - definitely allows NULL values, columnNullableUnknown - nullability unknown 
+        
+        String remarks; // comment describing column (may be null)
+        String columnDefaultValue; // default value for the column, which should be interpreted as a string when the value is enclosed in single quotes (may be null)
+        // int sqlDataType; // unused
+        // int sqlDateTimeSub; // unused
+        int charOctetLenght; // for char types the maximum number of bytes in the column        
+        int ordinalPosition; // index of column in table (starting at 1)
+        
+        // String isNullable; // ISO rules are used to determine the nullability for a column.  YES, NO, empty string (if the nullability is unknown)
+        // String scopeCatalog; // catalog of table that is the scope of a reference attribute (null if DATA_TYPE isn't REF)
+        // String scopeSchema; // schema of table that is the scope of a reference attribute (null if the DATA_TYPE isn't REF)
+        // String scopeTable; // table name that this the scope of a reference attribute (null if the DATA_TYPE isn't REF)
+        // short sourceDataType; //  source type of a distinct type or user-generated Ref type, SQL type from java.sql.Types (null if DATA_TYPE isn't DISTINCT or user-generated REF)
+        // String isAutoincrement; // Indicates whether this column is auto incremented: YES, NO, empty string (if it cannot be determined)
+        // String isGeneratedColumn; // Indicates whether this is a generated column: YES, NO, empty string (if it cannot be determined)
+        
+        ColumnDef(String tc, String ts, String tn, String cn, int dt, 
+                String tyn, int cs, int dd, int radix, int n, 
+                String r, String defVal, int length, int op) {
+            tableCatalog = tc;
+            tableSchema = ts;
+            tableName = tn;
+            columnName = cn;
+            dataType = dt;
+            
+            typeName = tyn;
+            columnSize = cs;
+            decimalDigits = dd;
+            numPrecRadix = radix;
+            nullable = n;
+            
+            remarks = r;
+            columnDefaultValue = defVal;
+            charOctetLenght = length;
+            ordinalPosition = op;
+        }
+    }
+    private class TableDef {
+        String tableCatalog; // may be null
+        String tableSchema;  // may be null
+        String tableName;
+        String tableType;    // Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
+        String remarks;      // explanatory comment on the table, may be null
+        // String typeCatalog;  // may be null
+        // String typeSchema;   // may be null
+        // String typeName;     // may be null
+        // String selfReferencingColName; // name of the designated "identifier" column of a typed table, may be null
+        // String refGeneration; // specifies how values in SELF_REFERENCING_COL_NAME are created. Values are "SYSTEM", "USER", "DERIVED". (may be null) 
+        
+        TableDef(String tc, String ts, String tn, String tt, String r) {
+            tableCatalog = tc;
+            tableSchema = ts;
+            tableName = tn;
+            tableType = tt;
+            remarks = r;
+        }
+    }
+    
+    private List<ColumnDef> getColumn(DatabaseMetaData dbmd) {
+        List<ColumnDef> result = new LinkedList<ColumnDef>();
+        
+        if (dbmd == null) {
+            return result;
+        }
+        ResultSet rs = null;
+        try {
+            rs = dbmd.getColumns(null, _macroParams.getSchemaName(), _macroParams.getTableName(), _macroParams.getColumnName());
+            while (rs.next()) {
+                result.add(new ColumnDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5),
+                                rs.getString(6), rs.getInt(7),rs.getInt(9), rs.getInt(10),  rs.getInt(11), 
+                        rs.getString(12), rs.getString(13), rs.getInt(16), rs.getInt(17)));
+            }   
+         } catch (SQLException e) {
+              _errorMessage = e.getMessage();
+              e.printStackTrace();
+         } finally {
+                try {
+                    if (rs != null) {
+                        rs.close();
+                    }
+                } catch (Exception e) {
+                    // do nothing
+                }
+         }
+        return result;
+    }
+    
+    private List<TableDef> getTables(DatabaseMetaData dbmd) {
+        List<TableDef> result = new LinkedList<TableDef>();
+        
+        if (dbmd == null) {
+            return result;
+        }
+        ResultSet rs = null;
+        try {
+            rs = dbmd.getTables(null, _macroParams.getSchemaName(), _macroParams.getTableName(), null);
+            while (rs.next()) {
+                result.add(new TableDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)));
+            }   
+         } catch (SQLException e) {
+              _errorMessage = e.getMessage();
+              e.printStackTrace();
+         } finally {
+                try {
+                    if (rs != null) {
+                        rs.close();
+                    }
+                } catch (Exception e) {
+                    // do nothing
+                }
+         }
+        return result;
+    }
+    
+    /**
+     * Returns database metadata
+     * @param jdbcName  Database which is configured at "java:comp/env/jdbc/<jdbcName>"
+     * @return Connection or null if none could be made. _errorMessage contains reason in the latter case.
+     */
+    private final DatabaseMetaData getDatabaseConnection(String jdbcName) {
+        Context jndiContext = null;
+        DatabaseMetaData dbmd = null;
+        try {
+            jndiContext = new InitialContext();
+            javax.sql.DataSource ds = (javax.sql.DataSource) jndiContext.lookup("java:comp/env/jdbc/" + _macroParams.getJdbcName());
+            try {
+                Connection con = ds.getConnection();
+                dbmd = con.getMetaData();
+            } catch (SQLException ex) {
+                _errorMessage = ex.getMessage();
+                ex.printStackTrace();
+            }
+        } catch (NamingException ex) {
+            _errorMessage = ex.getMessage();
+            ex.printStackTrace();
+        } finally {
+            if (jndiContext != null) {
+                try {
+                    jndiContext.close();
+                } catch (NamingException ex2 ) {
+                    // do nothing
+                }
+            }
+        }
+        return dbmd;
+    }
 }

@@ -250,6 +250,9 @@
       <category name="visuals"/>
       <parameters>
          <parameter name="jdbcName" type="string"/>
+         <parameter name="schemaName" type="string"/>
+         <parameter name="tableName" type="string"/>
+         <parameter name="columnName" type="string"/>
          <parameter name="nodeFontsize" type="string" default="9"/>
          <parameter name="format" type="enum" default="PNG">
             <value name="PNG"/>
@@ -273,6 +276,9 @@
       <category name="visuals"/>
       <parameters>
          <parameter name="jdbcName" type="string"/>
+         <parameter name="schemaName" type="string"/>
+         <parameter name="tableName" type="string"/>
+         <parameter name="columnName" type="string"/>
          <parameter name="nodeFontsize" type="string" default="9"/>
          <parameter name="format" type="enum" default="PNG">
             <value name="PNG"/>
