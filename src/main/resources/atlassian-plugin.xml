@@ -241,6 +241,51 @@
       </resource>
     </xhtml-macro>
 
+    <!-- Confluence <=3.x -->
+    <macro name="dbstructure" 
+           class="de.griffel.confluence.plugins.plantuml.DbStructureMacro" 
+           key="dbstructure-macro"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/dbstructure-macro-icon.png"
+           documentation-url="${project.url}/Macro dbstructure">
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="jdbcName" type="string"/>
+         <parameter name="nodeFontsize" type="string" default="9"/>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/dbstructure-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </macro>
+
+    <!-- Confluence >=4.x -->
+    <xhtml-macro name="dbstructure" 
+           class="de.griffel.confluence.plugins.plantuml.DbStructureMacroV4" 
+           key="dbstructure-macro-xhtml"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/dbstructure-macro-icon.png"
+           documentation-url="${project.url}/Macro dbstructure">
+      <device-type>mobile</device-type>
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="jdbcName" type="string"/>
+         <parameter name="nodeFontsize" type="string" default="9"/>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/dbstructure-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </xhtml-macro>
+
     <xwork name="plantuml xwork actions" key="plantuml-action-xwork">
         <package name="plantuml-admin-actions" extends="default" namespace="/admin/plugins/plantuml">
          <default-interceptor-ref name="defaultStack"/>
