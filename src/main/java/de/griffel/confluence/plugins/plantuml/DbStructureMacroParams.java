@@ -34,6 +34,9 @@ public final class DbStructureMacroParams {
    
    public enum Param {
       jdbcName,
+      schemaName,
+      tableName,
+      columnName,
       nodeFontsize,
       debug;
    }
@@ -46,6 +49,18 @@ public final class DbStructureMacroParams {
 
    public String getJdbcName() {      
        return get(Param.jdbcName);
+   }
+
+   public String getSchemaName() {      
+       return get(Param.schemaName);
+   }
+
+   public String getTableName() {      
+       return get(Param.tableName);
+   }
+
+   public String getColumnName() {      
+       return get(Param.columnName);
    }
 
    public int getNodeFontsize() {      
