@@ -204,7 +204,7 @@ public class PlantUmlMacro extends BaseMacro {
          final PlantUmlPreprocessor preprocessor) throws IOException,
          UnauthorizedDownloadResourceException, DownloadResourceNotFoundException {
 
-      final FileFormat fileFormat = macroParams.getFileFormat();
+      final FileFormat fileFormat = macroParams.getFileFormat(pageContext);
 
       final List<String> config = new PlantUmlConfigBuilder().build(macroParams);
       final MySourceStringReader reader = new MySourceStringReader(new Defines(), umlBlock, config);
@@ -278,7 +278,7 @@ public class PlantUmlMacro extends BaseMacro {
 
       return sb.toString();
    }
-
+   
    private DownloadResourceInfo attachImage(final ContentEntityObject page, final PlantUmlMacroParams macroParams,
          ImageInfo imageInfo, final FileFormat fileFormat, final DownloadResourceWriter resourceWriter)
          throws UnauthorizedDownloadResourceException, DownloadResourceNotFoundException, IOException {

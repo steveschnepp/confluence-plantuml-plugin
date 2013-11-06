@@ -24,6 +24,7 @@
  */
 package de.griffel.confluence.plugins.plantuml;
 
+import com.atlassian.renderer.RenderContext;
 import java.util.Collections;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -124,13 +125,22 @@ public final class PlantUmlMacroParams {
       return result;
    }
 
-   public FileFormat getFileFormat() {
+   /**
+    * Macro parameter FileFormat will be ignored if SVG is not supported.
+    * @param renderContext
+    * @return 
+    */
+   public FileFormat getFileFormat(RenderContext renderContext) {
       final String format = get(Param.format);
-      try {
-         return format != null ? FileFormat.valueOf(format) : FileFormat.PNG;
+      FileFormat result = FileFormat.PNG;
+      try {         
+         if (isSvgSupported(renderContext)) {
+             result = (format != null) ? FileFormat.valueOf(format) : FileFormat.PNG;
+         }
       } catch (IllegalArgumentException e) {
-         return FileFormat.PNG;
+         // use PNG as default
       }
+      return result;
    }
 
    public boolean getDropShadow() {
@@ -161,4 +171,23 @@ public final class PlantUmlMacroParams {
       return (String) params.get(param.name());
    }
 
+   private boolean isSvgSupported(RenderContext renderContext) {
+        if (RenderContext.DISPLAY.equals(renderContext.getOutputType())) {
+            return true;
+        } else if (RenderContext.EMAIL.equals(renderContext.getOutputType())) {
+            return false;
+        } else if (RenderContext.FEED.equals(renderContext.getOutputType())) {
+            return true;
+        } else if (RenderContext.HTML_EXPORT.equals(renderContext.getOutputType())) {
+            return false;
+        } else if (RenderContext.PDF.equals(renderContext.getOutputType())) {
+            return false;
+        } else if (RenderContext.PREVIEW.equals(renderContext.getOutputType())) {
+            return true;
+        } else if (RenderContext.WORD.equals(renderContext.getOutputType())) {
+            return false;
+        } else {
+            return false; // future types
+        }
+    }
 }
