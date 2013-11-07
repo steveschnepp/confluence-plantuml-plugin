@@ -40,6 +40,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import javax.naming.Context;
@@ -83,10 +84,14 @@ abstract class AbstractDbStructureMacroImpl {
         _macroParams = new DbStructureMacroParams(params);        
         
         final DatabaseMetaData dbmd = getDatabaseConnection(_macroParams.getJdbcName());
-        List<TableDef> tables = getTables(dbmd);
-        List<ColumnDef> columns = getColumn(dbmd);        
+        Map<String, TableDef> tables = getTables(dbmd);
+        List<ColumnDef> columns = getColumn(dbmd);
+        List<KeysDef> keys = getForeignKeys(dbmd);
         try { dbmd.getConnection().close(); } catch (SQLException ex) { /* do nothing */ }
         
+        linkColumnsWithTables(tables, columns);
+        columns = null;
+        tables = filterTableName(filterTypes(tables, "TABLE"), _macroParams.getTableName());
         
         final StringBuilder sb = new StringBuilder("digraph g {\n");
         sb.append("edge [arrowsize=\"0.8\"];");
@@ -97,76 +102,82 @@ abstract class AbstractDbStructureMacroImpl {
         if (_errorMessage != null){
             sb.append("\"").append(_errorMessage).append("\"");
         } else { 
-            sb.append(createDbDot(tables, columns));
+            sb.append(createDbDot(tables, columns, keys));
         }
         sb.append("}\n");
 
         return sb.toString();
     }
     
-    private String createDbDot(List<TableDef> tables, List<ColumnDef> columns) {
+    private String createDbDot(Map<String, TableDef> tables, List<ColumnDef> columns, List<KeysDef> keys) {
         StringBuilder sb = new StringBuilder();
         
-        for (TableDef t : tables) {
-            sb.append(t.tableType).append(" -> ").append(t.tableName).append(";\n");
+        for (TableDef table : tables.values()) {
+            sb.append(table.tableName).append(";\n");
+        }
+        for (KeysDef key : keys) {
+            if (tables.containsKey(key.getFkId()) && tables.containsKey(key.getPkId())) {
+                sb.append(key.tableNamePk).append(" -> ").append(key.tableNameFk).append((";\n"));
+            }
         }
         return sb.toString();
     }
 
-    private class ColumnDef {
+    private class BaseDef {
         String tableCatalog; // may be null
         String tableSchema;  // may be null
         String tableName;
+        
+        String getId() {            
+            return tableCatalog + "#" + tableSchema + "#" + tableName;
+        }
+    }
+    
+    private class ColumnDef extends BaseDef {
         String columnName;
-        int    dataType; // SQL type from java.sql.Types
-        
-        String typeName;  // Data source dependent type name, for a UDT the type name is fully qualified
+        int    dataType;        // SQL type from java.sql.Types        
+        String typeName;        // Data source dependent type name, for a UDT the type name is fully qualified
         int    columnSize;
-        // int bufferLength; // not used
-        int decimalDigits; // the number of fractional digits. Null is returned for data types where DECIMAL_DIGITS is not applicable.
-        int numPrecRadix; //  Radix (typically either 10 or 2)
-        int nullable; // is NULL allowed. columnNoNulls - might not allow NULL values,  columnNullable - definitely allows NULL values, columnNullableUnknown - nullability unknown 
-        
-        String remarks; // comment describing column (may be null)
+        // int bufferLength;    // not used
+        int decimalDigits;      // the number of fractional digits. Null is returned for data types where DECIMAL_DIGITS is not applicable.
+        int numPrecRadix;       //  Radix (typically either 10 or 2)
+        int nullable;           // is NULL allowed. columnNoNulls - might not allow NULL values,  columnNullable - definitely allows NULL values, columnNullableUnknown - nullability unknown
+        String remarks;         // comment describing column (may be null)
         String columnDefaultValue; // default value for the column, which should be interpreted as a string when the value is enclosed in single quotes (may be null)
-        // int sqlDataType; // unused
-        // int sqlDateTimeSub; // unused
-        int charOctetLenght; // for char types the maximum number of bytes in the column        
-        int ordinalPosition; // index of column in table (starting at 1)
-        
-        // String isNullable; // ISO rules are used to determine the nullability for a column.  YES, NO, empty string (if the nullability is unknown)
+        // int sqlDataType;     // unused
+        // int sqlDateTimeSub;  // unused
+        int charOctetLenght;    // for char types the maximum number of bytes in the column        
+        int ordinalPosition;    // index of column in table (starting at 1)        
+        // String isNullable;   // ISO rules are used to determine the nullability for a column.  YES, NO, empty string (if the nullability is unknown)
         // String scopeCatalog; // catalog of table that is the scope of a reference attribute (null if DATA_TYPE isn't REF)
-        // String scopeSchema; // schema of table that is the scope of a reference attribute (null if the DATA_TYPE isn't REF)
-        // String scopeTable; // table name that this the scope of a reference attribute (null if the DATA_TYPE isn't REF)
-        // short sourceDataType; //  source type of a distinct type or user-generated Ref type, SQL type from java.sql.Types (null if DATA_TYPE isn't DISTINCT or user-generated REF)
-        // String isAutoincrement; // Indicates whether this column is auto incremented: YES, NO, empty string (if it cannot be determined)
+        // String scopeSchema;  // schema of table that is the scope of a reference attribute (null if the DATA_TYPE isn't REF)
+        // String scopeTable;   // table name that this the scope of a reference attribute (null if the DATA_TYPE isn't REF)
+        // short sourceDataType;     //  source type of a distinct type or user-generated Ref type, SQL type from java.sql.Types (null if DATA_TYPE isn't DISTINCT or user-generated REF)
+        // String isAutoincrement;   // Indicates whether this column is auto incremented: YES, NO, empty string (if it cannot be determined)
         // String isGeneratedColumn; // Indicates whether this is a generated column: YES, NO, empty string (if it cannot be determined)
         
-        ColumnDef(String tc, String ts, String tn, String cn, int dt, 
-                String tyn, int cs, int dd, int radix, int n, 
+        ColumnDef(String tc, String ts, String tn, String cn, int dt,
+                String tyn, int cs, int dd, int radix, int n,
                 String r, String defVal, int length, int op) {
             tableCatalog = tc;
             tableSchema = ts;
             tableName = tn;
             columnName = cn;
             dataType = dt;
-            
             typeName = tyn;
             columnSize = cs;
             decimalDigits = dd;
             numPrecRadix = radix;
             nullable = n;
-            
             remarks = r;
             columnDefaultValue = defVal;
             charOctetLenght = length;
             ordinalPosition = op;
+            System.out.println(tc + " " + ts  + " " + tn + " " + cn + " " + dt+ " " + tyn+ " " + cs+ " " + dd+ " " + radix+ " " + n + " " + r + " " + defVal + " " + length + " " + op);
         }
     }
-    private class TableDef {
-        String tableCatalog; // may be null
-        String tableSchema;  // may be null
-        String tableName;
+
+    private class TableDef extends BaseDef {
         String tableType;    // Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
         String remarks;      // explanatory comment on the table, may be null
         // String typeCatalog;  // may be null
@@ -174,6 +185,7 @@ abstract class AbstractDbStructureMacroImpl {
         // String typeName;     // may be null
         // String selfReferencingColName; // name of the designated "identifier" column of a typed table, may be null
         // String refGeneration; // specifies how values in SELF_REFERENCING_COL_NAME are created. Values are "SYSTEM", "USER", "DERIVED". (may be null) 
+        List<ColumnDef> columns;
         
         TableDef(String tc, String ts, String tn, String tt, String r) {
             tableCatalog = tc;
@@ -181,6 +193,86 @@ abstract class AbstractDbStructureMacroImpl {
             tableName = tn;
             tableType = tt;
             remarks = r;
+            columns = new LinkedList<ColumnDef>();
+            System.out.println(tc + " " + ts  + " " + tn + " " + tt + " " + r);
+        }
+    }
+    
+    private class KeysDef {
+        String tableCatalogPk; // may be null
+        String tableSchemaPk;  // may be null
+        String tableNamePk;
+        String columnNamePk;
+        String tableCatalogFk; // may be null
+        String tableSchemaFk;  // may be null
+        String tableNameFk;
+        String columnNameFk;
+        short  keySeqNumber; // sequence number within a foreign key
+        // short updateRule;
+        // short deleteRule;
+        String namePk; // may be null
+        String nameFk; // may be null
+        // short deferability;
+        
+        KeysDef(String tcp, String tsp, String tnp, String cnp,
+                String tcf, String tsf, String tnf, String cnf,
+                short sn, String np, String nf) {
+            tableCatalogPk = tcp;
+            tableSchemaPk = tsp;
+            tableNamePk = tnp;
+            columnNamePk = cnp;            
+            tableCatalogFk = tcf;
+            tableSchemaFk = tsf;
+            tableNameFk = tnf;
+            columnNameFk = cnf;            
+            keySeqNumber = sn;
+            namePk = np;
+            nameFk = nf;
+            System.out.println(tcp + " " + tsp  + " " + tnp + " " + cnp + " " +
+                               tcf + " " + tsf  + " " + tnf + " " + cnf + " " + 
+                               sn + " " + np + " " + nf);
+        }
+        String getPkId() {
+            return tableCatalogPk + "#" + tableSchemaPk + "#" + tableNamePk;
+        }
+        String getFkId() {
+            return tableCatalogFk + "#" + tableSchemaFk + "#" + tableNameFk;
+        }
+    }
+
+    private Map<String, TableDef> filterTypes(Map<String, TableDef> tables, String tableTypeCriteria) {
+        if (tableTypeCriteria == null || tableTypeCriteria.isEmpty()) {
+            return tables;
+        }
+
+        final Map<String, TableDef> result = new HashMap<String, TableDef>();
+        for (String key : tables.keySet()) {
+            TableDef t = tables.get(key);
+            if (t.tableType != null && t.tableType.matches(tableTypeCriteria)) {
+                result.put(key, t);
+            }
+        }
+        return result;
+    }
+
+    private Map<String, TableDef> filterTableName(Map<String, TableDef> tables, String tableNameCriteria) {
+        if (tableNameCriteria == null || tableNameCriteria.isEmpty()) {
+            return tables;
+        }
+        
+        final Map<String, TableDef> result = new HashMap<String, TableDef>();
+        for (String key : tables.keySet()) {
+            TableDef t = tables.get(key);
+            if (t.tableName.matches(tableNameCriteria)) {
+                result.put(key, t);
+            }
+        }
+        return result;
+    }
+    
+    private void linkColumnsWithTables(Map<String, TableDef> tables, List<ColumnDef> columns) {
+        for (ColumnDef column : columns) {
+            tables.get(column.getId()).columns.add(column);
         }
     }
     
@@ -192,7 +284,7 @@ abstract class AbstractDbStructureMacroImpl {
         }
         ResultSet rs = null;
         try {
-            rs = dbmd.getColumns(null, _macroParams.getSchemaName(), _macroParams.getTableName(), _macroParams.getColumnName());
+            rs = dbmd.getColumns(null, _macroParams.getSchemaName(), null, null);
             while (rs.next()) {
                 result.add(new ColumnDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5),
                                 rs.getString(6), rs.getInt(7),rs.getInt(9), rs.getInt(10),  rs.getInt(11), 
@@ -213,17 +305,18 @@ abstract class AbstractDbStructureMacroImpl {
         return result;
     }
     
-    private List<TableDef> getTables(DatabaseMetaData dbmd) {
-        List<TableDef> result = new LinkedList<TableDef>();
+    private Map<String, TableDef> getTables(DatabaseMetaData dbmd) {
+        Map<String, TableDef> result = new HashMap<String, TableDef>();
         
         if (dbmd == null) {
             return result;
         }
         ResultSet rs = null;
         try {
-            rs = dbmd.getTables(null, _macroParams.getSchemaName(), _macroParams.getTableName(), null);
+            rs = dbmd.getTables(null, _macroParams.getSchemaName(), null, null);
             while (rs.next()) {
-                result.add(new TableDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)));
+                TableDef tmp = new TableDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+                result.put(tmp.getId(), tmp);
             }   
          } catch (SQLException e) {
               _errorMessage = e.getMessage();
@@ -239,7 +332,36 @@ abstract class AbstractDbStructureMacroImpl {
          }
         return result;
     }
-    
+
+    private List<KeysDef> getForeignKeys(DatabaseMetaData dbmd) {
+        List<KeysDef> result = new LinkedList<KeysDef>();
+        
+        if (dbmd == null) {
+            return result;
+        }
+        ResultSet rs = null;
+        try {
+            rs = dbmd.getImportedKeys(null, _macroParams.getSchemaName(), null);
+            while (rs.next()) {
+                KeysDef tmp = new KeysDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
+                        rs.getString(6), rs.getString(7), rs.getString(8), rs.getShort(9), rs.getString(12), rs.getString(13));
+                result.add(tmp);
+            }   
+         } catch (SQLException e) {
+              _errorMessage = e.getMessage();
+              e.printStackTrace();
+         } finally {
+                try {
+                    if (rs != null) {
+                        rs.close();
+                    }
+                } catch (Exception e) {
+                    // do nothing
+                }
+         }
+        return result;
+    }
+
     /**
      * Returns database metadata
      * @param jdbcName  Database which is configured at "java:comp/env/jdbc/<jdbcName>"
