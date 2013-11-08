@@ -46,6 +46,7 @@ import java.util.List;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * This is the abstract implementation class of the {dbstructure} macro.
@@ -83,15 +84,16 @@ abstract class AbstractDbStructureMacroImpl {
         _baseUrl = settingsManager.getGlobalSettings().getBaseUrl();
         _macroParams = new DbStructureMacroParams(params);        
         
-        final DatabaseMetaData dbmd = getDatabaseConnection(_macroParams.getJdbcName());
+        final DatabaseMetaData dbmd  = getDatabaseConnection(_macroParams.getJdbcName());
         Map<String, TableDef> tables = getTables(dbmd);
-        List<ColumnDef> columns = getColumn(dbmd);
-        List<KeysDef> keys = getForeignKeys(dbmd);
+        List<ColumnDef> columns      = getColumns(dbmd);
+        List<KeysDef> keys           = getForeignKeys(dbmd);
         try { dbmd.getConnection().close(); } catch (SQLException ex) { /* do nothing */ }
-        
+                
+        columns = filterColumnsByName(columns, _macroParams.getColumnName());
         linkColumnsWithTables(tables, columns);
         columns = null;
-        tables = filterTableName(filterTypes(tables, "TABLE"), _macroParams.getTableName());
+        tables = filterTablesByName(filterTablesByType(tables, "TABLE"), _macroParams.getTableName());
         
         final StringBuilder sb = new StringBuilder("digraph g {\n");
         sb.append("edge [arrowsize=\"0.8\"];");
@@ -110,14 +112,49 @@ abstract class AbstractDbStructureMacroImpl {
     }
     
     private String createDbDot(Map<String, TableDef> tables, List<ColumnDef> columns, List<KeysDef> keys) {
-        StringBuilder sb = new StringBuilder();
-        
+        final StringBuilder sb = new StringBuilder();
+
         for (TableDef table : tables.values()) {
-            sb.append(table.tableName).append(";\n");
+            // "TableName" [ label = "TableName | {{ColumnName1|ColumnName2} | {ColumnType1|ColumnType2}}" 
+            // shape="record"];
+            sb.append(table.tableName).append(" [ label = \"").append(table.tableName);
+
+            if (table.columns.size() > 0) {
+                String[] names = new String[table.columns.size()];
+                String[] types = new String[table.columns.size()];
+                int i = 0;
+                for (ColumnDef c : table.columns) {
+                    names[i] = "<" + c.columnName + "_to> " + c.columnName; // fieldId to link
+                    types[i] = "<" + c.columnName + "_from> " + c.typeName;
+                    if (c.typeName.startsWith("var")) {
+                        types[i] = types[i] + "(" + c.columnSize + ")";
+                    }
+                    if (c.nullable == 0) {
+                        types[i] = types[i] + " (not null)";
+                    }
+                    i++;
+                }
+                sb.append(" | {{")
+                        .append(StringUtils.join(names, "|"))
+                        .append("} | {")
+                        .append(StringUtils.join(types, "|"))
+                        .append("}}");
+            }
+            sb.append("\"\n")
+                    .append("shape=\"record\"];\n");
         }
+
         for (KeysDef key : keys) {
             if (tables.containsKey(key.getFkId()) && tables.containsKey(key.getPkId())) {
-                sb.append(key.tableNamePk).append(" -> ").append(key.tableNameFk).append((";\n"));
+                sb.append(key.tableNamePk).append(":").append(key.columnNamePk).append("_from")
+                  .append(" -> ")
+                  .append(key.tableNameFk).append(":").append(key.columnNameFk);
+                
+                if (key.tableNamePk.equals(key.tableNameFk)) {
+                    sb.append("_from;\n");
+                } else {
+                    sb.append("_to;\n");
+                }
             }
         }
         return sb.toString();
@@ -240,14 +277,14 @@ abstract class AbstractDbStructureMacroImpl {
         }
     }
 
-    private Map<String, TableDef> filterTypes(Map<String, TableDef> tables, String tableTypeCriteria) {
+    private Map<String, TableDef> filterTablesByType(Map<String, TableDef> tables, String tableTypeCriteria) {
         if (tableTypeCriteria == null || tableTypeCriteria.isEmpty()) {
             return tables;
         }
 
         final Map<String, TableDef> result = new HashMap<String, TableDef>();
         for (String key : tables.keySet()) {
-            TableDef t = tables.get(key);
+            final TableDef t = tables.get(key);
             if (t.tableType != null && t.tableType.matches(tableTypeCriteria)) {
                 result.put(key, t);
             }
@@ -255,14 +292,14 @@ abstract class AbstractDbStructureMacroImpl {
         return result;
     }
 
-    private Map<String, TableDef> filterTableName(Map<String, TableDef> tables, String tableNameCriteria) {
+    private Map<String, TableDef> filterTablesByName(Map<String, TableDef> tables, String tableNameCriteria) {
         if (tableNameCriteria == null || tableNameCriteria.isEmpty()) {
             return tables;
         }
         
         final Map<String, TableDef> result = new HashMap<String, TableDef>();
         for (String key : tables.keySet()) {
-            TableDef t = tables.get(key);
+            final TableDef t = tables.get(key);
             if (t.tableName.matches(tableNameCriteria)) {
                 result.put(key, t);
             }
@@ -270,13 +307,27 @@ abstract class AbstractDbStructureMacroImpl {
         return result;
     }
     
+    private List<ColumnDef> filterColumnsByName(List<ColumnDef> columns, String columnNameCriteria) {
+        if (columnNameCriteria == null || columnNameCriteria.isEmpty()) {
+            return columns;
+        }
+
+        final List<ColumnDef> result = new LinkedList<ColumnDef>();
+        for (ColumnDef c : columns) {
+            if (c.columnName.matches(columnNameCriteria)) {
+                result.add(c);
+            }
+        }
+        return result;
+    }
+
     private void linkColumnsWithTables(Map<String, TableDef> tables, List<ColumnDef> columns) {
         for (ColumnDef column : columns) {
             tables.get(column.getId()).columns.add(column);
         }
     }
     
-    private List<ColumnDef> getColumn(DatabaseMetaData dbmd) {
+    private List<ColumnDef> getColumns(DatabaseMetaData dbmd) {
         List<ColumnDef> result = new LinkedList<ColumnDef>();
         
         if (dbmd == null) {
