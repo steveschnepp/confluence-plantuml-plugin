@@ -30,8 +30,8 @@ import java.util.Map;
  * Supported SpaceGraph Macro parameters.
  */
 public final class SpaceGraphMacroParams {
-   private final int DEFAULT_DEPTH = 3;
-   private final int DEFAULT_NODE_FONTSIZE = 9;
+   private static final int DEFAULT_DEPTH = 3;
+   private static final int DEFAULT_NODE_FONTSIZE = 9;
    
    public enum Param {
       space,
