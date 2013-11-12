@@ -54,10 +54,10 @@ abstract class AbstractSpaceGraphMacroImpl {
     public static final String TB = "TB";
     public static final String LR = "LR";
 
-    protected ContentPropertyManager _cpm;
-    protected PermissionManager _pm;
-    protected String _baseUrl;
-    protected SpaceGraphMacroParams _macroParams;
+    private ContentPropertyManager _cpm;
+    private PermissionManager _pm;
+    private String _baseUrl;
+    private SpaceGraphMacroParams _macroParams;
             
 
     public String execute(Map<String, String> params, String dotString, RenderContext context) throws MacroException {
