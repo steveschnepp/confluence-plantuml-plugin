@@ -42,7 +42,6 @@ import com.atlassian.confluence.spaces.SpaceManager;
 import com.atlassian.confluence.user.AuthenticatedUserThreadLocal;
 import com.atlassian.renderer.RenderContext;
 import com.atlassian.renderer.v2.macro.MacroException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -98,9 +97,9 @@ abstract class AbstractSpaceGraphMacroImpl {
         sb.append(_macroParams.getNodeFontsize()).append("\"];\n");
         sb.append("rankdir=");
         if (TB.equals(_macroParams.getDirection())) {
-            sb.append(TB + "\n");
+            sb.append(TB).append("\n");
         } else {
-            sb.append(LR + "\n");
+            sb.append(LR).append("\n");
         }
 
         final List<Page> rootPages = new ArrayList<Page>();
@@ -192,7 +191,7 @@ abstract class AbstractSpaceGraphMacroImpl {
             sb.append("}");
         }
         sb.append("\"\nshape=\"record\"\n")
-          .append("URL=\"").append(baseUrl).append(page.getUrlPath()).append("\"];\n").toString();
+          .append("URL=\"").append(baseUrl).append(page.getUrlPath()).append("\"];\n");
         return sb.toString();
     }
     
@@ -220,11 +219,11 @@ abstract class AbstractSpaceGraphMacroImpl {
         final String[] keys = new String[metadata.size()];
         final String[] values = new String[metadata.size()];
         int i = 0;
-        for (String key : metadata.keySet()) {
-            keys[i] = key;
-            values[i++] = quoteMetadataValues(metadata.get(key));
+        for (Map.Entry<String, String> entry : metadata.entrySet()) {
+            keys[i] = entry.getKey();
+            values[i++] = quoteMetadataValues(entry.getValue());
         }
-
+        
         return new StringBuilder().append(" | {{")
                 .append(StringUtils.join(keys, "|"))
                 .append("} | {")
@@ -259,9 +258,9 @@ abstract class AbstractSpaceGraphMacroImpl {
      */
     private Map<String, String> filterMetadataValues(Map<String, String> map, Set<String> allowedKeys) {
         final Map<String, String> result = new HashMap<String, String>();
-        for (String key : map.keySet()) {
-            if (allowedKeys.contains(key) || allowedKeys.contains("@all")) {
-                result.put(key, map.get(key));
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            if (allowedKeys.contains("@all") || allowedKeys.contains(entry.getKey())) {
+                result.put(entry.getKey(), entry.getValue());
             }
         }
         return result;
