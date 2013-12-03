@@ -1,14 +1,14 @@
 
 <tr bgcolor=ffffff>
   <td width="200px">
-    {dbstructure:jndiName=conflueceDS}<br />
+    {dbstructure:datasource=confluenceDS|tableNameRegEx=.*space.*|columnNameRegEx=.*space.*}<br />
   </td>
 
   <td>
     <p>
       Generates a graphical overview of a database.
        <ul>
-         <li><b>jndiName:</b> - (required) JNDI name of database. Must be configured by Confluence admin.</br>
+         <li><b>datasource:</b> - (required) datasource name. Must be configured by Confluence admin.</br>
          <li><b>nodeFontsize:</b> - (optional) Size of font. Value must be integer. Default: 9</li>
          <li><b>format:</b> - (optional) Image output format. <tt>SVG</tt> or <tt>PNG</tt>. Default: <tt>PNG</tt></li>
          <li><b>exportName:</b> - (optional) stores the generated image as attachment if a name is given.</li>
@@ -19,8 +19,8 @@
        This is the output of the sample on the left side:
     </p>
     <p>
-       <img src="$req.contextPath/download/resources/de.griffel.confluence.plugins.plant-uml/icons/spacegraph-macro-help.png"
-         width="182" height="161" border="0">
+       <img src="$req.contextPath/download/resources/de.griffel.confluence.plugins.plant-uml/icons/dbstructure-macro-help.png"
+         width="182" height="72" border="0">
     </p>
   </td>
 </tr>

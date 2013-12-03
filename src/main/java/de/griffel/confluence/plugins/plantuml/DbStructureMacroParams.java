@@ -33,10 +33,12 @@ public final class DbStructureMacroParams {
    private final int DEFAULT_NODE_FONTSIZE = 9;
    
    public enum Param {
-      jdbcName,
-      schemaName,
-      tableName,
-      columnName,
+      datasource,
+      schemaNameFilter,
+      tableNameFilter,
+      columnNameFilter,
+      tableNameRegEx,
+      columnNameRegEx,
       nodeFontsize,
       debug;
    }
@@ -47,20 +49,28 @@ public final class DbStructureMacroParams {
       this.params = params;
    }
 
-   public String getJdbcName() {      
-       return get(Param.jdbcName);
+   public String getDatasource() {      
+       return get(Param.datasource);
    }
 
-   public String getSchemaName() {      
-       return get(Param.schemaName);
+   public String getSchemaNameFilter() {
+       return get(Param.schemaNameFilter);
    }
 
-   public String getTableName() {      
-       return get(Param.tableName);
+   public String getTableNameFilter() {
+       return get(Param.tableNameFilter);
    }
 
-   public String getColumnName() {      
-       return get(Param.columnName);
+   public String getColumnNameFilter() {
+       return get(Param.columnNameFilter);
+   }
+
+   public String getTableNameRegEx() {      
+       return get(Param.tableNameRegEx);
+   }
+
+   public String getColumnNameRegEx() {      
+       return get(Param.columnNameRegEx);
    }
 
    public int getNodeFontsize() {      

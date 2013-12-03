@@ -60,7 +60,7 @@ abstract class AbstractDbStructureMacroImpl {
             
 
     public String execute(Map<String, String> params, String dotString, RenderContext context) throws MacroException {
-        final SpaceGraphMacroParams macroParams = new SpaceGraphMacroParams(params);
+        final DbStructureMacroParams macroParams = new DbStructureMacroParams(params);
 
         params.put(PlantUmlMacroParams.Param.type.name(), DiagramType.DOT.name());
         if (macroParams.isDebug()) {
@@ -84,17 +84,20 @@ abstract class AbstractDbStructureMacroImpl {
         _baseUrl = settingsManager.getGlobalSettings().getBaseUrl();
         _macroParams = new DbStructureMacroParams(params);        
         
-        final DatabaseMetaData dbmd  = getDatabaseConnection(_macroParams.getJdbcName());
+        final DatabaseMetaData dbmd  = getDatabaseConnection(_macroParams.getDatasource());
         Map<String, TableDef> tables = getTables(dbmd);
         List<ColumnDef> columns      = getColumns(dbmd);
         List<KeysDef> keys           = getForeignKeys(dbmd);
-        try { dbmd.getConnection().close(); } catch (SQLException ex) { /* do nothing */ }
+        if (dbmd == null) {
+            _errorMessage = "Datasource " + _macroParams.getDatasource() + " does not exist.";
+        } else {
+            try { dbmd.getConnection().close(); } catch (SQLException ex) { /* do nothing */ }
                 
-        columns = filterColumnsByName(columns, _macroParams.getColumnName());
-        linkColumnsWithTables(tables, columns);
-        columns = null;
-        tables = filterTablesByName(filterTablesByType(tables, "TABLE"), _macroParams.getTableName());
-        
+            columns = filterColumnsByName(columns, _macroParams.getColumnNameRegEx());
+            linkColumnsWithTables(tables, columns);
+            columns = null;
+            tables = filterTablesByName(filterTablesByType(tables, "TABLE"), _macroParams.getTableNameRegEx());
+        }
         final StringBuilder sb = new StringBuilder("digraph g {\n");
         sb.append("edge [arrowsize=\"0.8\"];");
         sb.append("node [shape=\"rect\", style=\"filled\", fillcolor=\"lightyellow\", fontname=\"Verdana\", fontsize=\"");
@@ -287,29 +290,29 @@ abstract class AbstractDbStructureMacroImpl {
         return result;
     }
 
-    private Map<String, TableDef> filterTablesByName(Map<String, TableDef> tables, String tableNameCriteria) {
-        if (tableNameCriteria == null || tableNameCriteria.isEmpty()) {
+    private Map<String, TableDef> filterTablesByName(Map<String, TableDef> tables, String tableNameRegEx) {
+        if (tableNameRegEx == null || tableNameRegEx.isEmpty()) {
             return tables;
         }
         
         final Map<String, TableDef> result = new HashMap<String, TableDef>();
         for (String key : tables.keySet()) {
             final TableDef t = tables.get(key);
-            if (t.tableName.matches(tableNameCriteria)) {
+            if (t.tableName.matches(tableNameRegEx)) {
                 result.put(key, t);
             }
         }
         return result;
     }
     
-    private List<ColumnDef> filterColumnsByName(List<ColumnDef> columns, String columnNameCriteria) {
-        if (columnNameCriteria == null || columnNameCriteria.isEmpty()) {
+    private List<ColumnDef> filterColumnsByName(List<ColumnDef> columns, String columnNameRegEx) {
+        if (columnNameRegEx == null || columnNameRegEx.isEmpty()) {
             return columns;
         }
 
         final List<ColumnDef> result = new LinkedList<ColumnDef>();
         for (ColumnDef c : columns) {
-            if (c.columnName.matches(columnNameCriteria)) {
+            if (c.columnName.matches(columnNameRegEx)) {
                 result.add(c);
             }
         }
@@ -330,7 +333,7 @@ abstract class AbstractDbStructureMacroImpl {
         }
         ResultSet rs = null;
         try {
-            rs = dbmd.getColumns(null, _macroParams.getSchemaName(), null, null);
+            rs = dbmd.getColumns(null, _macroParams.getSchemaNameFilter(), _macroParams.getTableNameFilter(), _macroParams.getColumnNameFilter());
             while (rs.next()) {
                 result.add(new ColumnDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5),
                                 rs.getString(6), rs.getInt(7),rs.getInt(9), rs.getInt(10),  rs.getInt(11), 
@@ -358,11 +361,11 @@ abstract class AbstractDbStructureMacroImpl {
         }
         ResultSet rs = null;
         try {
-            rs = dbmd.getTables(null, _macroParams.getSchemaName(), null, null);
+            rs = dbmd.getTables(null, _macroParams.getSchemaNameFilter(), _macroParams.getTableNameFilter(), null);
             while (rs.next()) {
                 TableDef tmp = new TableDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
                 result.put(tmp.getId(), tmp);
-            }   
+            }
          } catch (SQLException e) {
               _errorMessage = e.getMessage();
          } finally {
@@ -385,7 +388,7 @@ abstract class AbstractDbStructureMacroImpl {
         }
         ResultSet rs = null;
         try {
-            rs = dbmd.getImportedKeys(null, _macroParams.getSchemaName(), null);
+            rs = dbmd.getImportedKeys(null, _macroParams.getSchemaNameFilter(), _macroParams.getTableNameFilter());
             while (rs.next()) {
                 KeysDef tmp = new KeysDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
                         rs.getString(6), rs.getString(7), rs.getString(8), rs.getShort(9), rs.getString(12), rs.getString(13));
@@ -415,7 +418,7 @@ abstract class AbstractDbStructureMacroImpl {
         DatabaseMetaData dbmd = null;
         try {
             jndiContext = new InitialContext();
-            javax.sql.DataSource ds = (javax.sql.DataSource) jndiContext.lookup("java:comp/env/jdbc/" + _macroParams.getJdbcName());
+            javax.sql.DataSource ds = (javax.sql.DataSource) jndiContext.lookup("java:comp/env/jdbc/" + _macroParams.getDatasource());
             try {
                 Connection con = ds.getConnection();
                 dbmd = con.getMetaData();
