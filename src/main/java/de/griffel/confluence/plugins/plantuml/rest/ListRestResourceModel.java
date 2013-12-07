@@ -25,18 +25,22 @@
 package de.griffel.confluence.plugins.plantuml.rest;
 
 import java.util.List;
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "datasources")
+@XmlRootElement(name = "list")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DatasourceListRestResourceModel {
+public class ListRestResourceModel {
 
-    @XmlElement(name = "datasource")
-    public List<String> datasource;
+   @XmlElement(name = "item")
+   public List<String> item;
 
-    public DatasourceListRestResourceModel() {}
-        
-    public DatasourceListRestResourceModel(List<String> datasourceNames) {
-        this.datasource = datasourceNames;
-    }
+   public ListRestResourceModel() {
+   }
+
+   public ListRestResourceModel(List<String> list) {
+      this.item = list;
+   }
 }
