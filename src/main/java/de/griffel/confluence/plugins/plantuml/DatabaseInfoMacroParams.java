@@ -34,16 +34,7 @@ import java.util.Map;
 public final class DatabaseInfoMacroParams {
 
     // all the attributes that can be shown
-    List<String> allJdbc4MetaDataAttributes = Arrays.asList("CatalogSeparator", "CatalogTerm", "DatabaseMajorVersion",
-            "DatabaseMinorVersion", "DatabaseProductName", "DatabaseProductVersion", "DefaultTransactionIsolation",
-            "DriverMajorVersion", "DriverMinorVersion", "DriverName", "DriverVersion", "ExtraNameCharacters",
-            "IdentifierQuoteString", "JDBCMajorVersion", "JDBCMinorVersion", "MaxBinaryLiteralLength", "MaxCatalogNameLength",
-            "MaxCharLiteralLength", "MaxColumnNameLength", "MaxColumnsInGroupBy", "MaxColumnsInIndex", "MaxColumnsInOrderBy",
-            "MaxColumnsInSelect", "MaxColumnsInTable", "MaxConnections", "MaxCursorNameLength", "MaxIndexLength",
-            "MaxProcedureNameLength", "MaxRowSize", "MaxSchemaNameLength", "MaxStatementLength", "MaxStatements",
-            "MaxTableNameLength", "MaxTablesInSelect", "MaxUserNameLength", "NumericFunctions", "ProcedureTerm",
-            "ResultSetHoldability", "SQLKeywords", "SchemaTerm", "SearchStringEscape", "StringFunctions", "SystemFunctions",
-            "TimeDateFunctions", "URL", "UserName");
+    private final List<String> allJdbc4MetaDataAttributes;
 
     public enum Param {
         datasources,
@@ -53,6 +44,16 @@ public final class DatabaseInfoMacroParams {
     private final Map<String, String> params;
 
     public DatabaseInfoMacroParams(Map<String, String> params) {
+        this.allJdbc4MetaDataAttributes = Arrays.asList("CatalogSeparator", "CatalogTerm", "DatabaseMajorVersion",
+                "DatabaseMinorVersion", "DatabaseProductName", "DatabaseProductVersion", "DefaultTransactionIsolation",
+                "DriverMajorVersion", "DriverMinorVersion", "DriverName", "DriverVersion", "ExtraNameCharacters",
+                "IdentifierQuoteString", "JDBCMajorVersion", "JDBCMinorVersion", "MaxBinaryLiteralLength", "MaxCatalogNameLength",
+                "MaxCharLiteralLength", "MaxColumnNameLength", "MaxColumnsInGroupBy", "MaxColumnsInIndex", "MaxColumnsInOrderBy",
+                "MaxColumnsInSelect", "MaxColumnsInTable", "MaxConnections", "MaxCursorNameLength", "MaxIndexLength",
+                "MaxProcedureNameLength", "MaxRowSize", "MaxSchemaNameLength", "MaxStatementLength", "MaxStatements",
+                "MaxTableNameLength", "MaxTablesInSelect", "MaxUserNameLength", "NumericFunctions", "ProcedureTerm",
+                "ResultSetHoldability", "SQLKeywords", "SchemaTerm", "SearchStringEscape", "StringFunctions", "SystemFunctions",
+                "TimeDateFunctions", "URL", "UserName");
         this.params = params;
     }
 
@@ -73,10 +74,14 @@ public final class DatabaseInfoMacroParams {
             return Arrays.asList(attributes.trim().split(" *, *"));
         }
     }
+    
+    public List<String> getAllAvailableAttributes() {
+        return allJdbc4MetaDataAttributes;
+    }
 
     @Override
     public String toString() {
-        return "DatabaseInfoParams [_params=" + params + "]";
+        return "DatabaseInfoMacroParams [_params=" + params + "]";
     }
 
     private String get(Param param) {
