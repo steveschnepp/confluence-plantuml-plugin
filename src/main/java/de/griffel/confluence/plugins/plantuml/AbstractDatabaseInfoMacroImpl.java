@@ -32,12 +32,8 @@ import com.atlassian.confluence.user.AuthenticatedUserThreadLocal;
 import com.atlassian.confluence.util.i18n.I18NBeanFactory;
 import com.atlassian.renderer.RenderContext;
 import com.atlassian.renderer.v2.macro.MacroException;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 import java.util.HashMap;
 import javax.sql.DataSource;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -53,7 +49,6 @@ abstract class AbstractDatabaseInfoMacroImpl {
     private static final String KEY_ATTRIBUTE      = "plantuml.database-info.attribute";
     private static final String KEY_ERROR          = "plantuml.database-info.error.error";
     private static final String KEY_DS_NOT_EXIST   = "plantuml.database-info.error.datasource_not_exist";
-    private static final String KEY_ATTR_NOT_EXIST = "plantuml.database-info.error.attribute_not_exist";
     
     public AbstractDatabaseInfoMacroImpl(I18NBeanFactory i18NBeanFactory, LocaleManager localeManager) {
         _i18NBeanFactory = i18NBeanFactory;
@@ -72,57 +67,21 @@ abstract class AbstractDatabaseInfoMacroImpl {
      */
     public String createResult(Map<String, String> params, PageContext pageContext) {
         final DatabaseInfoMacroParams _macroParams = new DatabaseInfoMacroParams(params);
-        
         final Map<String, Map<String, String>> data = new HashMap<String, Map<String, String>>();
         final List<String> datasources = _macroParams.getDatasources();
 
-        for (String datasourceName : datasources) {
-            final Map<String, String> datasourceAttributes = new HashMap<String, String>();
-            data.put(datasourceName, datasourceAttributes);
-            
+        for (String datasourceName : datasources) { 
             final DataSource ds = DatasourceHelper.getDatasource(datasourceName);
-            
+            final Map m;
             if (ds == null) {
-                datasourceAttributes.put(boldHtml(getLocalizedMessage(KEY_ERROR)),
-                    getLocalizedMessage(KEY_DS_NOT_EXIST));
-                
+                m = new HashMap<String,String>();
+                m.put(getLocalizedMessage(KEY_ERROR), getLocalizedMessage(KEY_DS_NOT_EXIST));
             } else {
-                Connection con = null;
-                try {
-                    con = ds.getConnection();
-                    final DatabaseMetaData dbmd = con.getMetaData();
-                    for (String attribut : _macroParams.getAttributes()) {
-                        fillValue(dbmd, attribut, datasourceAttributes);
-                    }
-                } catch (SQLException ex) {
-                    datasourceAttributes.put(boldHtml(getLocalizedMessage(KEY_ERROR)), ex.getMessage());
-                } finally {
-                    try {
-                        if (con != null) {
-                            con.close();
-                        }
-                    } catch (SQLException ex1) { /* do nothing */ }
-                }
+                m = DatasourceHelper.getDatabaseMetadata(ds, _macroParams.getAttributes());
             }
+            data.put(datasourceName, m);
         }
         return formatTable(data, datasources);
-    }
-
-    /**
-     * Gets attribute from Database meta data and stores it in map
-     *
-     * @param dbmd Database meta data
-     * @param attribute Name of attribute to get
-     * @param result Map to store attribute name and value in
-     */
-    public void fillValue(DatabaseMetaData dbmd, String attribute, Map<String, String> result) {
-        final Class noparams[] = {};
-        try {
-            final Method m = dbmd.getClass().getMethod("get" + attribute, noparams);
-            result.put(attribute, "" + m.invoke(dbmd, null));
-        } catch (Exception ex) {
-            result.put(attribute, getLocalizedMessage(KEY_ATTR_NOT_EXIST));
-        }
     }
 
     /**
@@ -142,8 +101,7 @@ abstract class AbstractDatabaseInfoMacroImpl {
      * Create HTML output
      *
      * @param data Connection parameters of all data sources
-     * @param datasourceNames List of data sources to show - defines order in
-     * which they are shown
+     * @param datasourceNames List of data sources to show - defines order in which they are shown
      * @return
      */
     public String formatTable(Map<String, Map<String, String>> data, List<String> datasourceNames) {
@@ -175,9 +133,5 @@ abstract class AbstractDatabaseInfoMacroImpl {
     private String getLocalizedMessage(String msgKey) {
         Locale locale = _localeManager.getLocale(AuthenticatedUserThreadLocal.getUser());
         return _i18NBeanFactory.getI18NBean(locale).getText(msgKey);
-    }
-    
-    private String boldHtml(String text) {
-        return "<b>" + text + "</b>";
     }
 }
