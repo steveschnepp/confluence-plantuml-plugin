@@ -27,54 +27,95 @@ package de.griffel.confluence.plugins.plantuml.rest;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import de.griffel.confluence.plugins.plantuml.DatabaseInfoMacroParams;
 import de.griffel.confluence.plugins.plantuml.DatasourceHelper;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/datasource")
 public class DatasourceRestResource {
 
-    class GatewayTimeout implements Response.StatusType {
-        @Override
-        public Response.Status.Family getFamily() {
-            return Response.Status.Family.SERVER_ERROR;
-        }
-        @Override
-        public String getReasonPhrase() {
-            return "Gateway Timeout";
-        }
-        @Override
-        public int getStatusCode() {
-            return 504;
-        }
-    }
+   @GET
+   @AnonymousAllowed
+   @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+   public Response getMessage() {
+      return Response.ok(new ListRestResourceModel(DatasourceHelper.listAvailableDataSources())).build();
+   }
 
-    @GET
-    @AnonymousAllowed
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getMessage() {
-        return Response.ok(new DatasourceListRestResourceModel(DatasourceHelper.listAvailableDataSources())).build();
-    }
+   @GET
+   @AnonymousAllowed
+   @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+   @Path("/{name}")
+   public Response getMessageFromPath(@PathParam("name") String datasourceName) {
+      final DataSource ds = DatasourceHelper.getDatasource(datasourceName);
+      if (ds == null) {
+         return Response.status(Response.Status.NOT_FOUND).build();
+      } else {
+         final Map<String, String> m = DatasourceHelper.getDatabaseMetadata(ds, new DatabaseInfoMacroParams(null).getAllAvailableAttributes());
+         if (m.size() < 2) {
+            // m contains error message "cannot create connection to database"
+            return Response.status(new GatewayTimeout()).build();
+         } else {
+            return Response.ok(new DatasourceRestResourceModel(m)).build();
+         }
+      }
+   }
 
-    @GET
-    @AnonymousAllowed
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Path("/{name}")
-    public Response getMessageFromPath(@PathParam("name") String datasourceName) {
-        final DataSource ds = DatasourceHelper.getDatasource(datasourceName);
-        if (ds == null) {
+   @GET
+   @AnonymousAllowed
+   @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+   @Path("/{name}/{detail}")
+   public Response getMessageFromPath(@PathParam("name") String datasourceName, @PathParam("detail") String detail) {
+      final DataSource ds = DatasourceHelper.getDatasource(datasourceName);
+      if (ds == null) {
+         return Response.status(Response.Status.NOT_FOUND).build();
+      } else {
+         final List<String> attributeName = new LinkedList<String>();
+         attributeName.add(detail);
+         final Map<String, String> attributes = DatasourceHelper.getDatabaseMetadata(ds, attributeName);
+         final String result = attributes.get(detail);
+         if (DatasourceHelper.ERROR.equals(result)) {
             return Response.status(Response.Status.NOT_FOUND).build();
-        } else {
-            final Map<String, String> m = DatasourceHelper.getDatabaseMetadata(ds, new DatabaseInfoMacroParams(null).getAllAvailableAttributes());
-            if (m.size() < 2) {
-                // m contains error message "cannot create connection to database"
-                return Response.status(new GatewayTimeout()).build();
-            } else {
-                return Response.ok(new DatasourceRestResourceModel(m)).build();
-            }
-        }
-    }
+         } else {
+            return Response.ok(new ListRestResourceModel(dbMetadataAsList(detail, result))).build();
+         }
+      }
+   }
+
+   private List<String> dbMetadataAsList(String attributeName, String value) {
+      // split comma separated items only if keyword ends in s
+      if (attributeName.endsWith("s")) {
+         return Arrays.asList(value.split(" *, *"));
+      } else {
+         final List<String> l = new LinkedList<String>();
+         l.add(value);
+         return l;
+      }
+   }
+
+   class GatewayTimeout implements Response.StatusType {
+
+      @Override
+      public Response.Status.Family getFamily() {
+         return Response.Status.Family.SERVER_ERROR;
+      }
+
+      @Override
+      public String getReasonPhrase() {
+         return "Gateway Timeout";
+      }
+
+      @Override
+      public int getStatusCode() {
+         return 504;
+      }
+   }
 
 }
