@@ -506,8 +506,6 @@
       <context>atl.admin</context>
     </web-resource>
 
-    <rest name="Plant Uml Rest Resource" i18n-name-key="plant-uml-rest-resource.name" key="plant-uml-rest-resource" path="/plantuml" version="1.0">
-      <description key="plant-uml-rest-resource.description">PlantUML Rest Resource</description>
-    </rest>
+    <rest name="Plant Uml Rest Resource" i18n-name-key="plantuml.rest-resource.name" key="plantuml.rest-resource" path="/plantuml" version="1.0" />
 
 </atlassian-plugin>
