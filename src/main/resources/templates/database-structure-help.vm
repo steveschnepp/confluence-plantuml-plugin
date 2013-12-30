@@ -1,7 +1,7 @@
 
 <tr bgcolor=ffffff>
   <td width="200px">
-    {dbstructure:datasource=confluenceDS|tableNameRegEx=.*space.*|columnNameRegEx=.*space.*}<br />
+    {database-structure:datasource=confluenceDS|tableNameRegEx=.*space.*|columnNameRegEx=.*space.*}<br />
   </td>
 
   <td>
@@ -19,7 +19,7 @@
        This is the output of the sample on the left side:
     </p>
     <p>
-       <img src="$req.contextPath/download/resources/de.griffel.confluence.plugins.plant-uml/icons/dbstructure-macro-help.png"
+       <img src="$req.contextPath/download/resources/de.griffel.confluence.plugins.plant-uml/icons/database-structure-macro-help.png"
          width="182" height="72" border="0">
     </p>
   </td>

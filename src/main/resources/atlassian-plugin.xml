@@ -242,20 +242,24 @@
     </xhtml-macro>
 
     <!-- Confluence <=3.x -->
-    <macro name="dbstructure" 
-           class="de.griffel.confluence.plugins.plantuml.DbStructureMacro" 
-           key="dbstructure-macro"
-           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/dbstructure-macro-icon.png"
-           documentation-url="${project.url}/Macro dbstructure">
+    <macro name="database-structure" 
+           class="de.griffel.confluence.plugins.plantuml.DatabaseStructureMacro" 
+           key="database-structure-macro"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/database-structure-macro-icon.png"
+           documentation-url="${project.url}/Macro database-structure">
       <category name="visuals"/>
       <parameters>
          <parameter name="datasource" type="string"/>
-         <parameter name="schemaNameFilter" type="string"/>
+         <parameter name="schemaName" type="string"/>
+         <parameter name="tableTypes" type="string" default="TABLE" />
          <parameter name="tableNameFilter" type="string"/>
          <parameter name="columnNameFilter" type="string"/>
          <parameter name="tableNameRegEx" type="string"/>
          <parameter name="columnNameRegEx" type="string"/>
+         <parameter name="showColumns" type="boolean" default="true"/>
+         <parameter name="showIndexes" type="boolean" default="false"/>
          <parameter name="nodeFontsize" type="string" default="9"/>
+         <parameter name="additional" type="string"/>
          <parameter name="format" type="enum" default="PNG">
             <value name="PNG"/>
             <value name="SVG"/>
@@ -263,27 +267,31 @@
          <parameter name="exportName" type="string"/>
          <parameter name="debug" type="boolean" default="false"/>
       </parameters>
-      <resource type="velocity" name="help" location="templates/dbstructure-help.vm">
+      <resource type="velocity" name="help" location="templates/database-structure-help.vm">
          <param name="help-section" value="misc"/>
       </resource>
     </macro>
 
     <!-- Confluence >=4.x -->
-    <xhtml-macro name="dbstructure" 
-           class="de.griffel.confluence.plugins.plantuml.DbStructureMacroV4" 
-           key="dbstructure-macro-xhtml"
-           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/dbstructure-macro-icon.png"
-           documentation-url="${project.url}/Macro dbstructure">
+    <xhtml-macro name="database-structure" 
+           class="de.griffel.confluence.plugins.plantuml.DatabaseStructureMacroV4" 
+           key="database-structure-macro-xhtml"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/database-structure-macro-icon.png"
+           documentation-url="${project.url}/Macro database-structure">
       <device-type>mobile</device-type>
       <category name="visuals"/>
       <parameters>
          <parameter name="datasource" type="string"/>
-         <parameter name="schemaNameFilter" type="string"/>
+         <parameter name="schemaName" type="string"/>
+         <parameter name="tableTypes" type="string" default="TABLE" />
          <parameter name="tableNameFilter" type="string"/>
          <parameter name="columnNameFilter" type="string"/>
          <parameter name="tableNameRegEx" type="string"/>
          <parameter name="columnNameRegEx" type="string"/>
+         <parameter name="showColumns" type="boolean" default="true"/>
+         <parameter name="showIndexes" type="boolean" default="false"/>
          <parameter name="nodeFontsize" type="string" default="9"/>
+         <parameter name="additional" type="string"/>
          <parameter name="format" type="enum" default="PNG">
             <value name="PNG"/>
             <value name="SVG"/>
@@ -291,7 +299,7 @@
          <parameter name="exportName" type="string"/>
          <parameter name="debug" type="boolean" default="false"/>
       </parameters>
-      <resource type="velocity" name="help" location="templates/dbstructure-help.vm">
+      <resource type="velocity" name="help" location="templates/database-structure-help.vm">
          <param name="help-section" value="misc"/>
       </resource>
     </xhtml-macro>
