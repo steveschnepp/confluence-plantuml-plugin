@@ -37,7 +37,6 @@ public final class DatabaseInfoMacroParams {
    private final List<String> allJdbc4MetaDataAttributes;
 
    public enum Param {
-
       datasources,
       attributes
    }
