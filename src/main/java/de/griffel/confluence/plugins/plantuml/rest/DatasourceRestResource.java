@@ -61,7 +61,8 @@ public class DatasourceRestResource {
          final Map<String, String> m = DatasourceHelper.getDatabaseMetadata(ds, new DatabaseInfoMacroParams(null).getAllAvailableAttributes());
          if (m.size() < 2) {
             // m contains error message "cannot create connection to database"
-            return Response.status(new GatewayTimeout()).build();
+            // 504 Gateway Timeout seems to be most appropriate response
+            return Response.status(504).build();
          } else {
             return Response.ok(new DatasourceRestResourceModel(m)).build();
          }
@@ -99,23 +100,4 @@ public class DatasourceRestResource {
          return l;
       }
    }
-
-   static class GatewayTimeout implements Response.StatusType {
-
-      @Override
-      public Response.Status.Family getFamily() {
-         return Response.Status.Family.SERVER_ERROR;
-      }
-
-      @Override
-      public String getReasonPhrase() {
-         return "Gateway Timeout";
-      }
-
-      @Override
-      public int getStatusCode() {
-         return 504;
-      }
-   }
-
 }
