@@ -8,7 +8,7 @@
     <p> 
       Show information about databases and JDBC drivers.
        <ul>
-         <li><b>datasources:</b> - (required) Name of databases to show information about. Databases must be configured as datasource by a Confluence admin. Leave empty to show information about all available databases. Multiple database names can be separated by comma. Table header contains database name.</br>
+         <li><b>datasources:</b> - (optional) Names of databases to show information about. They must be configured as datasource by a Confluence admin. Leave empty to show information about all available databases. Multiple names can be separated by comma.</li>
          <li><b>attributes:</b> - (optional) All available attributes will be shown (default). Attributes to show can be given as comma separated list.</li>
        </ul>
     </p>

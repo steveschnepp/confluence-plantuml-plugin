@@ -8,7 +8,16 @@
     <p>
       Generates a graphical overview of a database.
        <ul>
-         <li><b>datasource:</b> - (required) datasource name. Must be configured by Confluence admin.</br>
+         <li><b>datasource:</b> - (required) Datasource name. Must be configured by Confluence admin.</li>
+         <li><b>schemaName:</b> - (optional) name of schema to visualize.</li>
+         <li><b>tableTypes:</b> - (optional) Comma separated list of types to show in graphics. It depends on the database which types are available. Common ones are <tt>TABLE, INDEX, SEQUENCE, VIEW</tt>. Macro database-info gives a list of available types.</li>
+         <li><b>tableNameFilter:</b> - (optional) Show only tables with these names in generated graphic. Wildcards _ and % can be used as in a SQL SELECT. An additional filtering is possible with <tt>tableNameRegEx</tt>.</li>
+         <li><b>columnNameFilter:</b> - (optional) Show only columns with these names in generated graphic. It works like <tt>tableNameFilter</tt>.</li>
+         <li><b>tableNameRegEx:</b> - (optional) Show only tables with these names in generated graphic. Table names are defined as regular expression, e.g. show all tables whose names start with A,B,C or D: <tt>[A-D].*</tt/>.</li>
+         <li><b>columnNameRegEx:</b> - (optional) Show only columns with these names in generated graphic. It works like <tt>tableNameRegEx</tt>.</li>
+         <li><b>showColumns:</b> - (optional) If true column names and their data types are shown.</li>
+         <li><b>showIndexes:</b> - (optional) If true the indexes of each table are shown below the column names. Indexes can also be shown by adding INDEX to the list of <tt>tableTypes</tt> but this will need more space on the graphic.</li>
+         <li><b>additional:</b> - (optional) The appearance of the graphics can be changed by adding some DOT commands here. This will overwrite the default set by the macro.</li>
          <li><b>nodeFontsize:</b> - (optional) Size of font. Value must be integer. Default: 9</li>
          <li><b>format:</b> - (optional) Image output format. <tt>SVG</tt> or <tt>PNG</tt>. Default: <tt>PNG</tt></li>
          <li><b>exportName:</b> - (optional) stores the generated image as attachment if a name is given.</li>
