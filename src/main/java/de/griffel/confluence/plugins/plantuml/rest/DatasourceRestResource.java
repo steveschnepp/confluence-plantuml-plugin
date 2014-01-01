@@ -100,7 +100,7 @@ public class DatasourceRestResource {
       }
    }
 
-   class GatewayTimeout implements Response.StatusType {
+   static class GatewayTimeout implements Response.StatusType {
 
       @Override
       public Response.Status.Family getFamily() {

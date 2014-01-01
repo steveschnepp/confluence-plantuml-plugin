@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public final class DatabaseStructureMacroParams {
 
-   private final int DEFAULT_NODE_FONTSIZE = 9;
+   private static final int DEFAULT_NODE_FONTSIZE = 9;
 
    public enum Param {
 

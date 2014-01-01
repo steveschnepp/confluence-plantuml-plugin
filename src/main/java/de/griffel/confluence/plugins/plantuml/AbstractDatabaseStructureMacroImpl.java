@@ -91,8 +91,8 @@ abstract class AbstractDatabaseStructureMacroImpl {
          linkColumnsWithTables(tables, filterColumnsByName(getColumns(dbmd), _macroParams.getColumnNameRegEx()));
          List<ColumnDef> columns = null; // free resources
          tables = filterTablesByName(filterTablesByType(tables, _macroParams.getTableTypes()), _macroParams.getTableNameRegEx());
-         for (String key : tables.keySet()) {
-            addIndexDetails(dbmd, tables.get(key));
+         for (Map.Entry<String, TableDef> entry : tables.entrySet()) {
+            addIndexDetails(dbmd, tables.get(entry.getKey()));
          }
          return buildDot(tables, columns, reduceToTableReferences(getForeignKeys(dbmd)));
       } finally {
@@ -234,10 +234,10 @@ abstract class AbstractDatabaseStructureMacroImpl {
       }
 
       final Map<String, TableDef> result = new HashMap<String, TableDef>();
-      for (String key : tables.keySet()) {
-         final TableDef t = tables.get(key);
+      for (Map.Entry<String, TableDef> entry : tables.entrySet()) {
+         final TableDef t = entry.getValue();
          if (t.tableType != null && tableTypes.contains(t.tableType)) {
-            result.put(key, t);
+            result.put(entry.getKey(), t);
          }
       }
       return result;
@@ -249,10 +249,10 @@ abstract class AbstractDatabaseStructureMacroImpl {
       }
 
       final Map<String, TableDef> result = new HashMap<String, TableDef>();
-      for (String key : tables.keySet()) {
-         final TableDef t = tables.get(key);
+      for (Map.Entry<String, TableDef> entry : tables.entrySet()) {
+         final TableDef t = entry.getValue();
          if (t.tableName.matches(tableNameRegEx)) {
-            result.put(key, t);
+            result.put(entry.getKey(), t);
          }
       }
       return result;
@@ -286,7 +286,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
          try {
             rs = dbmd.getTables(null, _macroParams.getSchemaName(), _macroParams.getTableNameFilter(), null);
             while (rs.next()) {
-               TableDef tmp = new TableDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+               TableDef tmp = new TableDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
                result.put(tmp.getTableId(), tmp);
                log.debug(tmp.display());
             }
@@ -312,9 +312,8 @@ abstract class AbstractDatabaseStructureMacroImpl {
          try {
             rs = dbmd.getColumns(null, _macroParams.getSchemaName(), _macroParams.getTableNameFilter(), _macroParams.getColumnNameFilter());
             while (rs.next()) {
-               ColumnDef tmp = new ColumnDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5),
-                       rs.getString(6), rs.getInt(7), rs.getInt(9), rs.getInt(10), rs.getInt(11),
-                       rs.getString(12), rs.getString(13), rs.getInt(16), rs.getInt(17));
+               ColumnDef tmp = new ColumnDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                       rs.getString(6), rs.getInt(7), rs.getInt(9), rs.getInt(11));
                result.add(tmp);
                log.debug(tmp.getColumnId());
             }
@@ -340,8 +339,8 @@ abstract class AbstractDatabaseStructureMacroImpl {
          try {
             rs = dbmd.getImportedKeys(null, _macroParams.getSchemaName(), null);
             while (rs.next()) {
-               KeysDef tmp = new KeysDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
-                       rs.getString(6), rs.getString(7), rs.getString(8), rs.getShort(9), rs.getString(12), rs.getString(13));
+               KeysDef tmp = new KeysDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                       rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8));
                result.add(tmp);
                log.debug(tmp.getKeysColumnId());
             }
@@ -369,7 +368,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
 
             while (rs.next()) {
                IndexDef tmp = new IndexDef(rs.getString(1), rs.getString(2), rs.getString(3),
-                       rs.getString(5), rs.getString(6), rs.getShort(7), rs.getShort(8), rs.getString(9));
+                       rs.getString(5), rs.getString(6), rs.getShort(8), rs.getString(9));
                result.add(tmp);
                log.debug(tmp.getIndexId());
             }

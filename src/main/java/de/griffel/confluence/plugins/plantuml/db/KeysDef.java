@@ -38,14 +38,14 @@ public class KeysDef {
    public String tableSchemaFk; // may be null
    public String tableNameFk;
    public String columnNameFk;
-   public short keySeqNumber; // sequence number within a foreign key
+   // public short keySeqNumber; // sequence number within a foreign key
    // short updateRule;
    // short deleteRule;
-   public String namePk; // may be null
-   public String nameFk; // may be null
+   // public String namePk; // may be null
+   // pubic String nameFk; // may be null
    // short deferability;
 
-   public KeysDef(String tcp, String tsp, String tnp, String cnp, String tcf, String tsf, String tnf, String cnf, short sn, String np, String nf) {
+   public KeysDef(String tcp, String tsp, String tnp, String cnp, String tcf, String tsf, String tnf, String cnf) {
       tableCatalogPk = tcp;
       tableSchemaPk = tsp;
       tableNamePk = tnp;
@@ -54,9 +54,6 @@ public class KeysDef {
       tableSchemaFk = tsf;
       tableNameFk = tnf;
       columnNameFk = cnf;
-      keySeqNumber = sn;
-      namePk = np;
-      nameFk = nf;
    }
 
    public String getPkTableId() {

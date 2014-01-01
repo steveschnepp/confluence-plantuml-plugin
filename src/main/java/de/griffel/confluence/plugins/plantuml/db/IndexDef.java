@@ -33,7 +33,7 @@ public class IndexDef extends BaseDef {
    // boolean nonUnique; // Can index values be non-unique. false when TYPE is tableIndexStatistic
    public String indexQualifier; // index catalog (may be null); null when TYPE is tableIndexStatistic
    public String indexName; // null when TYPE is tableIndexStatistic
-   public short type; // tableIndexStatistic,  tableIndexClustered, tableIndexHashed, tableIndexOther
+   // public short type; // tableIndexStatistic,  tableIndexClustered, tableIndexHashed, tableIndexOther
    public short ordinalPosition; // column sequence number within index; zero when TYPE is tableIndexStatistic
    public String columnName; // null when TYPE is tableIndexStatistic
    // String columnSort; // "A" => ascending, "D" => descending, may be null if sort sequence is not supported; null when TYPE is tableIndexStatistic
@@ -41,13 +41,12 @@ public class IndexDef extends BaseDef {
    // int pages; // When TYPE is tableIndexStatisic then this is the number of pages used for the table, otherwise it is the number of pages used for the current index.
    // String filterCondition; // Filter condition, if any. (may be null)
 
-   public IndexDef(String tc, String ts, String tn, String iq, String in, short t, short op, String cn) {
+   public IndexDef(String tc, String ts, String tn, String iq, String in, short op, String cn) {
       tableCatalog = tc;
       tableSchema = ts;
       tableName = tn;
       indexQualifier = iq;
       indexName = in;
-      type = t;
       ordinalPosition = op;
       columnName = cn;
    }

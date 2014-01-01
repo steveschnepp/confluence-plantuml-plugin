@@ -25,6 +25,7 @@
 package de.griffel.confluence.plugins.plantuml;
 
 import com.opensymphony.xwork.interceptor.component.ComponentManager;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -158,7 +159,15 @@ public class DatasourceHelper {
       try {
          final Method m = dbmd.getClass().getMethod("get" + attribute, noparams);
          result.put(attribute, "" + m.invoke(dbmd, null));
-      } catch (Exception ex) {
+      } catch (IllegalAccessException ex) {
+         result.put(attribute, ERROR);
+      } catch (IllegalArgumentException ex) {
+         result.put(attribute, ERROR);
+      } catch (NoSuchMethodException ex) {
+         result.put(attribute, ERROR);
+      } catch (SecurityException ex) {
+         result.put(attribute, ERROR);
+      } catch (InvocationTargetException ex) {
          result.put(attribute, ERROR);
       }
    }
