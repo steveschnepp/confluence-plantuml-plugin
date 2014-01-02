@@ -43,14 +43,12 @@ import javax.ws.rs.core.Response;
 public class DatasourceRestResource {
 
    @GET
-   @AnonymousAllowed
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    public Response getMessage() {
       return Response.ok(new ListRestResourceModel(DatasourceHelper.listAvailableDataSources())).build();
    }
 
    @GET
-   @AnonymousAllowed
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    @Path("/{name}")
    public Response getMessageFromPath(@PathParam("name") String datasourceName) {
