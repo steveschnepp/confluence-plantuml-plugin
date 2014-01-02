@@ -24,13 +24,26 @@
  */
 package de.griffel.confluence.plugins.plantuml.db;
 
-public class BaseDef {
+abstract public class BaseDef {
 
-   public String tableCatalog; // may be null
-   public String tableSchema;  // may be null
-   public String tableName;
+   protected String tableCatalog;
+   protected String tableSchema;
+   protected String tableName;
 
    public String getTableId() {
       return tableCatalog + "." + tableSchema + "." + tableName;
    }
+
+   public String getTableCatalog() {
+      return tableCatalog;
+   }
+
+   public String getTableSchema() {
+      return tableSchema;
+   }
+
+   public String getTableName() {
+      return tableName;
+   }
+
 }

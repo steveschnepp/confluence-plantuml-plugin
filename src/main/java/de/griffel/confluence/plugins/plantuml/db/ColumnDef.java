@@ -26,27 +26,11 @@ package de.griffel.confluence.plugins.plantuml.db;
 
 public class ColumnDef extends BaseDef {
 
-   public String columnName;
-   // public int dataType;        // SQL type from java.sql.Types
-   public String typeName;        // Data source dependent type name, for a UDT the type name is fully qualified
-   public int columnSize;
-   // int bufferLength;    // not used
-   public int decimalDigits;      // the number of fractional digits. Null is returned for data types where DECIMAL_DIGITS is not applicable.
-   // public int numPrecRadix;       //  Radix (typically either 10 or 2)
-   public int nullable;           // is NULL allowed. columnNoNulls - might not allow NULL values,  columnNullable - definitely allows NULL values, columnNullableUnknown - nullability unknown
-   // public String remarks;         // comment describing column (may be null)
-   // public String columnDefaultValue; // default value for the column, which should be interpreted as a string when the value is enclosed in single quotes (may be null)
-   // int sqlDataType;     // unused
-   // int sqlDateTimeSub;  // unused
-   // public int charOctetLenght;    // for char types the maximum number of bytes in the column
-   // public int ordinalPosition;    // index of column in table (starting at 1)
-   // String isNullable;   // ISO rules are used to determine the nullability for a column.  YES, NO, empty string (if the nullability is unknown)
-   // String scopeCatalog; // catalog of table that is the scope of a reference attribute (null if DATA_TYPE isn't REF)
-   // String scopeSchema;  // schema of table that is the scope of a reference attribute (null if the DATA_TYPE isn't REF)
-   // String scopeTable;   // table name that this the scope of a reference attribute (null if the DATA_TYPE isn't REF)
-   // short sourceDataType;     //  source type of a distinct type or user-generated Ref type, SQL type from java.sql.Types (null if DATA_TYPE isn't DISTINCT or user-generated REF)
-   // String isAutoincrement;   // Indicates whether this column is auto incremented: YES, NO, empty string (if it cannot be determined)
-   // String isGeneratedColumn; // Indicates whether this is a generated column: YES, NO, empty string (if it cannot be determined)
+   private final String columnName;
+   private final String typeName;
+   private final int columnSize;
+   private final int decimalDigits;
+   private final int nullable;
 
    public ColumnDef(String tc, String ts, String tn, String cn, String tyn, int cs, int dd, int n) {
       tableCatalog = tc;
@@ -60,6 +44,26 @@ public class ColumnDef extends BaseDef {
    }
 
    public String getColumnId() {
-      return getTableId() + "." + columnName;
+      return getTableId() + "." + getColumnName();
+   }
+
+   public String getColumnName() {
+      return columnName;
+   }
+
+   public String getTypeName() {
+      return typeName;
+   }
+
+   public int getColumnSize() {
+      return columnSize;
+   }
+
+   public int getDecimalDigits() {
+      return decimalDigits;
+   }
+
+   public int getNullable() {
+      return nullable;
    }
 }

@@ -49,6 +49,9 @@ public class DatasourceHelper {
    public static final String TABLE_TYPES = "TableTypes";
    public static final String ERROR = "<b>ERROR</b>";
 
+   private DatasourceHelper() {
+   }
+
    /**
     * Determines data sources configured in Tomcat.
     *
@@ -68,7 +71,7 @@ public class DatasourceHelper {
             results.add(bindings.next().getName());
          }
       } catch (NamingException e) {
-         results.add(e.toString()); // do nothing
+         results.add(e.toString());
       } finally {
          Thread.currentThread().setContextClassLoader(origCL);
       }
@@ -124,7 +127,9 @@ public class DatasourceHelper {
             if (con != null) {
                con.close();
             }
-         } catch (SQLException ex1) { /* do nothing */ }
+         } catch (SQLException ex1) {
+            // do nothing
+         }
       }
       return databaseMetadata;
    }
@@ -135,6 +140,7 @@ public class DatasourceHelper {
       while (rs.next()) {
          catalogNames.add(rs.getString(1));
       }
+      rs.close();
       return catalogNames;
    }
 
@@ -144,6 +150,7 @@ public class DatasourceHelper {
       while (rs.next()) {
          tableTypes.add(rs.getString(1));
       }
+      rs.close();
       return tableTypes;
    }
 
@@ -155,7 +162,7 @@ public class DatasourceHelper {
     * @param result Map to store attribute name and value in
     */
    private static void fillValue(DatabaseMetaData dbmd, String attribute, Map<String, String> result) {
-      final Class noparams[] = {};
+      final Class[] noparams = {};
       try {
          final Method m = dbmd.getClass().getMethod("get" + attribute, noparams);
          result.put(attribute, "" + m.invoke(dbmd, null));

@@ -84,14 +84,13 @@ abstract class AbstractDatabaseStructureMacroImpl {
            ContentPropertyManager contentPropertyManager) {
 
       _macroParams = new DatabaseStructureMacroParams(params);
-      final DatabaseMetaData dbmd = openDatabaseMetaData(_macroParams.getDatasource());
+      final DatabaseMetaData dbmd = openDatabaseMetaData();
       long[] times = new long[7];
       try {
          times[0] = System.currentTimeMillis();
          Map<String, TableDef> tables = getTables(dbmd);
          times[1] = System.currentTimeMillis();
          linkColumnsWithTables(tables, filterColumnsByName(getColumns(dbmd), _macroParams.getColumnNameRegEx()));
-         List<ColumnDef> columns = null; // free resources
          times[2] = System.currentTimeMillis();
          tables = filterTablesByName(filterTablesByType(tables, _macroParams.getTableTypes()), _macroParams.getTableNameRegEx());
          times[3] = System.currentTimeMillis();
@@ -101,7 +100,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
          times[4] = System.currentTimeMillis();
          List<KeysDef> keys = reduceToTableReferences(getForeignKeys(dbmd));
          times[5] = System.currentTimeMillis();
-         String s = buildDot(tables, columns, keys);
+         String s = buildDot(tables, keys);
          times[6] = System.currentTimeMillis();
 
          if (log.isInfoEnabled()) {
@@ -112,11 +111,11 @@ abstract class AbstractDatabaseStructureMacroImpl {
          }
          return s;
       } finally {
-         closeDatabaseMetaData(dbmd); // free resources
+         closeDatabaseMetaData();
       }
    }
 
-   private String buildDot(Map<String, TableDef> tables, List<ColumnDef> columns, List<KeysDef> keys) {
+   private String buildDot(Map<String, TableDef> tables, List<KeysDef> keys) {
       final StringBuilder sb = new StringBuilder("digraph g {\n");
       sb.append("rankdir=LR;\n");
       sb.append("edge [arrowsize=\"0.8\"];");
@@ -154,28 +153,26 @@ abstract class AbstractDatabaseStructureMacroImpl {
 
    private void buildTableName(StringBuilder sb, TableDef table) {
       if (_macroParams.getTableTypes().size() != 1) {
-        sb.append("«").append(table.tableType).append("»\\n"); // show type if multiple are possible
+        sb.append("«").append(table.getTableType()).append("»\\n");
       }
-
       if (_macroParams.getSchemaName() == null) {
-         sb.append(table.tableSchema).append(".");
+         sb.append(table.getTableSchema()).append(".");
       }
-
-      sb.append(table.tableName);
+      sb.append(table.getTableName());
    }
 
    private void buildColumns(final StringBuilder sb, TableDef table) {
-      if (_macroParams.isShowColumns() && table.columns.size() > 0) {
+      if (_macroParams.isShowColumns() && !table.getColumns().isEmpty()) {
          sb.append(" | {");
-         for (ColumnDef c : table.columns) {
-            sb.append("+ ").append(c.columnName).append(": ").append(c.typeName);
-            if (c.typeName.contains("char") || c.typeName.contains("CHAR")) {
-               sb.append("(").append(c.columnSize).append(")");
+         for (ColumnDef c : table.getColumns()) {
+            sb.append("+ ").append(c.getColumnName()).append(": ").append(c.getTypeName());
+            if (c.getTypeName().contains("char") || c.getTypeName().contains("CHAR")) {
+               sb.append("(").append(c.getColumnSize()).append(")");
             }
-            if (c.typeName.startsWith("num") || c.typeName.startsWith("NUM")) {
-               sb.append("(").append(c.columnSize).append(",").append(c.decimalDigits).append(")");
+            if (c.getTypeName().startsWith("num") || c.getTypeName().startsWith("NUM")) {
+               sb.append("(").append(c.getColumnSize()).append(",").append(c.getDecimalDigits()).append(")");
             }
-            if (c.nullable == 0) {
+            if (c.getNullable() == 0) {
                sb.append(" \\{not null\\}");
             }
             sb.append("\\l");
@@ -185,20 +182,21 @@ abstract class AbstractDatabaseStructureMacroImpl {
    }
 
    private void buildIndexesInTables(final StringBuilder sb, TableDef table) {
-      if (_macroParams.isShowIndexes() && table.indices.size() > 0) {
+      if (_macroParams.isShowIndexes() && !table.getIndices().isEmpty()) {
          boolean first = true;
          sb.append(" | {");
-         for (IndexDef ix : table.indices) { // data are ordered
-            if (ix.ordinalPosition == 1) {
+         // data are ordered
+         for (IndexDef ix : table.getIndices()) {
+            if (ix.getOrdinalPosition() == 1) {
                if (!first) {
                   sb.append("\\l");
                } else {
                   first = false;
                }
-               sb.append(ix.indexName).append(":");
+               sb.append(ix.getIndexName()).append(":");
             }
-            if (ix.columnName != null) { // not table statistics
-               sb.append(" ").append(ix.columnName.replaceAll("\"", ""));
+            if (ix.getColumnName() != null) {
+               sb.append(" ").append(ix.getColumnName().replaceAll("\"", ""));
             }
          }
          sb.append("\\l}");
@@ -206,10 +204,10 @@ abstract class AbstractDatabaseStructureMacroImpl {
    }
 
    private void buildIndexRelations(final StringBuilder sb, TableDef currentTable, Map<String, TableDef> tables) {
-      for (IndexDef ix : currentTable.indices) {
-         if (ix.ordinalPosition == 1){
+      for (IndexDef ix : currentTable.getIndices()) {
+         if (ix.getOrdinalPosition() == 1) {
             for (TableDef referencedTable : tables.values()) {
-               if (ix.indexName.equals(referencedTable.tableName)) {
+               if (ix.getIndexName().equals(referencedTable.getTableName())) {
                   sb.append(cleanNodeId(currentTable.getTableId()))
                     .append(" -> ")
                     .append(cleanNodeId(referencedTable.getTableId()))
@@ -252,7 +250,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
       final Map<String, TableDef> result = new HashMap<String, TableDef>();
       for (Map.Entry<String, TableDef> entry : tables.entrySet()) {
          final TableDef t = entry.getValue();
-         if (t.tableType != null && tableTypes.contains(t.tableType)) {
+         if (t.getTableType() != null && tableTypes.contains(t.getTableType())) {
             result.put(entry.getKey(), t);
          }
       }
@@ -267,7 +265,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
       final Map<String, TableDef> result = new HashMap<String, TableDef>();
       for (Map.Entry<String, TableDef> entry : tables.entrySet()) {
          final TableDef t = entry.getValue();
-         if (t.tableName.matches(tableNameRegEx)) {
+         if (t.getTableName().matches(tableNameRegEx)) {
             result.put(entry.getKey(), t);
          }
       }
@@ -281,16 +279,31 @@ abstract class AbstractDatabaseStructureMacroImpl {
 
       final List<ColumnDef> result = new LinkedList<ColumnDef>();
       for (ColumnDef c : columns) {
-         if (c.columnName.matches(columnNameRegEx)) {
+         if (c.getColumnName().matches(columnNameRegEx)) {
             result.add(c);
          }
       }
       return result;
    }
 
+   private void sqlException(SQLException e) {
+      _errorMessage = e.getMessage();
+      log.error("SQLException " + _macroParams.getDatasource() + ": " + _errorMessage);
+   }
+
+   private void closeResource(ResultSet rs) {
+      try {
+         if (rs != null) {
+            rs.close();
+         }
+      } catch (SQLException e) {
+         log.debug("Exception closing ResultSet: " + e.getMessage());
+      }
+   }
+
    private void linkColumnsWithTables(Map<String, TableDef> tables, List<ColumnDef> columns) {
       for (ColumnDef column : columns) {
-         tables.get(column.getTableId()).columns.add(column);
+         tables.get(column.getTableId()).getColumns().add(column);
       }
    }
 
@@ -309,14 +322,9 @@ abstract class AbstractDatabaseStructureMacroImpl {
                }
             }
          } catch (SQLException e) {
-            _errorMessage = e.getMessage();
-            log.error("SQLException " + _macroParams.getDatasource() + ": " + _errorMessage);
+            sqlException(e);
          } finally {
-            try {
-               if (rs != null) {
-                  rs.close();
-               }
-            } catch (SQLException e) { /* do nothing */ }
+            closeResource(rs);
          }
       }
       return result;
@@ -338,14 +346,9 @@ abstract class AbstractDatabaseStructureMacroImpl {
                }
             }
          } catch (SQLException e) {
-            _errorMessage = e.getMessage();
-            log.error("SQLException " + _macroParams.getDatasource() + ": " + _errorMessage);
+            sqlException(e);
          } finally {
-            try {
-               if (rs != null) {
-                  rs.close();
-               }
-            } catch (SQLException e) { /* do nothing */ }
+            closeResource(rs);
          }
       }
       return result;
@@ -367,14 +370,9 @@ abstract class AbstractDatabaseStructureMacroImpl {
                }
             }
          } catch (SQLException e) {
-            _errorMessage = e.getMessage();
-            log.error("SQLException " + _macroParams.getDatasource() + ": " + _errorMessage);
+            sqlException(e);
          } finally {
-            try {
-               if (rs != null) {
-                  rs.close();
-               }
-            } catch (SQLException e) { /* do nothing */ }
+            closeResource(rs);
          }
       }
       return result;
@@ -386,8 +384,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
       if (_errorMessage == null && (_macroParams.isShowIndexes() || _macroParams.getTableTypes().contains("INDEX"))) {
          ResultSet rs = null;
          try {
-            rs = dbmd.getIndexInfo(t.tableCatalog, t.tableSchema, t.tableName, false /* also non-unique */, true /* approximate */);
-
+            rs = dbmd.getIndexInfo(t.getTableCatalog(), t.getTableSchema(), t.getTableName(), false, true);
             while (rs.next()) {
                IndexDef tmp = new IndexDef(rs.getString(1), rs.getString(2), rs.getString(3),
                        rs.getString(5), rs.getString(6), rs.getShort(8), rs.getString(9));
@@ -397,17 +394,12 @@ abstract class AbstractDatabaseStructureMacroImpl {
                }
             }
          } catch (SQLException e) {
-            _errorMessage = e.getMessage();
-            log.error("SQLException " + _macroParams.getDatasource() + ": " + _errorMessage);
+            sqlException(e);
          } finally {
-            try {
-               if (rs != null) {
-                  rs.close();
-               }
-            } catch (SQLException e) { /* do nothing */ }
+            closeResource(rs);
          }
       }
-      t.indices = result;
+      t.setIndices(result);
    }
 
    /**
@@ -418,7 +410,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
     * @param jdbcName Database which is configured at "java:comp/env/jdbc/<jdbcName>"
     * @return Connection or null if none could be made. _errorMessage contains reason in the latter case.
     */
-   private DatabaseMetaData openDatabaseMetaData(String jdbcName) {
+   private DatabaseMetaData openDatabaseMetaData() {
       Context jndiContext = null;
       DatabaseMetaData dbmd = null;
       try {
@@ -427,9 +419,8 @@ abstract class AbstractDatabaseStructureMacroImpl {
          try {
             _con = ds.getConnection();
             dbmd = _con.getMetaData();
-         } catch (SQLException ex) {
-            _errorMessage = ex.getMessage();
-            log.error("SQLException " + _macroParams.getDatasource() + ": " + _errorMessage);
+         } catch (SQLException e) {
+            sqlException(e);
          }
       } catch (NamingException ex) {
          _errorMessage = ex.getMessage();
@@ -438,7 +429,9 @@ abstract class AbstractDatabaseStructureMacroImpl {
          if (jndiContext != null) {
             try {
                jndiContext.close();
-            } catch (NamingException ex2) { /* do nothing */ }
+            } catch (NamingException ex2) {
+               log.debug("Exception closing JNDI context: " + ex2.getMessage());
+            }
          }
       }
       return dbmd;
@@ -449,11 +442,13 @@ abstract class AbstractDatabaseStructureMacroImpl {
     *
     * @param dbmd Database meta data retrieved by calling openDatabaseMetaData
     */
-   private void closeDatabaseMetaData(DatabaseMetaData dbmd) {
+   private void closeDatabaseMetaData() {
       try {
          if (_con != null) {
             _con.close();
          }
-      } catch (SQLException ex) { /* do nothing */ }
+      } catch (SQLException e) {
+         log.debug("Exception closing connection: " + e.getMessage());
+      }
    }
 }

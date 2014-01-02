@@ -24,22 +24,12 @@
  */
 package de.griffel.confluence.plugins.plantuml.db;
 
-
-/**
- *
- * @author chris
- */
 public class IndexDef extends BaseDef {
-   // boolean nonUnique; // Can index values be non-unique. false when TYPE is tableIndexStatistic
-   public String indexQualifier; // index catalog (may be null); null when TYPE is tableIndexStatistic
-   public String indexName; // null when TYPE is tableIndexStatistic
-   // public short type; // tableIndexStatistic,  tableIndexClustered, tableIndexHashed, tableIndexOther
-   public short ordinalPosition; // column sequence number within index; zero when TYPE is tableIndexStatistic
-   public String columnName; // null when TYPE is tableIndexStatistic
-   // String columnSort; // "A" => ascending, "D" => descending, may be null if sort sequence is not supported; null when TYPE is tableIndexStatistic
-   // int cardinality; // When TYPE is tableIndexStatistic, then this is the number of rows in the table; otherwise, it is the number of unique values in the index.
-   // int pages; // When TYPE is tableIndexStatisic then this is the number of pages used for the table, otherwise it is the number of pages used for the current index.
-   // String filterCondition; // Filter condition, if any. (may be null)
+
+   private final String indexQualifier;
+   private final String indexName;
+   private final short ordinalPosition;
+   private final String columnName;
 
    public IndexDef(String tc, String ts, String tn, String iq, String in, short op, String cn) {
       tableCatalog = tc;
@@ -52,10 +42,26 @@ public class IndexDef extends BaseDef {
    }
 
    public String getColumnId() {
-      return getTableId() + "." + columnName;
+      return getTableId() + "." + getColumnName();
    }
 
    public String getIndexId() {
-      return indexQualifier + "." + indexName + "." + ordinalPosition + ": " + getColumnId();
+      return getIndexQualifier() + "." + getIndexName() + "." + getOrdinalPosition() + ": " + getColumnId();
+   }
+
+   public String getIndexQualifier() {
+      return indexQualifier;
+   }
+
+   public String getIndexName() {
+      return indexName;
+   }
+
+   public short getOrdinalPosition() {
+      return ordinalPosition;
+   }
+
+   public String getColumnName() {
+      return columnName;
    }
 }
