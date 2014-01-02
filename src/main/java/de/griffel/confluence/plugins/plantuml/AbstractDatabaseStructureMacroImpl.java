@@ -85,16 +85,32 @@ abstract class AbstractDatabaseStructureMacroImpl {
 
       _macroParams = new DatabaseStructureMacroParams(params);
       final DatabaseMetaData dbmd = openDatabaseMetaData(_macroParams.getDatasource());
-
+      long[] times = new long[7];
       try {
+         times[0] = System.currentTimeMillis();
          Map<String, TableDef> tables = getTables(dbmd);
+         times[1] = System.currentTimeMillis();
          linkColumnsWithTables(tables, filterColumnsByName(getColumns(dbmd), _macroParams.getColumnNameRegEx()));
          List<ColumnDef> columns = null; // free resources
+         times[2] = System.currentTimeMillis();
          tables = filterTablesByName(filterTablesByType(tables, _macroParams.getTableTypes()), _macroParams.getTableNameRegEx());
+         times[3] = System.currentTimeMillis();
          for (Map.Entry<String, TableDef> entry : tables.entrySet()) {
             addIndexDetails(dbmd, tables.get(entry.getKey()));
          }
-         return buildDot(tables, columns, reduceToTableReferences(getForeignKeys(dbmd)));
+         times[4] = System.currentTimeMillis();
+         List<KeysDef> keys = reduceToTableReferences(getForeignKeys(dbmd));
+         times[5] = System.currentTimeMillis();
+         String s = buildDot(tables, columns, keys);
+         times[6] = System.currentTimeMillis();
+
+         if (log.isInfoEnabled()) {
+            log.info("Preparting DOT diagramm took " + (times[6] - times[0]) + " ms ("
+                    + "Tables "          + (times[1] - times[0]) + ", Columns "  + (times[2] - times[1])
+                    + ", Filter Tables " + (times[3] - times[2]) + ", Indexes "  + (times[4] - times[3])
+                    + ", Foreign Keys "  + (times[5] - times[4]) + ", DOT "      + (times[6] - times[5]) + ")");
+         }
+         return s;
       } finally {
          closeDatabaseMetaData(dbmd); // free resources
       }
@@ -288,7 +304,9 @@ abstract class AbstractDatabaseStructureMacroImpl {
             while (rs.next()) {
                TableDef tmp = new TableDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
                result.put(tmp.getTableId(), tmp);
-               log.debug(tmp.display());
+               if (log.isDebugEnabled()) {
+                  log.debug(tmp.display());
+               }
             }
          } catch (SQLException e) {
             _errorMessage = e.getMessage();
@@ -315,7 +333,9 @@ abstract class AbstractDatabaseStructureMacroImpl {
                ColumnDef tmp = new ColumnDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
                        rs.getString(6), rs.getInt(7), rs.getInt(9), rs.getInt(11));
                result.add(tmp);
-               log.debug(tmp.getColumnId());
+               if (log.isDebugEnabled()) {
+                  log.debug(tmp.getColumnId());
+               }
             }
          } catch (SQLException e) {
             _errorMessage = e.getMessage();
@@ -342,7 +362,9 @@ abstract class AbstractDatabaseStructureMacroImpl {
                KeysDef tmp = new KeysDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8));
                result.add(tmp);
-               log.debug(tmp.getKeysColumnId());
+               if (log.isDebugEnabled()) {
+                  log.debug(tmp.getKeysColumnId());
+               }
             }
          } catch (SQLException e) {
             _errorMessage = e.getMessage();
@@ -370,7 +392,9 @@ abstract class AbstractDatabaseStructureMacroImpl {
                IndexDef tmp = new IndexDef(rs.getString(1), rs.getString(2), rs.getString(3),
                        rs.getString(5), rs.getString(6), rs.getShort(8), rs.getString(9));
                result.add(tmp);
-               log.debug(tmp.getIndexId());
+               if (log.isDebugEnabled()) {
+                  log.debug(tmp.getIndexId());
+               }
             }
          } catch (SQLException e) {
             _errorMessage = e.getMessage();
