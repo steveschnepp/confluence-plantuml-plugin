@@ -29,15 +29,9 @@ import java.util.List;
 
 public class TableDef extends BaseDef {
 
-   public String tableType;    // Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
-   // public String remarks;      // explanatory comment on the table, may be null
-   // String typeCatalog;  // may be null
-   // String typeSchema;   // may be null
-   // String typeName;     // may be null
-   // String selfReferencingColName; // name of the designated "identifier" column of a typed table, may be null
-   // String refGeneration; // specifies how values in SELF_REFERENCING_COL_NAME are created. Values are "SYSTEM", "USER", "DERIVED". (may be null)
-   public List<ColumnDef> columns;
-   public List<IndexDef> indices;
+   private final String tableType;
+   private final List<ColumnDef> columns;
+   private List<IndexDef> indices;
 
    public TableDef(String tc, String ts, String tn, String tt) {
       tableCatalog = tc;
@@ -50,4 +44,21 @@ public class TableDef extends BaseDef {
    public String display() {
       return tableCatalog + "." + tableSchema + "." + tableName;
    }
+
+   public String getTableType() {
+      return tableType;
+   }
+
+   public List<ColumnDef> getColumns() {
+      return columns;
+   }
+
+   public List<IndexDef> getIndices() {
+      return indices;
+   }
+
+   public void setIndices(List<IndexDef> indices) {
+      this.indices = indices;
+   }
+
 }

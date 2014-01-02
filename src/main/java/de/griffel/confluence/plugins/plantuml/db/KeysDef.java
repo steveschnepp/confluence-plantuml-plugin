@@ -24,26 +24,16 @@
  */
 package de.griffel.confluence.plugins.plantuml.db;
 
-
-/**
- *
- * @author chris
- */
 public class KeysDef {
-   public String tableCatalogPk; // may be null
-   public String tableSchemaPk; // may be null
-   public String tableNamePk;
-   public String columnNamePk;
-   public String tableCatalogFk; // may be null
-   public String tableSchemaFk; // may be null
-   public String tableNameFk;
-   public String columnNameFk;
-   // public short keySeqNumber; // sequence number within a foreign key
-   // short updateRule;
-   // short deleteRule;
-   // public String namePk; // may be null
-   // pubic String nameFk; // may be null
-   // short deferability;
+
+   private final String tableCatalogPk;
+   private final String tableSchemaPk;
+   private final String tableNamePk;
+   private final String columnNamePk;
+   private final String tableCatalogFk;
+   private final String tableSchemaFk;
+   private final String tableNameFk;
+   private final String columnNameFk;
 
    public KeysDef(String tcp, String tsp, String tnp, String cnp, String tcf, String tsf, String tnf, String cnf) {
       tableCatalogPk = tcp;
@@ -57,19 +47,19 @@ public class KeysDef {
    }
 
    public String getPkTableId() {
-      return tableCatalogPk + "." + tableSchemaPk + "." + tableNamePk;
+      return getTableCatalogPk() + "." + getTableSchemaPk() + "." + getTableNamePk();
    }
 
    public String getFkTableId() {
-      return tableCatalogFk + "." + tableSchemaFk + "." + tableNameFk;
+      return getTableCatalogFk() + "." + getTableSchemaFk() + "." + getTableNameFk();
    }
 
    public String getPkColumnId() {
-      return getPkTableId() + "." + columnNamePk;
+      return getPkTableId() + "." + getColumnNamePk();
    }
 
    public String getFkColumnId() {
-      return getFkTableId() + "." + columnNameFk;
+      return getFkTableId() + "." + getColumnNameFk();
    }
 
    public String getKeysTableId() {
@@ -78,6 +68,38 @@ public class KeysDef {
 
    public String getKeysColumnId() {
       return getPkColumnId() + " -> " + getFkColumnId();
+   }
+
+   public String getTableCatalogPk() {
+      return tableCatalogPk;
+   }
+
+   public String getTableSchemaPk() {
+      return tableSchemaPk;
+   }
+
+   public String getTableNamePk() {
+      return tableNamePk;
+   }
+
+   public String getColumnNamePk() {
+      return columnNamePk;
+   }
+
+   public String getTableCatalogFk() {
+      return tableCatalogFk;
+   }
+
+   public String getTableSchemaFk() {
+      return tableSchemaFk;
+   }
+
+   public String getTableNameFk() {
+      return tableNameFk;
+   }
+
+   public String getColumnNameFk() {
+      return columnNameFk;
    }
 
 }

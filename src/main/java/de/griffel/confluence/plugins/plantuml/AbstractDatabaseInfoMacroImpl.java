@@ -66,9 +66,9 @@ abstract class AbstractDatabaseInfoMacroImpl {
      * Create HTML table
      */
     public String createResult(Map<String, String> params, PageContext pageContext) {
-        final DatabaseInfoMacroParams _macroParams = new DatabaseInfoMacroParams(params);
+        final DatabaseInfoMacroParams macroParams = new DatabaseInfoMacroParams(params);
         final Map<String, Map<String, String>> data = new HashMap<String, Map<String, String>>();
-        final List<String> datasources = _macroParams.getDatasources();
+        final List<String> datasources = macroParams.getDatasources();
 
         for (String datasourceName : datasources) { 
             final DataSource ds = DatasourceHelper.getDatasource(datasourceName);
@@ -77,7 +77,7 @@ abstract class AbstractDatabaseInfoMacroImpl {
                 m = new HashMap<String,String>();
                 m.put(getLocalizedMessage(KEY_ERROR), getLocalizedMessage(KEY_DS_NOT_EXIST));
             } else {
-                m = DatasourceHelper.getDatabaseMetadata(ds, _macroParams.getAttributes());
+                m = DatasourceHelper.getDatabaseMetadata(ds, macroParams.getAttributes());
             }
             data.put(datasourceName, m);
         }
@@ -106,7 +106,7 @@ abstract class AbstractDatabaseInfoMacroImpl {
      */
     public String formatTable(Map<String, Map<String, String>> data, List<String> datasourceNames) {
         final Set<String> allAttributes = new TreeSet<String>();
-        final StringBuffer sb = new StringBuffer("<table><tr><th>");
+        final StringBuilder sb = new StringBuilder("<table><tr><th>");
         sb.append(getLocalizedMessage(KEY_ATTRIBUTE)).append("</th>");
 
         for (String datasourceName : datasourceNames) {
