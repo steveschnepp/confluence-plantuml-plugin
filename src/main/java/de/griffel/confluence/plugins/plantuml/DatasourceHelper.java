@@ -41,6 +41,8 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DatasourceHelper {
 
@@ -48,6 +50,7 @@ public class DatasourceHelper {
    public static final String CATALOGS = "Catalogs";
    public static final String TABLE_TYPES = "TableTypes";
    public static final String ERROR = "<b>ERROR</b>";
+   private static final Logger log = LoggerFactory.getLogger(DatasourceHelper.class);
 
    private DatasourceHelper() {
    }
@@ -71,6 +74,7 @@ public class DatasourceHelper {
             results.add(bindings.next().getName());
          }
       } catch (NamingException e) {
+         log.debug("NamingException listBindings", e);
          results.add(e.toString());
       } finally {
          Thread.currentThread().setContextClassLoader(origCL);
@@ -92,6 +96,7 @@ public class DatasourceHelper {
          final InitialContext jndiContext = new InitialContext();
          return (javax.sql.DataSource) jndiContext.lookup(JDBC_CONTEXT + "/" + name);
       } catch (NamingException e) {
+         log.debug("NamingException lookup", e);
          return null;
       } finally {
          Thread.currentThread().setContextClassLoader(origCL);
@@ -120,15 +125,16 @@ public class DatasourceHelper {
                fillValue(dbmd, attribute, databaseMetadata);
             }
          }
-      } catch (SQLException ex) {
-         databaseMetadata.put(ERROR, ex.getMessage());
+      } catch (SQLException e) {
+         log.debug("SQLException accessing metadata", e);
+         databaseMetadata.put(ERROR, e.getMessage());
       } finally {
          try {
             if (con != null) {
                con.close();
             }
-         } catch (SQLException ex1) {
-            // do nothing
+         } catch (SQLException ex) {
+            log.debug("SQLException closing connection", ex);
          }
       }
       return databaseMetadata;
@@ -166,15 +172,20 @@ public class DatasourceHelper {
       try {
          final Method m = dbmd.getClass().getMethod("get" + attribute, noparams);
          result.put(attribute, "" + m.invoke(dbmd, null));
-      } catch (IllegalAccessException ex) {
+      } catch (IllegalAccessException e) {
+         log.debug("IllegalAccess", e);
          result.put(attribute, ERROR);
-      } catch (IllegalArgumentException ex) {
+      } catch (IllegalArgumentException e) {
+         log.debug("IllegalArgument", e);
          result.put(attribute, ERROR);
-      } catch (NoSuchMethodException ex) {
+      } catch (NoSuchMethodException e) {
+         log.debug("NoSuchMethod", e);
          result.put(attribute, ERROR);
-      } catch (SecurityException ex) {
+      } catch (SecurityException e) {
+         log.debug("Security", e);
          result.put(attribute, ERROR);
-      } catch (InvocationTargetException ex) {
+      } catch (InvocationTargetException e) {
+         log.debug("InvocationTarget", e);
          result.put(attribute, ERROR);
       }
    }
