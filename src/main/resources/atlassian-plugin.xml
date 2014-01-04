@@ -249,7 +249,7 @@
            documentation-url="${project.url}/Macro database-structure">
       <category name="visuals"/>
       <parameters>
-         <parameter name="datasource" type="string"/>
+         <parameter name="datasource" type="string" required="true"/>
          <parameter name="schemaName" type="string"/>
          <parameter name="tableTypes" type="string" default="TABLE" />
          <parameter name="tableNameFilter" type="string"/>
@@ -281,7 +281,7 @@
       <device-type>mobile</device-type>
       <category name="visuals"/>
       <parameters>
-         <parameter name="datasource" type="string"/>
+         <parameter name="datasource" type="string" required="true"/>
          <parameter name="schemaName" type="string"/>
          <parameter name="tableTypes" type="string" default="TABLE" />
          <parameter name="tableNameFilter" type="string"/>
