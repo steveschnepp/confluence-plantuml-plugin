@@ -286,9 +286,9 @@ abstract class AbstractDatabaseStructureMacroImpl {
       return result;
    }
 
-   private void sqlException(SQLException e) {
+   private void sqlException(String datasource, SQLException e) {
       _errorMessage = e.getMessage();
-      log.error("SQLException " + _macroParams.getDatasource() + ": " + _errorMessage);
+      log.error("SQLException " + datasource, e);
    }
 
    private void closeResource(ResultSet rs) {
@@ -297,7 +297,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
             rs.close();
          }
       } catch (SQLException e) {
-         log.debug("Exception closing ResultSet: " + e.getMessage());
+         log.debug("Exception closing ResultSet", e);
       }
    }
 
@@ -322,7 +322,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
                }
             }
          } catch (SQLException e) {
-            sqlException(e);
+            sqlException(_macroParams.getDatasource(), e);
          } finally {
             closeResource(rs);
          }
@@ -346,7 +346,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
                }
             }
          } catch (SQLException e) {
-            sqlException(e);
+            sqlException(_macroParams.getDatasource(), e);
          } finally {
             closeResource(rs);
          }
@@ -370,7 +370,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
                }
             }
          } catch (SQLException e) {
-            sqlException(e);
+            sqlException(_macroParams.getDatasource(), e);
          } finally {
             closeResource(rs);
          }
@@ -394,7 +394,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
                }
             }
          } catch (SQLException e) {
-            sqlException(e);
+            sqlException(_macroParams.getDatasource(), e);
          } finally {
             closeResource(rs);
          }
@@ -420,17 +420,17 @@ abstract class AbstractDatabaseStructureMacroImpl {
             _con = ds.getConnection();
             dbmd = _con.getMetaData();
          } catch (SQLException e) {
-            sqlException(e);
+            sqlException(_macroParams.getDatasource(), e);
          }
-      } catch (NamingException ex) {
-         _errorMessage = ex.getMessage();
-         log.error("NamingException " + _macroParams.getDatasource() + ": " + _errorMessage);
+      } catch (NamingException e) {
+         _errorMessage = e.getMessage();
+         log.error("NamingException " + _macroParams.getDatasource() + _errorMessage, e);
       } finally {
          if (jndiContext != null) {
             try {
                jndiContext.close();
-            } catch (NamingException ex2) {
-               log.debug("Exception closing JNDI context: " + ex2.getMessage());
+            } catch (NamingException e2) {
+               log.debug("Exception closing JNDI context", e2);
             }
          }
       }
@@ -448,7 +448,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
             _con.close();
          }
       } catch (SQLException e) {
-         log.debug("Exception closing connection: " + e.getMessage());
+         log.debug("Exception closing connection", e);
       }
    }
 }
