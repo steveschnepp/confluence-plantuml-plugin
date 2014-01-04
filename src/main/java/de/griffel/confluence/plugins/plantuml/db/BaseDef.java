@@ -24,24 +24,47 @@
  */
 package de.griffel.confluence.plugins.plantuml.db;
 
+/**
+ * Base DAO for database objects.
+ */
 abstract public class BaseDef {
 
    protected String tableCatalog;
    protected String tableSchema;
    protected String tableName;
 
+   /**
+    * Returns full qualified name on table level.
+    *
+    * @return Full qualified name.
+    */
    public String getTableId() {
       return tableCatalog + "." + tableSchema + "." + tableName;
    }
 
+   /**
+    * Returns table catalog.
+    *
+    * @return Table catalog
+    */
    public String getTableCatalog() {
       return tableCatalog;
    }
 
+   /**
+    * Returns table schema.
+    *
+    * @return Table schema
+    */
    public String getTableSchema() {
       return tableSchema;
    }
 
+   /**
+    * Returns table name.
+    *
+    * @return Table name
+    */
    public String getTableName() {
       return tableName;
    }

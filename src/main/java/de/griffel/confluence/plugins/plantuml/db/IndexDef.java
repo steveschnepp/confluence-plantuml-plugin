@@ -24,6 +24,9 @@
  */
 package de.griffel.confluence.plugins.plantuml.db;
 
+/**
+ * DAO for indices of a database table.
+ */
 public class IndexDef extends BaseDef {
 
    private final String indexQualifier;
@@ -31,6 +34,16 @@ public class IndexDef extends BaseDef {
    private final short ordinalPosition;
    private final String columnName;
 
+   /**
+    * Create object.
+    * @param tc Table catalog
+    * @param ts Table schema
+    * @param tn Table name
+    * @param iq Index qualifier
+    * @param in Index name
+    * @param op Ordinal position
+    * @param cn Column name
+    */
    public IndexDef(String tc, String ts, String tn, String iq, String in, short op, String cn) {
       tableCatalog = tc;
       tableSchema = ts;
@@ -41,26 +54,50 @@ public class IndexDef extends BaseDef {
       columnName = cn;
    }
 
+   /**
+    * Returns full qualified name on column level
+    * @return Full qualified name on column level
+    */
    public String getColumnId() {
       return getTableId() + "." + getColumnName();
    }
 
+   /**
+    * Returns full qualified name
+    * @return Full qualified name
+    */
    public String getIndexId() {
       return getIndexQualifier() + "." + getIndexName() + "." + getOrdinalPosition() + ": " + getColumnId();
    }
 
+   /**
+    * Returns index qualifier.
+    * @return Index qualifier
+    */
    public String getIndexQualifier() {
       return indexQualifier;
    }
 
+   /**
+    * Returns name of index.
+    * @return Index name
+    */
    public String getIndexName() {
       return indexName;
    }
 
+   /**
+    * Returns ordinal position.
+    * @return Ordinal position.
+    */
    public short getOrdinalPosition() {
       return ordinalPosition;
    }
 
+   /**
+    * Returns column name
+    * @return Column name
+    */
    public String getColumnName() {
       return columnName;
    }

@@ -27,12 +27,22 @@ package de.griffel.confluence.plugins.plantuml.db;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * DAO for database tables.
+ */
 public class TableDef extends BaseDef {
 
    private final String tableType;
    private final List<ColumnDef> columns;
    private List<IndexDef> indices;
 
+   /**
+    * Create new object.
+    * @param tc Table catalog
+    * @param ts Table schema
+    * @param tn Table name
+    * @param tt Table type
+    */
    public TableDef(String tc, String ts, String tn, String tt) {
       tableCatalog = tc;
       tableSchema = ts;
@@ -41,22 +51,42 @@ public class TableDef extends BaseDef {
       columns = new LinkedList<ColumnDef>();
    }
 
+   /**
+    * Returns full qualified name of table.
+    * @return Full qualified name
+    */
    public String display() {
       return tableCatalog + "." + tableSchema + "." + tableName;
    }
 
+   /**
+    * Returns table type
+    * @return table type
+    */
    public String getTableType() {
       return tableType;
    }
 
+   /**
+    * Returns List of columns in this table
+    * @return List of columns. List might by empty.
+    */
    public List<ColumnDef> getColumns() {
       return columns;
    }
 
+   /**
+    * Returns List of indices in this table.
+    * @return List of indices. Will be null if not set explicitely.
+    */
    public List<IndexDef> getIndices() {
       return indices;
    }
 
+   /**
+    * Set indices which belong to this table.
+    * @param indices List of indices.
+    */
    public void setIndices(List<IndexDef> indices) {
       this.indices = indices;
    }
