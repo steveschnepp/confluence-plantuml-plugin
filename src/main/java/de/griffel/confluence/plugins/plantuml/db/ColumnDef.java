@@ -24,6 +24,9 @@
  */
 package de.griffel.confluence.plugins.plantuml.db;
 
+/**
+ * DAO for columns of a database table.
+ */
 public class ColumnDef extends BaseDef {
 
    private final String columnName;
@@ -32,6 +35,18 @@ public class ColumnDef extends BaseDef {
    private final int decimalDigits;
    private final int nullable;
 
+   /**
+    * Create object.
+    *
+    * @param tc Table catalog
+    * @param ts Table schema
+    * @param tn Table name
+    * @param cn Column name
+    * @param tyn Name of datatype
+    * @param cs Size of column
+    * @param dd Number of decimal digits
+    * @param n Nullable
+    */
    public ColumnDef(String tc, String ts, String tn, String cn, String tyn, int cs, int dd, int n) {
       tableCatalog = tc;
       tableSchema = ts;
@@ -43,26 +58,56 @@ public class ColumnDef extends BaseDef {
       nullable = n;
    }
 
+   /**
+    * Returns full qualified column name.
+    *
+    * @return Full qualified column name
+    */
    public String getColumnId() {
       return getTableId() + "." + getColumnName();
    }
 
+   /**
+    * Returns column name.
+    *
+    * @return Column name
+    */
    public String getColumnName() {
       return columnName;
    }
 
+   /**
+    * Returns name of data type.
+    *
+    * @return Data type name
+    */
    public String getTypeName() {
       return typeName;
    }
 
+   /**
+    * Returns size of column.
+    *
+    * @return Column size
+    */
    public int getColumnSize() {
       return columnSize;
    }
 
+   /**
+    * Returns number of decimal digits.
+    *
+    * @return Number of decimal digits.
+    */
    public int getDecimalDigits() {
       return decimalDigits;
    }
 
+   /**
+    * Is column nullable.
+    *
+    * @return <tt>true</tt> if column is nullable
+    */
    public int getNullable() {
       return nullable;
    }

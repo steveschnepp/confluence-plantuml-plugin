@@ -24,6 +24,9 @@
  */
 package de.griffel.confluence.plugins.plantuml.db;
 
+/**
+ * DAO for primary/foreign keys of a database table.
+ */
 public class KeysDef {
 
    private final String tableCatalogPk;
@@ -35,6 +38,18 @@ public class KeysDef {
    private final String tableNameFk;
    private final String columnNameFk;
 
+   /**
+    * Create new object
+    *
+    * @param tcp Table catalog of primary key
+    * @param tsp Table schema of primary key
+    * @param tnp Table name of primary key
+    * @param cnp Column name of primary key
+    * @param tcf Table catalog of foreign key
+    * @param tsf Table schema of foreign key
+    * @param tnf Table name of foreign key
+    * @param cnf Column name of foreign key
+    */
    public KeysDef(String tcp, String tsp, String tnp, String cnp, String tcf, String tsf, String tnf, String cnf) {
       tableCatalogPk = tcp;
       tableSchemaPk = tsp;
@@ -46,58 +61,128 @@ public class KeysDef {
       columnNameFk = cnf;
    }
 
+   /**
+    * Returns full qualified name of primary key on table level.
+    *
+    * @return Full qualified name of primary key on table level
+    */
    public String getPkTableId() {
       return getTableCatalogPk() + "." + getTableSchemaPk() + "." + getTableNamePk();
    }
 
+   /**
+    * Returns full qualified name of foreign key on table level.
+    *
+    * @return Full qualified name of foreign on table level
+    */
    public String getFkTableId() {
       return getTableCatalogFk() + "." + getTableSchemaFk() + "." + getTableNameFk();
    }
 
+   /**
+    * Returns full qualified name of primary key on column level.
+    *
+    * @return Full qualified name of primary key on column level
+    */
    public String getPkColumnId() {
       return getPkTableId() + "." + getColumnNamePk();
    }
 
+   /**
+    * Full qualified name of foreign key on column level
+    *
+    * @return Full qualified name of foreign key on column level
+    */
    public String getFkColumnId() {
       return getFkTableId() + "." + getColumnNameFk();
    }
 
+   /**
+    * Returns primary+foreign key on table level.
+    *
+    * @return Primary+foreign key name on table level
+    */
    public String getKeysTableId() {
       return getPkTableId() + " -> " + getFkTableId();
    }
 
+   /**
+    * Returns primary+foreign key on column level.
+    *
+    * @return Primary+foreign key on column level
+    */
    public String getKeysColumnId() {
       return getPkColumnId() + " -> " + getFkColumnId();
    }
 
+   /**
+    * Returns table catalog of primary key.
+    *
+    * @return Table catalog of primary key
+    */
    public String getTableCatalogPk() {
       return tableCatalogPk;
    }
 
+   /**
+    * Returns table schema of primary key.
+    *
+    * @return table schema of primary key
+    */
    public String getTableSchemaPk() {
       return tableSchemaPk;
    }
 
+   /**
+    * Returns table name of primary key
+    *
+    * @return Table name of primary key
+    */
    public String getTableNamePk() {
       return tableNamePk;
    }
 
+   /**
+    * Returns column name of primary key
+    *
+    * @return Column name of primary key
+    */
    public String getColumnNamePk() {
       return columnNamePk;
    }
 
+   /**
+    * Returns table catalog of foreign key.
+    *
+    * @return Table catalog of foreign key
+    */
    public String getTableCatalogFk() {
       return tableCatalogFk;
    }
 
+   /**
+    * Returns table schema of foreign key.
+    *
+    * @return table schema of foreign key
+    */
    public String getTableSchemaFk() {
       return tableSchemaFk;
    }
 
+   /**
+    * Returns table name of foreign key
+    *
+    * @return Table name of foreign key
+    */
    public String getTableNameFk() {
       return tableNameFk;
    }
 
+   /**
+    * Returns column name of foreign key
+    *
+    * @return Column name of foreign key
+    */
    public String getColumnNameFk() {
       return columnNameFk;
    }
