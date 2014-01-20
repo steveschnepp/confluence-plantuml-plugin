@@ -34,6 +34,8 @@ public class ColumnDef extends BaseDef {
    private final int columnSize;
    private final int decimalDigits;
    private final int nullable;
+   private final String comment;
+   private final String defaultValue;
 
    /**
     * Create object.
@@ -46,8 +48,10 @@ public class ColumnDef extends BaseDef {
     * @param cs Size of column
     * @param dd Number of decimal digits
     * @param n Nullable
+    * @param c Comment
+    * @param dv Default Value
     */
-   public ColumnDef(String tc, String ts, String tn, String cn, String tyn, int cs, int dd, int n) {
+   public ColumnDef(String tc, String ts, String tn, String cn, String tyn, int cs, int dd, int n, String c, String dv) {
       tableCatalog = tc;
       tableSchema = ts;
       tableName = tn;
@@ -56,6 +60,8 @@ public class ColumnDef extends BaseDef {
       columnSize = cs;
       decimalDigits = dd;
       nullable = n;
+      comment = c;
+      defaultValue = dv;
    }
 
    /**
@@ -110,5 +116,21 @@ public class ColumnDef extends BaseDef {
     */
    public int getNullable() {
       return nullable;
+   }
+
+   /**
+    * Returns comment.
+    * @return Comment
+    */
+   public String getComment() {
+      return comment;
+   }
+
+   /**
+    * Default value of this column.
+    * @return  Default value of this column.
+    */
+   public String getDefaultValue() {
+      return defaultValue;
    }
 }

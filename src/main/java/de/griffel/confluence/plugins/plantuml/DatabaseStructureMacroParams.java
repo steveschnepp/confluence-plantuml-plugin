@@ -45,8 +45,10 @@ public final class DatabaseStructureMacroParams {
       tableNameRegEx,
       columnNameRegEx,
       nodeFontsize,
-      showIndexes,
       showColumns,
+      showComments,
+      showDefaults,
+      showIndexes,
       additional,
       debug;
    }
@@ -101,6 +103,16 @@ public final class DatabaseStructureMacroParams {
    public boolean isShowColumns() {
       final String showColumns = get(Param.showColumns);
       return showColumns != null ? Boolean.valueOf(showColumns) : true;
+   }
+
+   public boolean isShowComments() {
+      final String showComments = get(Param.showComments);
+      return showComments != null ? Boolean.valueOf(showComments) : false;
+   }
+
+   public boolean isShowDefaults() {
+      final String showDefaults = get(Param.showDefaults);
+      return showDefaults != null ? Boolean.valueOf(showDefaults) : false;
    }
 
    public boolean isShowIndexes() {
