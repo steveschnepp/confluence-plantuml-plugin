@@ -172,8 +172,14 @@ abstract class AbstractDatabaseStructureMacroImpl {
             if (c.getTypeName().startsWith("num") || c.getTypeName().startsWith("NUM")) {
                sb.append("(").append(c.getColumnSize()).append(",").append(c.getDecimalDigits()).append(")");
             }
+            if (c.getDefaultValue() != null) {
+               sb.append(" =  ").append(c.getDefaultValue().replaceAll("::.*", "")); // 'value'::datatype
+            }
             if (c.getNullable() == 0) {
                sb.append(" \\{not null\\}");
+            }
+            if (c.getComment() != null) {
+               sb.append(" -- ").append(c.getComment());
             }
             sb.append("\\l");
          }
@@ -338,8 +344,11 @@ abstract class AbstractDatabaseStructureMacroImpl {
          try {
             rs = dbmd.getColumns(null, _macroParams.getSchemaName(), _macroParams.getTableNameFilter(), _macroParams.getColumnNameFilter());
             while (rs.next()) {
-               ColumnDef tmp = new ColumnDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
-                       rs.getString(6), rs.getInt(7), rs.getInt(9), rs.getInt(11));
+               final String comment      = _macroParams.isShowComments() ? rs.getString(12) : null;
+               final String defaultValue = _macroParams.isShowDefaults() ? rs.getString(13) : null;
+
+               final ColumnDef tmp = new ColumnDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                       rs.getString(6), rs.getInt(7), rs.getInt(9), rs.getInt(11), comment, defaultValue);
                result.add(tmp);
                if (log.isDebugEnabled()) {
                   log.debug(tmp.getColumnId());

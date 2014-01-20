@@ -257,6 +257,8 @@
          <parameter name="tableNameRegEx" type="string"/>
          <parameter name="columnNameRegEx" type="string"/>
          <parameter name="showColumns" type="boolean" default="true"/>
+         <parameter name="showComments" type="boolean" default="false"/>
+         <parameter name="showDefaults" type="boolean" default="false"/>
          <parameter name="showIndexes" type="boolean" default="false"/>
          <parameter name="nodeFontsize" type="string" default="9"/>
          <parameter name="additional" type="string"/>
@@ -289,6 +291,8 @@
          <parameter name="tableNameRegEx" type="string"/>
          <parameter name="columnNameRegEx" type="string"/>
          <parameter name="showColumns" type="boolean" default="true"/>
+         <parameter name="showComments" type="boolean" default="false"/>
+         <parameter name="showDefaults" type="boolean" default="false"/>
          <parameter name="showIndexes" type="boolean" default="false"/>
          <parameter name="nodeFontsize" type="string" default="9"/>
          <parameter name="additional" type="string"/>
