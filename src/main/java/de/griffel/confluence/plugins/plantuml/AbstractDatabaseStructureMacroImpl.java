@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -134,7 +135,8 @@ abstract class AbstractDatabaseStructureMacroImpl {
             sb.append("\"\nshape=\"record\"];\n");
             buildIndexRelations(sb, table, tables);
          }
-         buildTableRelations(sb, keys, tables);
+         buildTableRelationsFromForeignKeys(sb, keys, tables);
+         buildTableRelationsFromRegEx(sb,tables);
       }
       sb.append("}\n");
 
@@ -209,31 +211,92 @@ abstract class AbstractDatabaseStructureMacroImpl {
       }
    }
 
+   /**
+    * Prints relation between two nodes.
+    *
+    * Output: node1 -> node2 [color="blue"];\n
+    * Node names will be cleaned from special characters.
+    *
+    * @param sb    StringBuilder to write relation to.
+    * @param node1 Left node
+    * @param node2 Right node
+    * @param format Additional formatting.
+    */
+   private void printRelation(StringBuilder sb, String node1, String node2, String format) {
+        sb.append(cleanNodeId(node1))
+          .append(" -> ")
+          .append(cleanNodeId(node2))
+          .append(" ").append(format).append(";\n");
+   }
+
+   /**
+    * Creates link between Index and table where it is defined.
+    *
+    * Link will have no arrowhead and a dark grey color.
+    *
+    * @param sb StringBuilder to write relation to
+    * @param currentTable Table for which references will be created
+    * @param tables  All available tables/indexes
+    */
    private void buildIndexRelations(final StringBuilder sb, TableDef currentTable, Map<String, TableDef> tables) {
       for (IndexDef ix : currentTable.getIndices()) {
          if (ix.getOrdinalPosition() == 1) {
             for (TableDef referencedTable : tables.values()) {
                if (ix.getIndexName().equals(referencedTable.getTableName())) {
-                  sb.append(cleanNodeId(currentTable.getTableId()))
-                    .append(" -> ")
-                    .append(cleanNodeId(referencedTable.getTableId()))
-                    .append(" [arrowhead=none, color=\"#999999\"];\n");
+                  printRelation(sb, currentTable.getTableId(), referencedTable.getTableId(), "[arrowhead=none, color=\"#999999\"]");
                }
             }
          }
       }
    }
 
-   private void buildTableRelations(final StringBuilder sb, List<KeysDef> keys, Map<String, TableDef> tables) {
+   /**
+    * Creates link between tables based on foreign keys.
+    *
+    * @param sb StringBuilder to write to
+    * @param keys All available foreign keys
+    * @param tables All available tables
+    */
+   private void buildTableRelationsFromForeignKeys(final StringBuilder sb, List<KeysDef> keys, Map<String, TableDef> tables) {
       for (KeysDef key : keys) {
          if (tables.containsKey(key.getFkTableId()) && tables.containsKey(key.getPkTableId())) {
-            sb.append(cleanNodeId(key.getPkTableId()))
-              .append(" -> ")
-              .append(cleanNodeId(key.getFkTableId()))
-              .append("\n");
+            printRelation(sb, key.getPkTableId(), key.getFkTableId(), "");
          }
       }
    }
+
+   /**
+    * Create link between tables based on a regular expression given as macro parameter.
+    *
+    * @param sb StringBuilder to write to
+    * @param tables All available tables
+    */
+   private void buildTableRelationsFromRegEx(final StringBuilder sb, Map<String, TableDef> tables) {
+      if (_macroParams.getRelationRegEx() == null) {
+         return;
+      }
+
+      final Pattern pattern = Pattern.compile(_macroParams.getRelationRegEx());
+
+      for (Map.Entry<String, TableDef> tmp : tables.entrySet()) {
+         final TableDef outerTable = tmp.getValue();
+         for (ColumnDef outerColumn : outerTable.getColumns()) {
+            final String outer = outerTable.getTableName() + "." + outerColumn.getColumnName() + " ";
+
+            for (Map.Entry<String, TableDef> innerTmp : tables.entrySet()) {
+               final TableDef innerTable = innerTmp.getValue();
+               final List<ColumnDef> innerColumns = innerTable.getColumns();
+               for (ColumnDef innerColumn : innerColumns) {
+                  final String reference = outer + innerTable.getTableName() + "." + innerColumn.getColumnName();
+                  if (pattern.matcher(reference).matches()) {
+                     printRelation(sb, outerTable.getTableId(), innerTable.getTableId(), "");
+                  }
+               }
+            }
+         }
+      }
+   }
+
 
    private List<KeysDef> reduceToTableReferences(List<KeysDef> keys) {
       final List<KeysDef> result = new ArrayList<KeysDef>();
@@ -366,7 +429,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
    private List<KeysDef> getForeignKeys(DatabaseMetaData dbmd) {
       final List<KeysDef> result = new LinkedList<KeysDef>();
 
-      if (_errorMessage == null) {
+      if (_errorMessage == null && _macroParams.isUseForeingKeys()) {
          ResultSet rs = null;
          try {
             rs = dbmd.getImportedKeys(null, _macroParams.getSchemaName(), null);
