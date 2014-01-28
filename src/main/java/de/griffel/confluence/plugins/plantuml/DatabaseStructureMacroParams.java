@@ -36,7 +36,6 @@ public final class DatabaseStructureMacroParams {
    private static final int DEFAULT_NODE_FONTSIZE = 9;
 
    public enum Param {
-
       datasource,
       schemaName,
       tableTypes,
@@ -44,11 +43,13 @@ public final class DatabaseStructureMacroParams {
       columnNameFilter,
       tableNameRegEx,
       columnNameRegEx,
-      nodeFontsize,
       showColumns,
       showComments,
       showDefaults,
       showIndexes,
+      useForeignKeys,
+      relationRegEx,
+      nodeFontsize,
       additional,
       debug;
    }
@@ -92,14 +93,6 @@ public final class DatabaseStructureMacroParams {
       return get(Param.columnNameRegEx);
    }
 
-   public int getNodeFontsize() {
-      try {
-         return Integer.parseInt(get(Param.nodeFontsize));
-      } catch (NumberFormatException e) {
-         return DEFAULT_NODE_FONTSIZE;
-      }
-   }
-
    public boolean isShowColumns() {
       final String showColumns = get(Param.showColumns);
       return showColumns != null ? Boolean.valueOf(showColumns) : true;
@@ -118,6 +111,24 @@ public final class DatabaseStructureMacroParams {
    public boolean isShowIndexes() {
       final String showIndexes = get(Param.showIndexes);
       return showIndexes != null ? Boolean.valueOf(showIndexes) : false;
+   }
+
+   public boolean isUseForeingKeys() {
+      final String useForeignKeys = get(Param.useForeignKeys);
+      return useForeignKeys != null ? Boolean.valueOf(useForeignKeys) : true;
+   }
+
+   public String getRelationRegEx() {
+      String relationRegEx = get(Param.relationRegEx);
+      return relationRegEx != null ? relationRegEx : null;
+   }
+
+   public int getNodeFontsize() {
+      try {
+         return Integer.parseInt(get(Param.nodeFontsize));
+      } catch (NumberFormatException e) {
+         return DEFAULT_NODE_FONTSIZE;
+      }
    }
 
    public String getAdditional() {

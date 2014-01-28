@@ -260,6 +260,8 @@
          <parameter name="showComments" type="boolean" default="false"/>
          <parameter name="showDefaults" type="boolean" default="false"/>
          <parameter name="showIndexes" type="boolean" default="false"/>
+         <parameter name="useForeignKeys" type="boolean" default="true"/>
+         <parameter name="relationRegEx" type="string"/>
          <parameter name="nodeFontsize" type="string" default="9"/>
          <parameter name="additional" type="string"/>
          <parameter name="format" type="enum" default="PNG">
@@ -294,6 +296,8 @@
          <parameter name="showComments" type="boolean" default="false"/>
          <parameter name="showDefaults" type="boolean" default="false"/>
          <parameter name="showIndexes" type="boolean" default="false"/>
+         <parameter name="useForeignKeys" type="boolean" default="true"/>
+         <parameter name="relationRegEx" type="string"/>
          <parameter name="nodeFontsize" type="string" default="9"/>
          <parameter name="additional" type="string"/>
          <parameter name="format" type="enum" default="PNG">
