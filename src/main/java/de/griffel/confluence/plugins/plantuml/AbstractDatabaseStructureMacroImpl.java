@@ -99,7 +99,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
             addIndexDetails(dbmd, tables.get(entry.getKey()));
          }
          times[4] = System.currentTimeMillis();
-         List<KeysDef> keys = reduceToTableReferences(getForeignKeys(dbmd));
+         List<KeysDef> keys = reduceToTableReferences(getForeignKeys(dbmd, tables));
          times[5] = System.currentTimeMillis();
          String s = buildDot(tables, keys);
          times[6] = System.currentTimeMillis();
@@ -426,25 +426,28 @@ abstract class AbstractDatabaseStructureMacroImpl {
       return result;
    }
 
-   private List<KeysDef> getForeignKeys(DatabaseMetaData dbmd) {
+   private List<KeysDef> getForeignKeys(DatabaseMetaData dbmd, Map<String, TableDef> tables) {
       final List<KeysDef> result = new LinkedList<KeysDef>();
 
       if (_errorMessage == null && _macroParams.isUseForeingKeys()) {
-         ResultSet rs = null;
-         try {
-            rs = dbmd.getImportedKeys(null, _macroParams.getSchemaName(), null);
-            while (rs.next()) {
-               KeysDef tmp = new KeysDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
-                       rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8));
-               result.add(tmp);
-               if (log.isDebugEnabled()) {
-                  log.debug(tmp.getKeysColumnId());
+         for (Map.Entry<String, TableDef> entries : tables.entrySet()) {
+            final String tableName = entries.getValue().getTableName();
+
+            ResultSet rs = null;
+            try {
+               rs = dbmd.getImportedKeys(null, _macroParams.getSchemaName(), tableName);
+               while (rs.next()) {
+                  KeysDef tmp = new KeysDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8));
+                  result.add(tmp);
+                  if (log.isDebugEnabled()) {
+                     log.debug(tmp.getKeysColumnId());
+                  }
                }
+            } catch (SQLException e) {
+               sqlException(_macroParams.getDatasource(), e);
+            } finally {
+               closeResource(rs);
             }
-         } catch (SQLException e) {
-            sqlException(_macroParams.getDatasource(), e);
-         } finally {
-            closeResource(rs);
          }
       }
       return result;
