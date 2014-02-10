@@ -30,10 +30,10 @@
 		<amps.version>4.0</amps.version>
 	</properties>
 
-	<url>https://studio.plugins.atlassian.com/wiki/display/PUML</url>
+	<url>https://avono-support.atlassian.net/wiki/display/PUML/Confluence+PlantUML+Plugin</url>
 	<issueManagement>
 		<system>JIRA</system>
-		<url>https://studio.plugins.atlassian.com/browse/PUML</url>
+		<url>https://avono-support.atlassian.net/browse/PUML</url>
 	</issueManagement>
 	<scm>
 		<connection>scm:hg:https://bitbucket.org/mgriffel/plantuml</connection>
@@ -160,7 +160,6 @@
 				<version>2.4.1</version>
 				<configuration>
 					<goals>package</goals>
-					<tagBase>https://studio.plugins.atlassian.com/svn/PUML/tags</tagBase>
 				</configuration>
 			</plugin>
 			<plugin>
