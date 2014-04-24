@@ -30,7 +30,7 @@
 		<amps.version>4.0</amps.version>
 	</properties>
 
-	<url>https://avono-support.atlassian.net/wiki/display/PUML/Confluence+PlantUML+Plugin</url>
+	<url>https://avono-support.atlassian.net/wiki/display/PUML</url>
 	<issueManagement>
 		<system>JIRA</system>
 		<url>https://avono-support.atlassian.net/browse/PUML</url>
