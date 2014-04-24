@@ -193,6 +193,7 @@
          <parameter name="space" type="spacekey" />
          <parameter name="page" type="string"/>
          <parameter name="depth" type="string" default="3"/>
+         <parameter name="nodeColor" type="string" default="lightyellow"/>
          <parameter name="nodeFontsize" type="string" default="9"/>
          <parameter name="direction" type="enum" default="LR">
             <value name="LR"/>
@@ -223,6 +224,7 @@
          <parameter name="space" type="spacekey" />
          <parameter name="page"  type="confluence-content"/>
          <parameter name="depth" type="string" default="3"/>
+         <parameter name="nodeColor" type="string" default="lightyellow"/>
          <parameter name="nodeFontsize" type="string" default="9"/>
          <parameter name="direction"    type="enum" default="LR">
             <value name="LR"/>
@@ -240,6 +242,72 @@
          <param name="help-section" value="misc"/>
       </resource>
     </xhtml-macro>
+
+    <!-- Confluence <=3.x -->
+    <macro name="linkgraph"
+           class="de.griffel.confluence.plugins.plantuml.LinkGraphMacro"
+           key="linkgraph-macro"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/linkgraph-macro-icon.png"
+           documentation-url="${project.url}/Macro linkgraph">
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="space" type="spacekey" />
+         <parameter name="page" type="string"/>
+         <parameter name="outgoingLinkLevels" type="string" default="1"/>
+         <parameter name="incomingLinkLevels" type="string" default="1"/>
+         <parameter name="rootNodeColor" type="string" default="lightblue"/>
+         <parameter name="nodeColor" type="string" default="lightyellow"/>
+         <parameter name="nodeFontsize" type="string" default="9"/>
+         <parameter name="direction" type="enum" default="LR">
+            <value name="LR"/>
+            <value name="TB"/>
+         </parameter>
+         <parameter name="metadata" type="string"/>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/linkegraph-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </macro>
+
+    <!-- Confluence >=4.x -->
+    <xhtml-macro name="linkgraph"
+           class="de.griffel.confluence.plugins.plantuml.LinkGraphMacroV4"
+           key="linkgraph-macro-xhtml"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/linkgraph-macro-icon.png"
+           documentation-url="${project.url}/Macro linkgraph">
+      <device-type>mobile</device-type>
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="space" type="spacekey" />
+         <parameter name="page" type="string"/>
+         <parameter name="outgoingLinkLevels" type="string" default="1"/>
+         <parameter name="incomingLinkLevels" type="string" default="1"/>
+         <parameter name="rootNodeColor" type="string" default="lightblue"/>
+         <parameter name="nodeColor" type="string" default="lightyellow"/>
+         <parameter name="nodeFontsize" type="string" default="9"/>
+         <parameter name="direction" type="enum" default="LR">
+            <value name="LR"/>
+            <value name="TB"/>
+         </parameter>
+         <parameter name="metadata" type="string"/>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/linkegraph-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </xhtml-macro>
+
 
     <!-- Confluence <=3.x -->
     <macro name="database-structure" 

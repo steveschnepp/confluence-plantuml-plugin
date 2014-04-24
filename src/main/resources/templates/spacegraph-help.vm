@@ -15,12 +15,14 @@ Supported are</br>
             <tt>pagetitle</tt> and<br/>
             <tt>spacekey:pagetitle</tt>.<br/>
             The parameter space will be ignored if a spacekey is given here. Default: use all top level pages</li>
-         <li><b>depth:</b> - (optional) Number of levels descendent pages will be shown. <tt>0</tt> only root pages, <tt>1</tt> only direct children. Value must bei integer. Default: 3</li>
-         <li><b>nodeFontsize:</b> - (optional) Size of font. Value must be integer. Default: 9</li>
+         <li><b>depth:</b> - (optional) Number of levels descendent pages will be shown. <tt>0</tt> only root pages, <tt>1</tt> only direct children. Value must be an integer. Default: 3</li>
+         <li><b>nodeColor:</b> - (optional) Color of linked pages. Default: <tt>lightyellow</tt></li>
+         <li><b>nodeFontsize:</b> - (optional) Size of font. Value must be an integer. Default: 9</li>
          <li><b>direction:</b> - (optional) Layout of graph. Supported are<br/>
             <tt>TB</tt> top to bottom and<br/>
             <tt>LR</tt> left to right.<br/>
             Default: <tt>LR</tt></li>
+         <li><b>metadata:</b> - (optional) Metadata keys and values of an page which will be shown. Requires comma separed list of metadata keys or <tt>@all</tt>.</li>
          <li><b>format:</b> - (optional) Image output format. <tt>SVG</tt> or <tt>PNG</tt>. Default: <tt>PNG</tt></li>
          <li><b>exportName:</b> - (optional) stores the generated image as attachment if a name is given.</li>
          <li><b>debug:</b> - (optional) show debug information when set to <tt>true</tt></li>

@@ -24,15 +24,13 @@
  */
 package de.griffel.confluence.plugins.plantuml;
 
-import java.util.Map;
-
+import com.atlassian.confluence.core.ContentPropertyManager;
 import com.atlassian.confluence.importexport.resource.WritableDownloadResourceManager;
 import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.renderer.PageContext;
 import com.atlassian.confluence.renderer.ShortcutLinksManager;
 import com.atlassian.confluence.security.PermissionManager;
 import com.atlassian.confluence.setup.settings.SettingsManager;
-import com.atlassian.confluence.core.ContentPropertyManager;
 import com.atlassian.confluence.spaces.SpaceManager;
 import com.atlassian.confluence.util.i18n.I18NBeanFactory;
 import com.atlassian.plugin.PluginAccessor;
@@ -40,8 +38,8 @@ import com.atlassian.renderer.RenderContext;
 import com.atlassian.renderer.v2.RenderMode;
 import com.atlassian.renderer.v2.macro.BaseMacro;
 import com.atlassian.renderer.v2.macro.MacroException;
-
 import de.griffel.confluence.plugins.plantuml.config.PlantUmlConfigurationManager;
+import java.util.Map;
 
 /**
  * This is the {spacegraph} Macro (Confluence < 4.0).
@@ -53,7 +51,7 @@ public class SpaceGraphMacro extends BaseMacro {
    private final SettingsManager _settingsManager;
    private final PermissionManager _permissionManager;
    private final ContentPropertyManager _contentPropertyManager;
-   
+
    public SpaceGraphMacro(WritableDownloadResourceManager writeableDownloadResourceManager, PageManager pageManager,
          SpaceManager spaceManager, SettingsManager settingsManager, PluginAccessor pluginAccessor,
          ShortcutLinksManager shortcutLinksManager, PlantUmlConfigurationManager configurationManager,
@@ -71,7 +69,7 @@ public class SpaceGraphMacro extends BaseMacro {
 
    @SuppressWarnings("unchecked")
    public String execute(Map params, String body, RenderContext context) throws MacroException {
-      return new AbstractSpaceGraphMacroImpl() {
+      return new AbstractLinkAndSpaceGraphMacroImpl() {
          @Override
          protected String executePlantUmlMacro(Map<String, String> params, String dotString, RenderContext context)
                throws MacroException {
@@ -84,7 +82,7 @@ public class SpaceGraphMacro extends BaseMacro {
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see com.atlassian.renderer.v2.macro.Macro#getBodyRenderMode()
     */
    public RenderMode getBodyRenderMode() {
