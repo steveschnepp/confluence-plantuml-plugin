@@ -266,14 +266,13 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
    }
 
    public String buildDotNodeWithColor(ContentEntityObject page, String color) {
-      // "TOP-DOWN" [ label = "{TD | {{Key 1|Key 555}|{Value 1|Value 2}} }"
-      // shape="record"
-      // URL="url"];
-      //
-      // "LEFT-RIGHT" [ label = "LR | {{Key 1|Key2} | {Value 1|Value 2}}"
-      // shape="record"
-      //URL="url"];
+      /* "TOP-DOWN" [ label = "{TD | {{Key 1|Key 555}|{Value 1|Value 2}} }"
+         shape="record"
+         URL="url"];
 
+         "LEFT-RIGHT" [ label = "LR | {{Key 1|Key2} | {Value 1|Value 2}}"
+         shape="record"
+         URL="url"];  */
       final String metadataString = buildMetadataString(page);
       StringBuilder sb = new StringBuilder("\"");
       sb.append(page.getDisplayTitle()).append("\" [ label = \"");
