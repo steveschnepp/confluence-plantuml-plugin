@@ -428,6 +428,43 @@
       </package>
     </xwork>
 
+
+    <!-- Confluence <=3.x -->
+    <macro name="svg"
+           class="de.griffel.confluence.plugins.plantuml.SvgMacro"
+           key="svg-macro"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/svg-macro-icon.png"
+           documentation-url="${project.url}/Macro svg">
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="space" type="spacekey" />
+         <parameter name="page" type="string"/>
+         <parameter name="attachment" type="string" required="true"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/svg-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </macro>
+
+    <!-- Confluence >=4.x -->
+    <xhtml-macro name="svg"
+           class="de.griffel.confluence.plugins.plantuml.SvgMacroV4"
+           key="svg-macro-xhtml"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/svg-macro-icon.png"
+           documentation-url="${project.url}/Macro svg">
+      <device-type>mobile</device-type>
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="space" type="spacekey" />
+         <parameter name="page"  type="confluence-content"/>
+         <parameter name="attachment" type="string" required="true"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/svg-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </xhtml-macro>
+
+
     <!-- Blueprints -->
     <content-template key="plantuml-index-template" i18n-name-key="plantuml.blueprint.templates.index.name">
       <resource name="template" type="download" location="xml/index.xml"/>
