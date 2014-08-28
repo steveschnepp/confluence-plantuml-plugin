@@ -29,7 +29,6 @@ import com.atlassian.confluence.pages.AttachmentManager;
 import com.atlassian.confluence.pages.Page;
 import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.renderer.PageContext;
-import com.atlassian.confluence.spaces.Space;
 import com.atlassian.confluence.spaces.SpaceManager;
 import com.atlassian.confluence.util.i18n.I18NBeanFactory;
 import com.atlassian.renderer.RenderContext;
@@ -77,40 +76,39 @@ public class SvgMacro extends BaseMacro {
    public static String getSvg(Map<String, String> params, SpaceManager spaceManager, PageManager pageManager,
            AttachmentManager attachmentManager, RenderContext renderContext) throws MacroException {
       final SvgMacroParams macroParams = new SvgMacroParams(params);
-      final String space = macroParams.getSpace();
       final String page = macroParams.getPage();
-      final String attachment = macroParams.getAttachmentName();
+      final String attachment = macroParams.getAttachment();
 
       final PageContext pageContext = (PageContext) renderContext;
-      final Space spaceObject;
-      final Page pageObject;
-      final Attachment attachmentObject;
-
-      if (isSet(space)) {
-         spaceObject = spaceManager.getSpace(trimToEmpty(space));
-      } else {
-         spaceObject = spaceManager.getSpace(pageContext.getSpaceKey());
-      }
-      if (spaceObject == null) {
-         throw new MacroException("Invalid space: " + space);
-      }
+      final String spaceKey;
+      final String pageTitle;
 
       if (isSet(page)) {
-         pageObject = pageManager.getPage(spaceObject.getKey(), trimToEmpty(page));
+         final String[] spaceAndPage = page.split(":");
+         if (spaceAndPage.length == 2) {
+            spaceKey = spaceAndPage[0];
+         } else {
+            spaceKey = pageContext.getSpaceKey();
+         }
+         pageTitle = spaceAndPage[spaceAndPage.length - 1];
       } else {
-         pageObject = pageManager.getPage(spaceObject.getKey(), pageContext.getPageTitle());
-      }
-      if (pageObject == null) {
-         throw new MacroException("Invalid page: " + spaceObject.getKey() + ":" + page);
+         spaceKey = pageContext.getSpaceKey();
+         pageTitle = pageContext.getPageTitle();
       }
 
+      final Page pageObject = pageManager.getPage(spaceKey, pageTitle);
+      if (pageObject == null) {
+         throw new MacroException("Invalid page: " + page);
+      }
+
+      final Attachment attachmentObject;
       if (isSet(attachment)) {
          attachmentObject = attachmentManager.getAttachment(pageObject, trimToEmpty(attachment));
       } else {
          throw new MacroException("Name of attachment required");
       }
       if (attachmentObject == null) {
-         throw new MacroException("No attachment " + attachment + " found at " + spaceObject.getKey() + ":" + pageObject.getTitle());
+         throw new MacroException("No attachment " + attachment + " found at " + spaceKey + ":" + pageTitle);
       }
 
       final StringWriter sw = new StringWriter();

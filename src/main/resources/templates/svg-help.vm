@@ -1,16 +1,15 @@
 
 <tr bgcolor=ffffff>
   <td width="200px">
-    {spacegraph:space=ds|page=Home|attachment=linkgraph.svg}<br />
+    {svg:page=ds:Home|attachment=linkgraph.svg}<br />
   </td>
 
   <td>
     <p>
       Displays an attached SVG graphic inside a wiki page.
        <ul>
-         <li><b>space:</b> - (optional) Key of space. Default: current space</li>
          <li><b>page:</b> - (optional) Title of page where SVG graphics is attached. Default: current page</li>
-         <li><b>attachment</b> - (required) Number of attached SVG file</li>
+         <li><b>name:</b> - (required) Number of attached SVG file</li>
        </ul>
     </p>
   </td>
