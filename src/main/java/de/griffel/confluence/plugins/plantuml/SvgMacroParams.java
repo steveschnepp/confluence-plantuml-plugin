@@ -32,9 +32,8 @@ import java.util.Map;
 public final class SvgMacroParams {
 
    public enum Param {
-      space,
       page,
-      attachment;
+      name;
    }
 
    private final Map<String, String> params;
@@ -44,16 +43,12 @@ public final class SvgMacroParams {
    }
 
 
-   public String getSpace() {
-      return get(Param.space);
-   }
-
    public String getPage() {
       return get(Param.page);
    }
 
-   public String getAttachmentName() {
-      return get(Param.attachment);
+   public String getAttachment() {
+      return get(Param.name);
    }
 
    @Override
