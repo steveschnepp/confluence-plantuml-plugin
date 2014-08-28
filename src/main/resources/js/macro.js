@@ -1,0 +1,2 @@
+AJS.MacroBrowser.activateSmartFieldsAttachmentsOnPage("svg");
+
