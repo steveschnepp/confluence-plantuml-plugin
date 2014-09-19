@@ -7,6 +7,7 @@
         <param name="plugin-icon">images/icons/plantuml-icon.png</param>
         <param name="plugin-logo">images/plantuml-logo.png</param>
         <param name="plugin-banner">images/plantuml-banner.png</param>
+        <param name="atlassian-data-center-compatible">true</param>
     </plugin-info>
 
     <resource key="icons" name="icons/" type="download" location="/images/icons/"/>
