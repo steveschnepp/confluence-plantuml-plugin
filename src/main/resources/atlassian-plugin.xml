@@ -96,6 +96,46 @@
       </resource>
     </xhtml-macro>
 
+    <!-- Confluence >=4.x -->
+    <xhtml-macro name="plantumlrender"
+           class="de.griffel.confluence.plugins.plantuml.PlantUmlRenderMacroV4"
+           key="plantumlrender-macro-xhtml"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/plantuml-macro-icon.png"
+           documentation-url="${project.url}/Macro plantumlrender">
+      <device-type>mobile</device-type>
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="type" type="enum" default="plantuml">
+            <value name="plantuml"/>
+            <value name="ditaa"/>
+            <value name="dot"/>
+            <value name="jcckit"/>
+            <value name="salt"/>
+         </parameter>
+         <parameter name="title" type="string"/>
+         <parameter name="align" type="enum" default="none">
+            <value name="none"/>
+            <value name="left"/>
+            <value name="center"/>
+            <value name="right"/>
+         </parameter>
+         <parameter name="border" type="string"/>
+         <parameter name="hspace" type="string"/>
+         <parameter name="vspace" type="string"/>
+         <parameter name="dropshadow" type="boolean" default="true"/>
+         <parameter name="separation" type="boolean" default="true"/>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/plantuml-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </xhtml-macro>
+
     <!-- Confluence <=3.x -->
     <macro name="flowchart"
            class="de.griffel.confluence.plugins.plantuml.FlowChartMacro"
@@ -184,8 +224,8 @@
     </xhtml-macro>
 
     <!-- Confluence <=3.x -->
-    <macro name="spacegraph" 
-           class="de.griffel.confluence.plugins.plantuml.SpaceGraphMacro" 
+    <macro name="spacegraph"
+           class="de.griffel.confluence.plugins.plantuml.SpaceGraphMacro"
            key="spacegraph-macro"
            icon="/download/resources/${project.groupId}.${project.artifactId}/icons/spacegraph-macro-icon.png"
            documentation-url="${project.url}/Macro spacegraph">
@@ -214,8 +254,8 @@
     </macro>
 
     <!-- Confluence >=4.x -->
-    <xhtml-macro name="spacegraph" 
-           class="de.griffel.confluence.plugins.plantuml.SpaceGraphMacroV4" 
+    <xhtml-macro name="spacegraph"
+           class="de.griffel.confluence.plugins.plantuml.SpaceGraphMacroV4"
            key="spacegraph-macro-xhtml"
            icon="/download/resources/${project.groupId}.${project.artifactId}/icons/spacegraph-macro-icon.png"
            documentation-url="${project.url}/Macro spacegraph">
@@ -311,8 +351,8 @@
 
 
     <!-- Confluence <=3.x -->
-    <macro name="database-structure" 
-           class="de.griffel.confluence.plugins.plantuml.DatabaseStructureMacro" 
+    <macro name="database-structure"
+           class="de.griffel.confluence.plugins.plantuml.DatabaseStructureMacro"
            key="database-structure-macro"
            icon="/download/resources/${project.groupId}.${project.artifactId}/icons/database-structure-macro-icon.png"
            documentation-url="${project.url}/Macro database-structure">
@@ -346,8 +386,8 @@
     </macro>
 
     <!-- Confluence >=4.x -->
-    <xhtml-macro name="database-structure" 
-           class="de.griffel.confluence.plugins.plantuml.DatabaseStructureMacroV4" 
+    <xhtml-macro name="database-structure"
+           class="de.griffel.confluence.plugins.plantuml.DatabaseStructureMacroV4"
            key="database-structure-macro-xhtml"
            icon="/download/resources/${project.groupId}.${project.artifactId}/icons/database-structure-macro-icon.png"
            documentation-url="${project.url}/Macro database-structure">
@@ -382,8 +422,8 @@
     </xhtml-macro>
 
     <!-- Confluence <=3.x -->
-    <macro name="database-info" 
-           class="de.griffel.confluence.plugins.plantuml.DatabaseInfoMacro" 
+    <macro name="database-info"
+           class="de.griffel.confluence.plugins.plantuml.DatabaseInfoMacro"
            key="database-info-macro"
            icon="/download/resources/${project.groupId}.${project.artifactId}/icons/database-info-macro-icon.png"
            documentation-url="${project.url}/Macro database-info">
@@ -398,8 +438,8 @@
     </macro>
 
     <!-- Confluence >=4.x -->
-    <xhtml-macro name="database-info" 
-           class="de.griffel.confluence.plugins.plantuml.DatabaseInfoMacroV4" 
+    <xhtml-macro name="database-info"
+           class="de.griffel.confluence.plugins.plantuml.DatabaseInfoMacroV4"
            key="database-info-macro-xhtml"
            icon="/download/resources/${project.groupId}.${project.artifactId}/icons/database-info-macro-icon.png"
            documentation-url="${project.url}/Macro database-info">
@@ -625,9 +665,9 @@
           <functions>com.atlassian.confluence.plugins.soy:soy-core-functions</functions>
         </transformer>
       </transformation>
- 
+
       <resource type="download" name="wizard-templates-soy.js" location="soy/wizard-templates.soy" />
- 
+
       <dependency>com.atlassian.confluence.plugins.confluence-create-content-plugin:resources</dependency>
       <context>atl.general</context>
       <context>atl.admin</context>
