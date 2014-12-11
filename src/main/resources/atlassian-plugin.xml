@@ -100,8 +100,8 @@
     <xhtml-macro name="plantumlrender"
            class="de.griffel.confluence.plugins.plantuml.PlantUmlRenderMacroV4"
            key="plantumlrender-macro-xhtml"
-           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/plantuml-macro-icon.png"
-           documentation-url="${project.url}/Macro plantumlrender">
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/plantumlrender-macro-icon.png"
+           documentation-url="${project.url}/Macro plantumlrender and flowchartrender">
       <device-type>mobile</device-type>
       <category name="visuals"/>
       <parameters>
@@ -185,6 +185,50 @@
            key="flowchart-macro-xhtml"
            icon="/download/resources/${project.groupId}.${project.artifactId}/icons/flowchart-macro-icon.png"
            documentation-url="${project.url}/Macro flowchart">
+      <device-type>mobile</device-type>
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="edgeArrowSize" type="string" default="0.8"/>
+         <parameter name="nodeShape" type="enum" default="rect">
+            <value name="rect"/>
+            <value name="ellipse"/>
+            <value name="tab"/>
+            <value name="note"/>
+            <value name="component"/>
+            <value name="folder"/>
+            <value name="box3d"/>
+            <value name="square"/>
+         </parameter>
+         <parameter name="nodeStyle" type="enum" default="filled">
+            <value name="filled"/>
+            <value name="diagonals"/>
+            <value name="rounded"/>
+            <value name="dashed"/>
+            <value name="dotted"/>
+            <value name="solid"/>
+            <value name="bold"/>
+         </parameter>
+         <parameter name="nodeFillColor" type="string" default="lightyellow"/>
+         <parameter name="nodeFontname" type="string" default="Verdana"/>
+         <parameter name="nodeFontsize" type="string" default="9"/>
+          <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/flowchart-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </xhtml-macro>
+
+    <!-- Confluence >=4.x -->
+    <xhtml-macro name="flowchartrender"
+           class="de.griffel.confluence.plugins.plantuml.FlowChartRenderMacroV4"
+           key="flowchartrender-macro-xhtml"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/flowchartrender-macro-icon.png"
+           documentation-url="${project.url}/Macro plantumlrender and flowchartrender">
       <device-type>mobile</device-type>
       <category name="visuals"/>
       <parameters>
