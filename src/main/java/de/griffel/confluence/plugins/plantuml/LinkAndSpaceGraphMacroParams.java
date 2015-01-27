@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * Supported LinkGraph Macro parameters.
  */
-public final class LinkAnsSpaceGraphMacroParams {
+public final class LinkAndSpaceGraphMacroParams {
    public static final String TB = "TB";
    public static final String LR = "LR";
 
@@ -56,7 +56,7 @@ public final class LinkAnsSpaceGraphMacroParams {
 
    private final Map<String, String> params;
 
-   public LinkAnsSpaceGraphMacroParams(Map<String, String> params) {
+   public LinkAndSpaceGraphMacroParams(Map<String, String> params) {
       this.params = params;
    }
 

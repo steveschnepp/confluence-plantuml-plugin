@@ -87,7 +87,7 @@ import de.griffel.confluence.plugins.plantuml.type.UmlSourceBuilder;
 
 /**
  * The Confluence PlantUML Macro.
- * 
+ *
  * @author Michael Griffel
  */
 public class PlantUmlMacro extends BaseMacro {
@@ -249,7 +249,7 @@ public class PlantUmlMacro extends BaseMacro {
             IOUtils.copy(resourceInfo.getStreamForReading(), sw);
             sb.append(sw.getBuffer());
          } else /* PNG */{
-            sb.append("<span class=\"image-wrap\" style=\"" + macroParams.getAlignment().getCssStyle() + "\">");
+            sb.append("<span class=\"image-wrap\" style=\"").append(macroParams.getAlignment().getCssStyle()).append("\">");
             sb.append("<img");
             if (cmap.isValid()) {
                sb.append(" usemap=\"#");
@@ -278,7 +278,7 @@ public class PlantUmlMacro extends BaseMacro {
 
       return sb.toString();
    }
-   
+
    private DownloadResourceInfo attachImage(final ContentEntityObject page, final PlantUmlMacroParams macroParams,
          ImageInfo imageInfo, final FileFormat fileFormat, final DownloadResourceWriter resourceWriter)
          throws UnauthorizedDownloadResourceException, DownloadResourceNotFoundException, IOException {
@@ -335,7 +335,7 @@ public class PlantUmlMacro extends BaseMacro {
 
       /**
        * Returns the base URL from the global settings.
-       * 
+       *
        * @return the base URL from the global settings.
        */
       public String getBaseUrl() {
@@ -425,7 +425,11 @@ public class PlantUmlMacro extends BaseMacro {
       private int index = 0;
 
       /**
-       * {@inheritDoc}
+       * Creates extended version of {@link SourceStringReader}.
+       *
+       * @param defines defines
+       * @param source plant uml source
+       * @param config configuration
        */
       public MySourceStringReader(Defines defines, String source, List<String> config) {
          super(defines, source, config);

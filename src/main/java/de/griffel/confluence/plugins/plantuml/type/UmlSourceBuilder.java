@@ -145,10 +145,7 @@ public final class UmlSourceBuilder {
             lines.add(line);
          } else {
             final String trimedLine = line.trim();
-            if (trimedLine.isEmpty()
-                  || trimedLine.equals(NO_BREAK_SPACE)) {
-               // ignore empty line
-            } else {
+            if (!trimedLine.isEmpty() && !trimedLine.equals(NO_BREAK_SPACE)) {
                lines.add(trimedLine);
             }
          }

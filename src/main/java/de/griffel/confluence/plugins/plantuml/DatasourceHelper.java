@@ -171,7 +171,7 @@ public class DatasourceHelper {
       final Class[] noparams = {};
       try {
          final Method m = dbmd.getClass().getMethod("get" + attribute, noparams);
-         result.put(attribute, "" + m.invoke(dbmd, null));
+         result.put(attribute, "" + m.invoke(dbmd));
       } catch (IllegalAccessException e) {
          log.debug("IllegalAccess", e);
          result.put(attribute, ERROR);

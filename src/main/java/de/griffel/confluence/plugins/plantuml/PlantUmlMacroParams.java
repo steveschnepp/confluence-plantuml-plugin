@@ -92,10 +92,10 @@ public final class PlantUmlMacroParams {
       final StringBuilder sb = new StringBuilder();
       sb.append(" style=\"");
       if (getBorder() > 0) {
-         sb.append("border:" + getBorder() + "px solid black;");
+         sb.append("border:").append(getBorder()).append("px solid black;");
       }
       if (getHspace() > 0 || getVspace() > 0) {
-         sb.append("margin:" + getVspace() + "px " + getHspace() + "px;");
+         sb.append("margin:").append(getVspace()).append("px ").append(getHspace()).append("px;");
       }
       sb.append("\" ");
       return sb.toString();
@@ -128,17 +128,17 @@ public final class PlantUmlMacroParams {
    /**
     * Macro parameter FileFormat will be ignored if SVG is not supported.
     * @param renderContext
-    * @return 
+    * @return
     */
    public FileFormat getFileFormat(RenderContext renderContext) {
       final String format = get(Param.format);
       FileFormat result = FileFormat.PNG;
-      try {         
+      try {
          if (isSvgSupported(renderContext)) {
              result = (format != null) ? FileFormat.valueOf(format) : FileFormat.PNG;
          }
       } catch (IllegalArgumentException e) {
-         // use PNG as default
+         result = FileFormat.PNG;
       }
       return result;
    }
