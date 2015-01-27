@@ -36,9 +36,9 @@ public final class ExternalUrlRenderer extends AbstractUrlRenderer {
 
    /**
     * Constructs a new instance of this class.
-    * 
+    *
     * @param baseUrl the Confluence Base URL.
-    * @param sectionLinkRenderer the section link renderer to use.
+    * @param pageAnchorBuilder the page anchor builder to use.
     */
    public ExternalUrlRenderer(String baseUrl, PageAnchorBuilder pageAnchorBuilder) {
       this.baseUrl = baseUrl;
@@ -47,7 +47,7 @@ public final class ExternalUrlRenderer extends AbstractUrlRenderer {
 
    /**
     * Returns the external display URL of this Confluence link.
-    * 
+    *
     * @param link the Confluence link for which the external display URL should be generated.
     * @return the external display URL of this Confluence link.
     */

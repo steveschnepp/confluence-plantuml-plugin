@@ -57,10 +57,10 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
    private ContentPropertyManager _cpm;
    private PermissionManager _pm;
    private String _baseUrl;
-   private LinkAnsSpaceGraphMacroParams _macroParams;
+   private LinkAndSpaceGraphMacroParams _macroParams;
 
    public String execute(Map<String, String> params, String dotString, RenderContext context) throws MacroException {
-      final LinkAnsSpaceGraphMacroParams macroParams = new LinkAnsSpaceGraphMacroParams(params);
+      final LinkAndSpaceGraphMacroParams macroParams = new LinkAndSpaceGraphMacroParams(params);
 
       params.put(PlantUmlMacroParams.Param.type.name(), DiagramType.DOT.name());
       if (macroParams.isDebug()) {
@@ -81,7 +81,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
       _baseUrl = settingsManager.getGlobalSettings().getBaseUrl();
       _pm = permissionManager;
       _cpm = contentPropertyManager;
-      _macroParams = new LinkAnsSpaceGraphMacroParams(params); // TODO
+      _macroParams = new LinkAndSpaceGraphMacroParams(params);
 
       String spaceKey = _macroParams.getSpace();
       if (spaceKey == null) {
@@ -163,7 +163,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
       _baseUrl = settingsManager.getGlobalSettings().getBaseUrl();
       _pm = permissionManager;
       _cpm = contentPropertyManager;
-      _macroParams = new LinkAnsSpaceGraphMacroParams(params);
+      _macroParams = new LinkAndSpaceGraphMacroParams(params);
 
       String spaceKey = _macroParams.getSpace();
       if (spaceKey == null) {
@@ -299,7 +299,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
    }
 
    private String buildMetadataString(ContentEntityObject page) {
-      if (_macroParams.getMetadata() == null || _macroParams.getMetadata().length() == 0) {
+      if (StringUtils.isEmpty(_macroParams.getMetadata())) {
          return "";
       }
 
@@ -393,7 +393,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
    private String[] getMetadataKeysForPage(ContentEntityObject page) {
       final String metadatakeys = "metadatakeys";
       final String keys = _cpm.getTextProperty(page, metadatakeys);
-      if (keys == null || keys.length() == 0) {
+      if (StringUtils.isEmpty(keys)) {
          return new String[0];
       }
       return keys.split("\\|");

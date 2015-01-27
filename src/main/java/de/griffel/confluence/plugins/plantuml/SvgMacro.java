@@ -30,7 +30,6 @@ import com.atlassian.confluence.pages.Page;
 import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.renderer.PageContext;
 import com.atlassian.confluence.spaces.SpaceManager;
-import com.atlassian.confluence.util.i18n.I18NBeanFactory;
 import com.atlassian.renderer.RenderContext;
 import com.atlassian.renderer.v2.RenderMode;
 import com.atlassian.renderer.v2.macro.BaseMacro;
@@ -49,7 +48,7 @@ public class SvgMacro extends BaseMacro {
    private final PageManager _pageManager;
    private final AttachmentManager _attachmentManager;
 
-   public SvgMacro(PageManager pageManager, SpaceManager spaceManager, AttachmentManager attachmentManager, I18NBeanFactory i18NBeanFactory) {
+   public SvgMacro(PageManager pageManager, SpaceManager spaceManager, AttachmentManager attachmentManager) {
       _spaceManager = spaceManager;
       _pageManager = pageManager;
       _attachmentManager = attachmentManager;

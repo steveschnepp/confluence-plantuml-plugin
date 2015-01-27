@@ -7,12 +7,14 @@ public interface PlantUmlConfigurationManager {
 
    /**
     * Loads the configuration.
+    *
+    * @return configuration
     */
    PlantUmlConfiguration load();
 
    /**
     * Persists the given configuration.
-    * 
+    *
     * @param config the configuration to save.
     */
    void save(PlantUmlConfiguration config);

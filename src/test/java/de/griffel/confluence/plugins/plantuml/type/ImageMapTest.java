@@ -27,8 +27,6 @@ package de.griffel.confluence.plugins.plantuml.type;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.griffel.confluence.plugins.plantuml.type.ImageMap;
-
 /**
  * ImageMapTest.
  */

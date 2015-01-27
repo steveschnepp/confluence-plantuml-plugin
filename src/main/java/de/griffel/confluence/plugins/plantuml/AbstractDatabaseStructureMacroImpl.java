@@ -50,6 +50,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import net.sourceforge.plantuml.core.DiagramType;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -327,7 +328,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
    }
 
    private Map<String, TableDef> filterTablesByName(Map<String, TableDef> tables, String tableNameRegEx) {
-      if (tableNameRegEx == null || tableNameRegEx.isEmpty()) {
+      if (StringUtils.isEmpty(tableNameRegEx)) {
          return tables;
       }
 
@@ -342,7 +343,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
    }
 
    private List<ColumnDef> filterColumnsByName(List<ColumnDef> columns, String columnNameRegEx) {
-      if (columnNameRegEx == null || columnNameRegEx.isEmpty()) {
+      if (StringUtils.isEmpty(columnNameRegEx)) {
          return columns;
       }
 

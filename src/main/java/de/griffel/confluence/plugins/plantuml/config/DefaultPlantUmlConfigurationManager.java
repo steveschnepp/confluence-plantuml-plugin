@@ -2,7 +2,6 @@ package de.griffel.confluence.plugins.plantuml.config;
 
 import com.atlassian.bandana.BandanaManager;
 import com.atlassian.confluence.setup.bandana.ConfluenceBandanaContext;
-import com.atlassian.confluence.util.i18n.I18NBeanFactory;
 
 /**
  * This class is responsible for loading and storing the configuration for this plugin.
@@ -10,7 +9,6 @@ import com.atlassian.confluence.util.i18n.I18NBeanFactory;
 public final class DefaultPlantUmlConfigurationManager implements PlantUmlConfigurationManager {
 
    private final BandanaManager bandanaManager;
-   private I18NBeanFactory i18NBeanFactory;
 
    public DefaultPlantUmlConfigurationManager(BandanaManager bandanaManager) {
       this.bandanaManager = bandanaManager;

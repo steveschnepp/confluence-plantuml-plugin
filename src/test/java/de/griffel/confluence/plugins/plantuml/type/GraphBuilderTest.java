@@ -65,7 +65,7 @@ public class GraphBuilderTest {
                   .withNodeStyle(NodeStyle.dotted)
                   .withNodeFillColor("lightgreen")
                   .withNodeFontname("Times New Roman")
-                  .withNodeFontsize(BigDecimal.valueOf(10L))
+                  .withNodeFontsize(BigDecimal.TEN)
                   .appendGraph("Foo -> Bar")
                   .appendGraph("Bar -> Buz")
                   .build());

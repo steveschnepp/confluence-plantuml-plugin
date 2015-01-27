@@ -30,7 +30,6 @@ import com.atlassian.confluence.macro.MacroExecutionException;
 import com.atlassian.confluence.pages.AttachmentManager;
 import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.spaces.SpaceManager;
-import com.atlassian.confluence.util.i18n.I18NBeanFactory;
 import com.atlassian.renderer.v2.macro.MacroException;
 import java.util.Map;
 
@@ -43,7 +42,7 @@ public class SvgMacroV4 implements Macro {
    private final PageManager _pageManager;
    private final AttachmentManager _attachmentManager;
 
-   public SvgMacroV4(PageManager pageManager, SpaceManager spaceManager, AttachmentManager attachmentManager, I18NBeanFactory i18NBeanFactor) {
+   public SvgMacroV4(PageManager pageManager, SpaceManager spaceManager, AttachmentManager attachmentManager) {
       _spaceManager = spaceManager;
       _pageManager = pageManager;
       _attachmentManager = attachmentManager;
