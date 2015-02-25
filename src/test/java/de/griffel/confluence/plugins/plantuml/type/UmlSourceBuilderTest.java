@@ -60,4 +60,36 @@ public class UmlSourceBuilderTest {
       Assert.assertEquals("@startuml" + NEWLINE + "skinparam shadowing false" + NEWLINE + "class Test" + NEWLINE
             + "@enduml" + NEWLINE, builder.build().getPlainString());
    }
+
+   @Test
+   public void testDitaaWithTrailingSlash() throws Exception {
+      final UmlSourceBuilder builder =
+              new UmlSourceBuilder(DiagramType.DITAA, true, true, new PlantUmlConfigurationBean());
+      final String body = NEWLINE +
+              "/--------\\" + NEWLINE +
+              "| Test   |" + NEWLINE +
+              "\\--------/" + NEWLINE +
+              NEWLINE;
+      builder.append(new StringReader(body));
+      Assert.assertEquals("@startditaa" + NEWLINE + body +  "@endditaa" + NEWLINE,
+              builder.build().getPlainString());
+   }
+
+   /* See http://plantuml.net/ditaa.html :
+    * it is also possible to use Ditaa with @startuml by using ditaa keyword on the very first line of your description
+    */
+   @Test
+   public void testDitaaInsidePlantUML() throws Exception {
+      final UmlSourceBuilder builder =
+              new UmlSourceBuilder(DiagramType.UML, true, true, new PlantUmlConfigurationBean());
+      final String body =
+              "ditaa" + NEWLINE +
+              "/--------\\" + NEWLINE +
+              "| Test   |" + NEWLINE +
+              "\\--------/" + NEWLINE;
+      builder.append(new StringReader(body));
+      Assert.assertEquals("@startuml" + NEWLINE + body +  "@enduml" + NEWLINE,
+              builder.build().getPlainString());
+   }
+
 }
