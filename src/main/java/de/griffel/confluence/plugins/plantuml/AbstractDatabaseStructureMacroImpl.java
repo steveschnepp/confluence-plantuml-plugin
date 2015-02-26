@@ -24,18 +24,6 @@
  */
 package de.griffel.confluence.plugins.plantuml;
 
-import com.atlassian.confluence.core.ContentPropertyManager;
-import com.atlassian.confluence.pages.PageManager;
-import com.atlassian.confluence.renderer.PageContext;
-import com.atlassian.confluence.security.PermissionManager;
-import com.atlassian.confluence.setup.settings.SettingsManager;
-import com.atlassian.confluence.spaces.SpaceManager;
-import com.atlassian.renderer.RenderContext;
-import com.atlassian.renderer.v2.macro.MacroException;
-import de.griffel.confluence.plugins.plantuml.db.ColumnDef;
-import de.griffel.confluence.plugins.plantuml.db.IndexDef;
-import de.griffel.confluence.plugins.plantuml.db.KeysDef;
-import de.griffel.confluence.plugins.plantuml.db.TableDef;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -46,13 +34,30 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
 import net.sourceforge.plantuml.core.DiagramType;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.atlassian.confluence.core.ContentPropertyManager;
+import com.atlassian.confluence.pages.PageManager;
+import com.atlassian.confluence.renderer.PageContext;
+import com.atlassian.confluence.security.PermissionManager;
+import com.atlassian.confluence.setup.settings.SettingsManager;
+import com.atlassian.confluence.spaces.SpaceManager;
+import com.atlassian.renderer.RenderContext;
+import com.atlassian.renderer.v2.macro.MacroException;
+
+import de.griffel.confluence.plugins.plantuml.db.ColumnDef;
+import de.griffel.confluence.plugins.plantuml.db.IndexDef;
+import de.griffel.confluence.plugins.plantuml.db.KeysDef;
+import de.griffel.confluence.plugins.plantuml.db.TableDef;
 
 /**
  * This is the abstract implementation class of the {database-structure} macro.
@@ -61,7 +66,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
 
    private static final Logger log = LoggerFactory.getLogger(AbstractDatabaseStructureMacroImpl.class);
    protected DatabaseStructureMacroParams _macroParams;
-   protected String     _errorMessage;
+   protected String _errorMessage;
    protected Connection _con;
 
    public String execute(Map<String, String> params, String dotString, RenderContext context) throws MacroException {
@@ -76,14 +81,15 @@ abstract class AbstractDatabaseStructureMacroImpl {
    }
 
    protected abstract String executePlantUmlMacro(Map<String, String> params, String dotString, RenderContext context)
-           throws MacroException;
+         throws MacroException;
 
    /**
     * Create dot-String
     */
-   public String createDotForDatabaseStructure(Map<String, String> params, PageContext pageContext, SpaceManager spaceManager,
-           PageManager pageManager, SettingsManager settingsManager, PermissionManager permissionManager,
-           ContentPropertyManager contentPropertyManager) {
+   public String createDotForDatabaseStructure(Map<String, String> params, PageContext pageContext,
+         SpaceManager spaceManager,
+         PageManager pageManager, SettingsManager settingsManager, PermissionManager permissionManager,
+         ContentPropertyManager contentPropertyManager) {
 
       _macroParams = new DatabaseStructureMacroParams(params);
       final DatabaseMetaData dbmd = openDatabaseMetaData();
@@ -94,7 +100,9 @@ abstract class AbstractDatabaseStructureMacroImpl {
          times[1] = System.currentTimeMillis();
          linkColumnsWithTables(tables, filterColumnsByName(getColumns(dbmd), _macroParams.getColumnNameRegEx()));
          times[2] = System.currentTimeMillis();
-         tables = filterTablesByName(filterTablesByType(tables, _macroParams.getTableTypes()), _macroParams.getTableNameRegEx());
+         tables =
+               filterTablesByName(filterTablesByType(tables, _macroParams.getTableTypes()),
+                     _macroParams.getTableNameRegEx());
          times[3] = System.currentTimeMillis();
          for (Map.Entry<String, TableDef> entry : tables.entrySet()) {
             addIndexDetails(dbmd, tables.get(entry.getKey()));
@@ -107,9 +115,9 @@ abstract class AbstractDatabaseStructureMacroImpl {
 
          if (log.isInfoEnabled()) {
             log.info("Preparting DOT diagramm took " + (times[6] - times[0]) + " ms ("
-                    + "Tables "          + (times[1] - times[0]) + ", Columns "  + (times[2] - times[1])
-                    + ", Filter Tables " + (times[3] - times[2]) + ", Indexes "  + (times[4] - times[3])
-                    + ", Foreign Keys "  + (times[5] - times[4]) + ", DOT "      + (times[6] - times[5]) + ")");
+                  + "Tables " + (times[1] - times[0]) + ", Columns " + (times[2] - times[1])
+                  + ", Filter Tables " + (times[3] - times[2]) + ", Indexes " + (times[4] - times[3])
+                  + ", Foreign Keys " + (times[5] - times[4]) + ", DOT " + (times[6] - times[5]) + ")");
          }
          return s;
       } finally {
@@ -130,14 +138,18 @@ abstract class AbstractDatabaseStructureMacroImpl {
       } else {
          for (TableDef table : tables.values()) {
             sb.append(cleanNodeId(table.getTableId())).append(" [ label = \"");
-            buildTableName(sb, table);
-            buildColumns(sb, table);
-            buildIndexesInTables(sb, table);
+
+            final StringBuilder labelStringBuilder = new StringBuilder();
+            buildTableName(labelStringBuilder, table);
+            buildColumns(labelStringBuilder, table);
+            buildIndexesInTables(labelStringBuilder, table);
+            sb.append(GraphVizUtils.toNodeLabel(labelStringBuilder.toString()));
+
             sb.append("\"\nshape=\"record\"];\n");
             buildIndexRelations(sb, table, tables);
          }
          buildTableRelationsFromForeignKeys(sb, keys, tables);
-         buildTableRelationsFromRegEx(sb,tables);
+         buildTableRelationsFromRegEx(sb, tables);
       }
       sb.append("}\n");
 
@@ -147,16 +159,20 @@ abstract class AbstractDatabaseStructureMacroImpl {
 
    /**
     * Replaces characters in names which are not allowed as NodeId.
+    *
     * @param s String to be used as NodeId
     * @return Cleaned string
     */
    private String cleanNodeId(String s) {
-      return s.replaceAll("\\.", "_").replaceAll("\\$", "_S_");
+      return s.replaceAll("\\.", "_")
+            .replaceAll("\\$", "_S_")
+            .replaceAll("<", "_")
+            .replaceAll(">", "_");
    }
 
    private void buildTableName(StringBuilder sb, TableDef table) {
       if (_macroParams.getTableTypes().size() != 1) {
-        sb.append("«").append(table.getTableType()).append("»\\n");
+         sb.append("«").append(table.getTableType()).append("»\\n");
       }
       if (_macroParams.getSchemaName() == null) {
          sb.append(table.getTableSchema()).append(".");
@@ -215,19 +231,18 @@ abstract class AbstractDatabaseStructureMacroImpl {
    /**
     * Prints relation between two nodes.
     *
-    * Output: node1 -> node2 [color="blue"];\n
-    * Node names will be cleaned from special characters.
+    * Output: node1 -> node2 [color="blue"];\n Node names will be cleaned from special characters.
     *
-    * @param sb    StringBuilder to write relation to.
+    * @param sb StringBuilder to write relation to.
     * @param node1 Left node
     * @param node2 Right node
     * @param format Additional formatting.
     */
    private void printRelation(StringBuilder sb, String node1, String node2, String format) {
-        sb.append(cleanNodeId(node1))
-          .append(" -> ")
-          .append(cleanNodeId(node2))
-          .append(" ").append(format).append(";\n");
+      sb.append(cleanNodeId(node1))
+            .append(" -> ")
+            .append(cleanNodeId(node2))
+            .append(" ").append(format).append(";\n");
    }
 
    /**
@@ -237,14 +252,15 @@ abstract class AbstractDatabaseStructureMacroImpl {
     *
     * @param sb StringBuilder to write relation to
     * @param currentTable Table for which references will be created
-    * @param tables  All available tables/indexes
+    * @param tables All available tables/indexes
     */
    private void buildIndexRelations(final StringBuilder sb, TableDef currentTable, Map<String, TableDef> tables) {
       for (IndexDef ix : currentTable.getIndices()) {
          if (ix.getOrdinalPosition() == 1) {
             for (TableDef referencedTable : tables.values()) {
                if (ix.getIndexName().equals(referencedTable.getTableName())) {
-                  printRelation(sb, currentTable.getTableId(), referencedTable.getTableId(), "[arrowhead=none, color=\"#999999\"]");
+                  printRelation(sb, currentTable.getTableId(), referencedTable.getTableId(),
+                        "[arrowhead=none, color=\"#999999\"]");
                }
             }
          }
@@ -258,7 +274,8 @@ abstract class AbstractDatabaseStructureMacroImpl {
     * @param keys All available foreign keys
     * @param tables All available tables
     */
-   private void buildTableRelationsFromForeignKeys(final StringBuilder sb, List<KeysDef> keys, Map<String, TableDef> tables) {
+   private void buildTableRelationsFromForeignKeys(final StringBuilder sb, List<KeysDef> keys,
+         Map<String, TableDef> tables) {
       for (KeysDef key : keys) {
          if (tables.containsKey(key.getFkTableId()) && tables.containsKey(key.getPkTableId())) {
             printRelation(sb, key.getPkTableId(), key.getFkTableId(), "");
@@ -297,7 +314,6 @@ abstract class AbstractDatabaseStructureMacroImpl {
          }
       }
    }
-
 
    private List<KeysDef> reduceToTableReferences(List<KeysDef> keys) {
       final List<KeysDef> result = new ArrayList<KeysDef>();
@@ -406,13 +422,15 @@ abstract class AbstractDatabaseStructureMacroImpl {
       if (_errorMessage == null && _macroParams.isShowColumns()) {
          ResultSet rs = null;
          try {
-            rs = dbmd.getColumns(null, _macroParams.getSchemaName(), _macroParams.getTableNameFilter(), _macroParams.getColumnNameFilter());
+            rs =
+                  dbmd.getColumns(null, _macroParams.getSchemaName(), _macroParams.getTableNameFilter(),
+                        _macroParams.getColumnNameFilter());
             while (rs.next()) {
-               final String comment      = _macroParams.isShowComments() ? rs.getString(12) : null;
+               final String comment = _macroParams.isShowComments() ? rs.getString(12) : null;
                final String defaultValue = _macroParams.isShowDefaults() ? rs.getString(13) : null;
 
                final ColumnDef tmp = new ColumnDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
-                       rs.getString(6), rs.getInt(7), rs.getInt(9), rs.getInt(11), comment, defaultValue);
+                     rs.getString(6), rs.getInt(7), rs.getInt(9), rs.getInt(11), comment, defaultValue);
                result.add(tmp);
                if (log.isDebugEnabled()) {
                   log.debug(tmp.getColumnId());
@@ -438,7 +456,9 @@ abstract class AbstractDatabaseStructureMacroImpl {
             try {
                rs = dbmd.getImportedKeys(null, _macroParams.getSchemaName(), tableName);
                while (rs.next()) {
-                  KeysDef tmp = new KeysDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8));
+                  KeysDef tmp =
+                        new KeysDef(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                              rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8));
                   result.add(tmp);
                   if (log.isDebugEnabled()) {
                      log.debug(tmp.getKeysColumnId());
@@ -463,7 +483,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
             rs = dbmd.getIndexInfo(t.getTableCatalog(), t.getTableSchema(), t.getTableName(), false, true);
             while (rs.next()) {
                IndexDef tmp = new IndexDef(rs.getString(1), rs.getString(2), rs.getString(3),
-                       rs.getString(5), rs.getString(6), rs.getShort(8), rs.getString(9));
+                     rs.getString(5), rs.getString(6), rs.getShort(8), rs.getString(9));
                result.add(tmp);
                if (log.isDebugEnabled()) {
                   log.debug(tmp.getIndexId());
@@ -491,7 +511,8 @@ abstract class AbstractDatabaseStructureMacroImpl {
       DatabaseMetaData dbmd = null;
       try {
          jndiContext = new InitialContext();
-         javax.sql.DataSource ds = (javax.sql.DataSource) jndiContext.lookup("java:comp/env/jdbc/" + _macroParams.getDatasource());
+         javax.sql.DataSource ds =
+               (javax.sql.DataSource) jndiContext.lookup("java:comp/env/jdbc/" + _macroParams.getDatasource());
          try {
             _con = ds.getConnection();
             dbmd = _con.getMetaData();
