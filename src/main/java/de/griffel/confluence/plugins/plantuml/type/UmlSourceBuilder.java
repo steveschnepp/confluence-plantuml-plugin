@@ -57,9 +57,11 @@ public final class UmlSourceBuilder {
    private final boolean dropShadow;
    private final boolean separation;
    private final PlantUmlConfiguration configuration;
+   private boolean isDitaa = false;
 
    public UmlSourceBuilder(DiagramType diagramType, boolean dropShadow, boolean separation,
          PlantUmlConfiguration configuration) {
+      isDitaa = DiagramType.DITAA == diagramType;
       this.diagramType = diagramType;
       this.dropShadow = dropShadow;
       this.separation = separation;
@@ -105,6 +107,9 @@ public final class UmlSourceBuilder {
    public UmlSourceBuilder append(StringReader stringReader) throws IOException {
       final LineNumberReader reader = new LineNumberReader(stringReader);
       String line = reader.readLine();
+      if ("ditaa".equals(line) && DiagramType.UML == diagramType) {
+         isDitaa = true;
+      }
       while (line != null) {
          appendLine(line);
          line = reader.readLine();
@@ -129,8 +134,7 @@ public final class UmlSourceBuilder {
 
          appendLine(getEndTag());
       }
-      boolean checkEndingBackslash = true;
-      return new UmlSource(lines, checkEndingBackslash);
+      return new UmlSource(lines, !isDitaa); // DITAA needs literal backslashes
    }
 
    @Override
@@ -141,7 +145,7 @@ public final class UmlSourceBuilder {
    private void appendLine(String line) {
       if (line != null) {
          // preserve white spaces for ditaa diagrams
-         if (diagramType == DiagramType.DITAA) {
+         if (isDitaa) {
             lines.add(line);
          } else {
             final String trimedLine = line.trim();
