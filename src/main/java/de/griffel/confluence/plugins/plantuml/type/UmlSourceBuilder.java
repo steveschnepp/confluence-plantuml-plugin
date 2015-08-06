@@ -33,6 +33,10 @@ import java.io.StringReader;
 import java.util.List;
 import java.util.Locale;
 
+import net.sourceforge.plantuml.CharSequence2;
+import net.sourceforge.plantuml.CharSequence2Impl;
+import net.sourceforge.plantuml.LineLocation;
+import net.sourceforge.plantuml.LineLocationImpl;
 import net.sourceforge.plantuml.core.DiagramType;
 import net.sourceforge.plantuml.core.UmlSource;
 
@@ -52,7 +56,7 @@ public final class UmlSourceBuilder {
     */
    private static final String NO_BREAK_SPACE = "\u00a0";
 
-   private final List<String> lines = Lists.newArrayList();
+   private final List<CharSequence2> lines = Lists.newArrayList();
    private final DiagramType diagramType;
    private final boolean dropShadow;
    private final boolean separation;
@@ -146,11 +150,11 @@ public final class UmlSourceBuilder {
       if (line != null) {
          // preserve white spaces for ditaa diagrams
          if (isDitaa) {
-            lines.add(line);
+            lines.add(new CharSequence2Impl(line, null));
          } else {
             final String trimedLine = line.trim();
             if (!trimedLine.isEmpty() && !trimedLine.equals(NO_BREAK_SPACE)) {
-               lines.add(trimedLine);
+               lines.add(new CharSequence2Impl(trimedLine, null));
             }
          }
       }

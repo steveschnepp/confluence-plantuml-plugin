@@ -34,6 +34,7 @@ import net.sourceforge.plantuml.core.UmlSource;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import net.sourceforge.plantuml.version.IteratorCounter2;
 
 public final class PlantUmlPreprocessor {
 
@@ -56,8 +57,8 @@ public final class PlantUmlPreprocessor {
             .add(new UrlReplaceFunction())
             .build();
 
-      for (Iterator<String> iterator = umlSource.iterator(); iterator.hasNext();) {
-         final String line = iterator.next();
+      for (IteratorCounter2 iterator = umlSource.iterator2(); iterator.hasNext();) {
+         final String line = iterator.next().toString2();
          try {
             sb.append(functions.apply(context, line));
          } catch (PreprocessingException e) {
