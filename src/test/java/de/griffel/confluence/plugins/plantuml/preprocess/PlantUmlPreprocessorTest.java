@@ -24,28 +24,35 @@
  */
 package de.griffel.confluence.plugins.plantuml.preprocess;
 
-import java.util.Map;
-
-import net.sourceforge.plantuml.core.UmlSource;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.renderer.PageContext;
 import com.atlassian.confluence.renderer.ShortcutLinkConfig;
 import com.atlassian.confluence.spaces.SpaceManager;
 import com.google.common.collect.ImmutableList;
+import net.sourceforge.plantuml.CharSequence2;
+import net.sourceforge.plantuml.CharSequence2Impl;
+import net.sourceforge.plantuml.core.UmlSource;
+import org.junit.Assert;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import java.util.Map;
 
 public class PlantUmlPreprocessorTest {
    @Test
    public void testInlining() throws Exception {
-      final UmlSource umlSource = new UmlSource(ImmutableList.of("!include x", "buz", "eof"), true);
+      final UmlSource umlSource = new UmlSource(
+            ImmutableList.<CharSequence2>of(
+                  new CharSequence2Impl("!include x", null),
+                  new CharSequence2Impl("buz", null),
+                  new CharSequence2Impl("eof", null)), true);
+
       Assert.assertEquals("foo\nbar\nbuz\neof\n",
             new PlantUmlPreprocessor(umlSource, new UmlSourceLocator() {
                public UmlSource get(String name) {
-                  return new UmlSource(ImmutableList.of("foo", "bar"), true);
+                  return new UmlSource(ImmutableList.<CharSequence2>of(
+                        new CharSequence2Impl("foo", null),
+                        new CharSequence2Impl("bar", null)), true);
                }
             }, new PreprocessingContext() {
 

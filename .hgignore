@@ -15,3 +15,9 @@ syntax: regexp
 ^.*\.swp$
 syntax: regexp
 ^.*\.orig$
+syntax: regexp
+plant-uml\.iml
+syntax: regexp
+\.idea/
+syntax: regexp
+^bin
