@@ -1,0 +1,16 @@
+
+<tr bgcolor=ffffff>
+  <td width="200px">
+    {svg:page=ds:Home|attachment=linkgraph.svg}<br />
+  </td>
+
+  <td>
+    <p>
+      Displays an attached SVG graphic inside a wiki page.
+       <ul>
+         <li><b>page:</b> - (optional) Title of page where SVG graphics is attached. Default: current page</li>
+         <li><b>name:</b> - (required) Number of attached SVG file</li>
+       </ul>
+    </p>
+  </td>
+</tr>

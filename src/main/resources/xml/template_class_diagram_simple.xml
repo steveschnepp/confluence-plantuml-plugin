@@ -1,0 +1,15 @@
+<ac:macro ac:name="plantuml"><ac:plain-text-body><![CDATA[interface Interface
+
+class Base << stereotype >> {
+  -privateField
+  +publicField 
+  #protectedMethod()
+  ~packagePrivateMethod()
+}
+
+class Derived {
+  +privateMethod()
+}
+
+Interface <|.. Base : implements
+Base <|-- Derived]]></ac:plain-text-body></ac:macro>

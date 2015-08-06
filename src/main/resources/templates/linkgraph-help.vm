@@ -1,0 +1,41 @@
+
+<tr bgcolor=ffffff>
+  <td width="200px">
+    {linkgraph:incomingLinkLevels=1|outgoingLinkLevels=1|direction=TB|metadata=@all|format=SVG}<br />
+  </td>
+
+  <td>
+    <p>
+      Generates a graphical overview of incoming and outgoing links of a wiki page.
+       <ul>
+         <li><b>space:</b> - (optional) Key of space to create graph for. Default: current space</li>
+         <li><b>page:</b> - (optional) Title of page that will be treated as root of the graph.  Only its descendants will be shown in graph. 
+Supported are</br>
+            <tt>@self</tt> start at the current page,<br/>
+            <tt>pagetitle</tt> and<br/>
+            <tt>spacekey:pagetitle</tt>.<br/>
+            The parameter space will be ignored if a spacekey is given here. Default: use all top level pages</li>
+         <li><b>outgoingLinkLevels:</b> - (optional) Number of pages outgoing links will be followed. <tt>0</tt> do not follow outgoing pages, <tt>1</tt> only outgoing pages of selected page. Value must be an integer. Default: 1</li>
+         <li><b>incomingLinkLevels:</b> - (optional) Number of pages incoming links will be followed. <tt>0</tt> do not follow incoming pages, <tt>1</tt> only incoming pages of selected page. Value must be an integer. Default: 1</li>
+         <li><b>rootNodeColor:</b> - (optional) Color of selected page. Default: <tt>lightblue</tt></li>
+         <li><b>nodeColor:</b> - (optional) Color of linked pages. Default: <tt>lightyellow</tt></li>
+         <li><b>nodeFontsize:</b> - (optional) Size of font. Value must be integer. Default: 9</li>
+         <li><b>direction:</b> - (optional) Layout of graph. Supported are<br/>
+            <tt>TB</tt> top to bottom and<br/>
+            <tt>LR</tt> left to right.<br/>
+            Default: <tt>LR</tt></li>
+         <li><b>metadata:</b> - (optional) Metadata keys and values of an page which will be shown. Requires comma separed list of metadata keys or <tt>@all</tt>.</li>
+         <li><b>format:</b> - (optional) Image output format. <tt>SVG</tt> or <tt>PNG</tt>. Default: <tt>PNG</tt></li>
+         <li><b>exportName:</b> - (optional) stores the generated image as attachment if a name is given.</li>
+         <li><b>debug:</b> - (optional) show debug information when set to <tt>true</tt></li>
+       </ul>
+    </p>
+    <p>
+       This is the output of the sample on the left side:
+    </p>
+    <p>
+       <img src="$req.contextPath/download/resources/de.griffel.confluence.plugins.plant-uml/icons/linkgraph-macro-help.png"
+         width="225" height="150" border="0">
+    </p>
+  </td>
+</tr>
