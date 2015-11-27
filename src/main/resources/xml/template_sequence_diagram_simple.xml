@@ -1,0 +1,10 @@
+<ac:macro ac:name="plantuml"><ac:plain-text-body><![CDATA[actor A
+actor B
+'comment: actor boundary control entity
+A -> B: Request
+A <-- B: Response
+alt success
+   A -> A: Message\nto\nself.
+else some error
+   A -> "Logging Service" : Error
+end]]></ac:plain-text-body></ac:macro>

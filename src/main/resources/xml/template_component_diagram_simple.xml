@@ -1,0 +1,18 @@
+<ac:macro ac:name="plantuml"><ac:plain-text-body><![CDATA[skinparam componentStyle uml2
+
+cloud {
+  [Cloud Service]
+}
+
+database "PostgreSQL"
+
+package "Package Web" {
+  interface HTTP
+  
+  node "Node" {
+    HTTP - [First Component]
+    [First Component] --> [Second Component]
+    [First Component] --> [Cloud Service]
+    [Second Component] --> PostgreSQL
+  }
+}]]></ac:plain-text-body></ac:macro>
