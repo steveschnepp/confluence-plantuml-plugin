@@ -153,7 +153,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
             if (isViewPermitted(child)
                   && !isTrashed(child)) {
                sb.append(buildDotNode(child));
-               sb.append(buildDotEdge(page.getDisplayTitle(), child.getDisplayTitle()));
+               sb.append(buildDotEdge(quote(page.getDisplayTitle()), quote(child.getDisplayTitle())));
             }
          }
       }
@@ -239,7 +239,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
 
          for (ContentEntityObject referringPage : visibleReferringPages) {
             sb.append(buildDotNode(referringPage));
-            sb.append(buildDotEdge(referringPage.getDisplayTitle(), currentPage.getDisplayTitle()));
+            sb.append(buildDotEdge(quote(referringPage.getDisplayTitle()), quote(currentPage.getDisplayTitle())));
          }
 
       }
@@ -267,7 +267,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
          processReferredPages(sb, visibleReferredPages, maxDepth, currentDepth + 1, pageManager);
          for (ContentEntityObject referredPage : visibleReferredPages) {
             sb.append(buildDotNode(referredPage));
-            sb.append(buildDotEdge(currentPage.getDisplayTitle(), referredPage.getDisplayTitle()));
+            sb.append(buildDotEdge(quote(currentPage.getDisplayTitle()), quote(referredPage.getDisplayTitle())));
          }
       }
    }
@@ -292,11 +292,11 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
          URL="url"];  */
       final String metadataString = buildMetadataString(page);
       StringBuilder sb = new StringBuilder("\"");
-      sb.append(page.getDisplayTitle()).append("\" [ label = \"");
+      sb.append(quote(page.getDisplayTitle())).append("\" [ label = \"");
       if (metadataString.length() > 0 && _macroParams.isDirectionTopToBottom()) {
          sb.append("{");
       }
-      sb.append(page.getDisplayTitle()).append(buildMetadataString(page));
+      sb.append(quote(page.getDisplayTitle())).append(buildMetadataString(page));
       if (metadataString.length() > 0 && _macroParams.isDirectionTopToBottom()) {
          sb.append("}");
       }
@@ -335,7 +335,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
       int i = 0;
       for (Map.Entry<String, String> entry : metadata.entrySet()) {
          keys[i] = entry.getKey();
-         values[i++] = quoteMetadataValues(entry.getValue());
+         values[i++] = quote(entry.getValue());
       }
 
       return " | {{" +
@@ -352,7 +352,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
     * @param s String to clean
     * @return Cleaned string
     */
-   private String quoteMetadataValues(String s) {
+   private String quote(String s) {
       return s.replaceAll("([<>{}|\"])", "\\\\$1");
    }
 
