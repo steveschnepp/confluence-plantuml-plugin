@@ -24,6 +24,7 @@
  */
 package de.griffel.confluence.plugins.plantuml;
 
+import com.atlassian.confluence.api.model.content.ContentStatus;
 import com.atlassian.confluence.core.ContentEntityObject;
 import com.atlassian.confluence.core.ContentPropertyManager;
 import com.atlassian.confluence.links.LinkManager;
@@ -39,6 +40,9 @@ import com.atlassian.confluence.spaces.SpaceManager;
 import com.atlassian.confluence.user.AuthenticatedUserThreadLocal;
 import com.atlassian.renderer.RenderContext;
 import com.atlassian.renderer.v2.macro.MacroException;
+import net.sourceforge.plantuml.core.DiagramType;
+import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -46,8 +50,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.sourceforge.plantuml.core.DiagramType;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Implementation of {linkgraph} and {spacegraph} macros.
@@ -108,7 +110,9 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
             startPageTitle = spaceAndTitle[1];
          }
          final Page startPage = pageManager.getPage(spaceKey, startPageTitle);
-         if ((startPage != null) && isViewPermitted(startPage)) {
+         if ((startPage != null)
+               && isViewPermitted(startPage)
+               && !isTrashed(startPage)) {
             rootPages.add(startPage);
             sb.append(buildDotNode(startPage));
          } else {
@@ -116,9 +120,12 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
          }
       } else {
          final Space space = spaceManager.getSpace(spaceKey);
+
          final List<Page> pageList = pageManager.getPages(space, true /* only current ones */);
          for (Page page : pageList) {
-            if (page.getAncestors().isEmpty() && isViewPermitted(page)) {
+            if (page.getAncestors().isEmpty()
+                  && isViewPermitted(page)
+                  && !isTrashed(page)) {
                rootPages.add(page);
                sb.append(buildDotNode(page));
             }
@@ -143,7 +150,8 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
 
          sb.append(processChildren(children, depth, currentDepth + 1));
          for (Page child : children) {
-            if (isViewPermitted(child)) {
+            if (isViewPermitted(child)
+                  && !isTrashed(child)) {
                sb.append(buildDotNode(child));
                sb.append(buildDotEdge(page.getDisplayTitle(), child.getDisplayTitle()));
             }
@@ -190,7 +198,10 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
 
       final Collection<ContentEntityObject> rootPages = new ArrayList<ContentEntityObject>();
       final Page startPage = pageManager.getPage(spaceKey, startPageTitle);
-      if ((startPage != null) && isViewPermitted(startPage)) {
+      if (startPage != null
+            && isViewPermitted(startPage)
+            && !isTrashed(startPage)) {
+
          rootPages.add(startPage);
 
          final int currentDepth = 0;
@@ -217,7 +228,10 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
          final Collection<ContentEntityObject> visibleReferringPages = new ArrayList<ContentEntityObject>();
 
          for (ContentEntityObject referringPage : linkManager.getReferringContent(currentPage)) {
-            if ((referringPage != null) && (currentPage.getId() != referringPage.getId()) && isViewPermitted(referringPage)) {
+            if ((referringPage != null)
+                  && (currentPage.getId() != referringPage.getId())
+                  && isViewPermitted(referringPage)
+                  && !isTrashed(referringPage)) {
                visibleReferringPages.add(referringPage);
             }
          }
@@ -242,7 +256,10 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
          for (OutgoingLink outgoingLink : currentPage.getOutgoingLinks()) {
             if (!outgoingLink.isUrlLink()) {
                final Page referredPage = pageManager.getPage(outgoingLink.getDestinationSpaceKey(), outgoingLink.getDestinationPageTitle());
-               if ((referredPage != null) && (referredPage.getId() != currentPage.getId()) && isViewPermitted(referredPage)) {
+               if ((referredPage != null)
+                     && (referredPage.getId() != currentPage.getId())
+                     && isViewPermitted(referredPage)
+                     && !isTrashed(referredPage)) {
                   visibleReferredPages.add(referredPage);
                }
             }
@@ -258,7 +275,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
    // ============================= COMMON FUNCTIONS =============================
    public String buildDotEdge(String left, String right) {
       // "left" -> "right";
-      return new StringBuilder("\"").append(left).append("\" -> \"").append(right).append("\";\n").toString();
+      return "\"" + left + "\" -> \"" + right + "\";\n";
    }
 
    public String buildDotNode(ContentEntityObject page) {
@@ -291,11 +308,15 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
 
    public String buildDotNode(String node) {
       // "node";
-      return new StringBuilder("\"").append(node).append("\";\n").toString();
+      return "\"" + node + "\";\n";
    }
 
    public boolean isViewPermitted(ContentEntityObject page) {
-      return _pm.hasPermission(AuthenticatedUserThreadLocal.getUser(), Permission.VIEW, page);
+      return _pm.hasPermission(AuthenticatedUserThreadLocal.get(), Permission.VIEW, page);
+   }
+
+   protected boolean isTrashed(ContentEntityObject page) {
+      return page.getContentStatusObject() == ContentStatus.TRASHED;
    }
 
    private String buildMetadataString(ContentEntityObject page) {
@@ -317,17 +338,17 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
          values[i++] = quoteMetadataValues(entry.getValue());
       }
 
-      return new StringBuilder().append(" | {{")
-              .append(StringUtils.join(keys, "|"))
-              .append("} | {")
-              .append(StringUtils.join(values, "|"))
-              .append("}}").toString();
+      return " | {{" +
+            StringUtils.join(keys, "|") +
+            "} | {" +
+            StringUtils.join(values, "|") +
+            "}}";
    }
 
    /**
     * Quotes special characters in metadata values.
     *
-    * @see http://www.graphviz.org/doc/info/shapes.html#record
+    * @see <a href="http://www.graphviz.org/doc/info/shapes.html#record">GraphViz Record</a>
     * @param s String to clean
     * @return Cleaned string
     */
@@ -346,7 +367,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
    /**
     * Filters map.
     *
-    * @param map
+    * @param map meta data map
     * @param allowedKeys Set of keys that are allowed in map. "@all" allows all keys.
     * @return New map that contains only allowed keys.
     */
