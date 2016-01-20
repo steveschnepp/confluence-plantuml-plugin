@@ -1,0 +1,20 @@
+<ac:macro ac:name="plantuml">
+  <ac:parameter ac:name="type">dot</ac:parameter>
+  <ac:plain-text-body><![CDATA[digraph G {
+  node [style=rounded];
+
+  subgraph cluster_0 {
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white];
+    Start -> Stop
+    label = "Process #1";
+  }
+
+  node1 [fillcolor=yellow, style="rounded,filled", shape=diamond];
+  node2 [shape=record, label="{ a | b | c }"];
+
+  node1 -> Start;
+  Stop -> node2;
+}]]></ac:plain-text-body>
+</ac:macro>
