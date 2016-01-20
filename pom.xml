@@ -116,7 +116,7 @@
 		<dependency>
 			<groupId>net.sourceforge.plantuml</groupId>
 			<artifactId>plantuml</artifactId>
-			<version>8033</version>
+			<version>8034</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
