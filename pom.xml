@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.griffel.confluence.plugins</groupId>
 	<artifactId>plant-uml</artifactId>
-	<version>5.11-SNAPSHOT</version>
+	<version>5.13-SNAPSHOT</version>
 
 	<name>Confluence PlantUML Plugin</name>
 	<description>This is the PlantUML plugin for Atlassian Confluence.</description>
