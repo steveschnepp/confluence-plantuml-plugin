@@ -24,7 +24,6 @@
  */
 package de.griffel.confluence.plugins.plantuml;
 
-import com.atlassian.confluence.api.model.content.ContentStatus;
 import com.atlassian.confluence.core.ContentEntityObject;
 import com.atlassian.confluence.core.ContentPropertyManager;
 import com.atlassian.confluence.links.LinkManager;
@@ -112,7 +111,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
          final Page startPage = pageManager.getPage(spaceKey, startPageTitle);
          if ((startPage != null)
                && isViewPermitted(startPage)
-               && !isTrashed(startPage)) {
+               && !startPage.isDeleted()) {
             rootPages.add(startPage);
             sb.append(buildDotNode(startPage));
          } else {
@@ -125,7 +124,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
          for (Page page : pageList) {
             if (page.getAncestors().isEmpty()
                   && isViewPermitted(page)
-                  && !isTrashed(page)) {
+                  && !page.isDeleted()) {
                rootPages.add(page);
                sb.append(buildDotNode(page));
             }
@@ -151,7 +150,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
          sb.append(processChildren(children, depth, currentDepth + 1));
          for (Page child : children) {
             if (isViewPermitted(child)
-                  && !isTrashed(child)) {
+                  && !child.isDeleted()) {
                sb.append(buildDotNode(child));
                sb.append(buildDotEdge(quote(page.getDisplayTitle()), quote(child.getDisplayTitle())));
             }
@@ -200,7 +199,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
       final Page startPage = pageManager.getPage(spaceKey, startPageTitle);
       if (startPage != null
             && isViewPermitted(startPage)
-            && !isTrashed(startPage)) {
+            && !startPage.isDeleted()) {
 
          rootPages.add(startPage);
 
@@ -231,7 +230,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
             if ((referringPage != null)
                   && (currentPage.getId() != referringPage.getId())
                   && isViewPermitted(referringPage)
-                  && !isTrashed(referringPage)) {
+                  && !referringPage.isDeleted()) {
                visibleReferringPages.add(referringPage);
             }
          }
@@ -259,7 +258,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
                if ((referredPage != null)
                      && (referredPage.getId() != currentPage.getId())
                      && isViewPermitted(referredPage)
-                     && !isTrashed(referredPage)) {
+                     && !referredPage.isDeleted()) {
                   visibleReferredPages.add(referredPage);
                }
             }
@@ -313,10 +312,6 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
 
    public boolean isViewPermitted(ContentEntityObject page) {
       return _pm.hasPermission(AuthenticatedUserThreadLocal.get(), Permission.VIEW, page);
-   }
-
-   protected boolean isTrashed(ContentEntityObject page) {
-      return page.getContentStatusObject() == ContentStatus.TRASHED;
    }
 
    private String buildMetadataString(ContentEntityObject page) {
