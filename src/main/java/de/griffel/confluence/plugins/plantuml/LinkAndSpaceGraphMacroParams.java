@@ -24,7 +24,10 @@
  */
 package de.griffel.confluence.plugins.plantuml;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Supported LinkGraph Macro parameters.
@@ -50,6 +53,7 @@ public final class LinkAndSpaceGraphMacroParams {
       nodeColor,
       nodeFontsize,
       direction,
+      labels,
       metadata,
       debug;
    }
@@ -146,6 +150,19 @@ public final class LinkAndSpaceGraphMacroParams {
 
    public boolean isDirectionLeftToRight() {
       return LR.equals(getDirection());
+   }
+
+   public Set<String> getLabels() {
+      final Set<String> labelSet = new HashSet<String>();
+      final String value = get(Param.labels);
+      
+      if (value != null) {
+         String[] labels = value.split(",");
+         for (String label : labels) {
+            labelSet.add(label.trim().toLowerCase());
+         }
+      }
+      return labelSet;
    }
 
    public String getMetadata() {

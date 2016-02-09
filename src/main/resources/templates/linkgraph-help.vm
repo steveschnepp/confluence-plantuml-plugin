@@ -24,6 +24,7 @@ Supported are</br>
             <tt>TB</tt> top to bottom and<br/>
             <tt>LR</tt> left to right.<br/>
             Default: <tt>LR</tt></li>
+         <li><b>labels:</b> - (optional) Comma separated list of labels. If set only incoming/outgoing pages that contain at least one of the labels will be shown.</li>
          <li><b>metadata:</b> - (optional) Metadata keys and values of an page which will be shown. Requires comma separed list of metadata keys or <tt>@all</tt>.</li>
          <li><b>format:</b> - (optional) Image output format. <tt>SVG</tt> or <tt>PNG</tt>. Default: <tt>PNG</tt></li>
          <li><b>exportName:</b> - (optional) stores the generated image as attachment if a name is given.</li>

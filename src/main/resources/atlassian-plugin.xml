@@ -347,6 +347,7 @@
             <value name="LR"/>
             <value name="TB"/>
          </parameter>
+         <parameter name="labels" type="string"/>
          <parameter name="metadata" type="string"/>
          <parameter name="format" type="enum" default="PNG">
             <value name="PNG"/>
@@ -380,6 +381,7 @@
             <value name="LR"/>
             <value name="TB"/>
          </parameter>
+         <parameter name="labels" type="string"/>
          <parameter name="metadata" type="string"/>
          <parameter name="format" type="enum" default="PNG">
             <value name="PNG"/>

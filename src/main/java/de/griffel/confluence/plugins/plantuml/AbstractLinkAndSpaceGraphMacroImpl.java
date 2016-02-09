@@ -26,6 +26,7 @@ package de.griffel.confluence.plugins.plantuml;
 
 import com.atlassian.confluence.core.ContentEntityObject;
 import com.atlassian.confluence.core.ContentPropertyManager;
+import com.atlassian.confluence.labels.Label;
 import com.atlassian.confluence.links.LinkManager;
 import com.atlassian.confluence.links.OutgoingLink;
 import com.atlassian.confluence.pages.Page;
@@ -204,8 +205,9 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
          rootPages.add(startPage);
 
          final int currentDepth = 0;
-         processReferredPages(sb, rootPages, _macroParams.getOutgoingLinkLevels(), currentDepth, pageManager);
-         processReferringPages(sb, rootPages, _macroParams.getIncomingLinkLevels(), currentDepth, pageManager, linkManager);
+         final Set<String> allowedLabels = _macroParams.getLabels();
+         processReferredPages(sb, rootPages, _macroParams.getOutgoingLinkLevels(), currentDepth, allowedLabels, pageManager);
+         processReferringPages(sb, rootPages, _macroParams.getIncomingLinkLevels(), currentDepth, allowedLabels, pageManager, linkManager);
 
          // process root node with different color as last to prevent overwriting
          sb.append(buildDotNodeWithColor(startPage, _macroParams.getRootNodeColor()));
@@ -218,7 +220,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
       return sb.toString();
    }
 
-   void processReferringPages(StringBuilder sb, Collection<ContentEntityObject> pagesToFindReferringOnes, int maxDepth, int currentDepth, PageManager pageManager, LinkManager linkManager) {
+   void processReferringPages(StringBuilder sb, Collection<ContentEntityObject> pagesToFindReferringOnes, int maxDepth, int currentDepth, Set<String> allowedLabels, PageManager pageManager, LinkManager linkManager) {
       if (currentDepth >= maxDepth) {
          return;
       }
@@ -230,11 +232,12 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
             if ((referringPage != null)
                   && (currentPage.getId() != referringPage.getId())
                   && isViewPermitted(referringPage)
-                  && !referringPage.isDeleted()) {
+                  && !referringPage.isDeleted()
+                  && doesLabelFit(referringPage, allowedLabels)) {
                visibleReferringPages.add(referringPage);
             }
          }
-         processReferringPages(sb, visibleReferringPages, maxDepth, currentDepth + 1, pageManager, linkManager);
+         processReferringPages(sb, visibleReferringPages, maxDepth, currentDepth + 1, allowedLabels, pageManager, linkManager);
 
          for (ContentEntityObject referringPage : visibleReferringPages) {
             sb.append(buildDotNode(referringPage));
@@ -244,7 +247,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
       }
    }
 
-   void processReferredPages(StringBuilder sb, Collection<ContentEntityObject> pagesToFindOutgoingLinks, int maxDepth, int currentDepth, PageManager pageManager) {
+   void processReferredPages(StringBuilder sb, Collection<ContentEntityObject> pagesToFindOutgoingLinks, int maxDepth, int currentDepth, Set<String> allowedLabels, PageManager pageManager) {
       if (currentDepth >= maxDepth) {
          return;
       }
@@ -258,12 +261,13 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
                if ((referredPage != null)
                      && (referredPage.getId() != currentPage.getId())
                      && isViewPermitted(referredPage)
-                     && !referredPage.isDeleted()) {
+                     && !referredPage.isDeleted()
+                     && doesLabelFit(referredPage, allowedLabels)) {
                   visibleReferredPages.add(referredPage);
                }
             }
          }
-         processReferredPages(sb, visibleReferredPages, maxDepth, currentDepth + 1, pageManager);
+         processReferredPages(sb, visibleReferredPages, maxDepth, currentDepth + 1, allowedLabels, pageManager);
          for (ContentEntityObject referredPage : visibleReferredPages) {
             sb.append(buildDotNode(referredPage));
             sb.append(buildDotEdge(quote(currentPage.getDisplayTitle()), quote(referredPage.getDisplayTitle())));
@@ -312,6 +316,18 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
 
    public boolean isViewPermitted(ContentEntityObject page) {
       return _pm.hasPermission(AuthenticatedUserThreadLocal.get(), Permission.VIEW, page);
+   }
+   
+   public boolean doesLabelFit(ContentEntityObject page, Set allowedLabels) {
+      if (allowedLabels.isEmpty()) {
+         return true;
+      }
+      for (Label l : page.getLabels()) {
+         if (allowedLabels.contains(l.getName().toLowerCase())) {
+            return true;
+         }
+      }
+      return false;
    }
 
    private String buildMetadataString(ContentEntityObject page) {
