@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.griffel.confluence.plugins</groupId>
 	<artifactId>plant-uml</artifactId>
-	<version>5.15</version>
+	<version>5.16-SNAPSHOT</version>
 
 	<name>Confluence PlantUML Plugin</name>
 	<description>This is the PlantUML plugin for Atlassian Confluence.</description>
@@ -40,7 +40,7 @@
 		<connection>scm:hg:https://bitbucket.org/mgriffel/plantuml</connection>
 		<developerConnection>scm:hg:https://bitbucket.org/mgriffel/plantuml</developerConnection>
 		<url>https://bitbucket.org/mgriffel/plantuml</url>
-		<tag>plant-uml-5.15</tag>
+		<tag>plant-uml-5.13</tag>
 	</scm>
 	<developers>
 		<developer>
