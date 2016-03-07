@@ -178,7 +178,7 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
          spaceKey = pageContext.getSpaceKey();
       }
 
-      final StringBuilder sb = new StringBuilder("digraph g {\n");
+      final StringBuilder sb = new StringBuilder("strict digraph g {\n");
       sb.append("edge [arrowsize=\"0.8\"];");
       sb.append("node [shape=\"rect\", style=\"filled\", fillcolor=\"").append(_macroParams.getNodeColor()).append("\",");
       sb.append("fontname=\"Verdana\", fontsize=\"").append(_macroParams.getNodeFontsize()).append("\"];\n");
