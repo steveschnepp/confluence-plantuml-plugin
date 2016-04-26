@@ -1,0 +1,15 @@
+<ac:macro ac:name="plantuml">
+  <ac:parameter ac:name="type">ditaa</ac:parameter>
+  <ac:plain-text-body><![CDATA[
++--------+   +-------+    /----------+    +---------+    +-------+
+|        +---+ ditaa +--> |cBLU      +--> | cAAA    +<--.+ cF00  |
+|  Text  |   +-------+    | Colored  |    | Storage |    |  I/O  |
+|Document|   |!magic!|    |     +----+    | {s}     |    |  {io} |
+|     {d}|   |       |    |     | Hi |    +---------+    +-------+
++---+----+   +-------+    |     |c0FF|
+    :                     +-----+----/
+    |                         ^
+    |       Dashed Line       |
+    +-------------------------+
+]]></ac:plain-text-body>
+</ac:macro>

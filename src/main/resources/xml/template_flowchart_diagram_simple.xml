@@ -1,0 +1,7 @@
+<ac:macro ac:name="flowchart">
+  <ac:plain-text-body><![CDATA[Documentation [URL="Home" target="_blank"]
+ Content [URL="Content"]
+ "More Content" [URL="[SPK:Home]"]
+ Documentation -> Content
+ Documentation -> "More Content"]]></ac:plain-text-body>
+</ac:macro>
