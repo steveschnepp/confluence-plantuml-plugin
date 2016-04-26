@@ -37,6 +37,7 @@ import com.atlassian.confluence.security.PermissionManager;
 import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.spaces.Space;
 import com.atlassian.confluence.spaces.SpaceManager;
+import com.atlassian.confluence.util.GeneralUtil;
 import com.atlassian.confluence.user.AuthenticatedUserThreadLocal;
 import com.atlassian.renderer.RenderContext;
 import com.atlassian.renderer.v2.macro.MacroException;
@@ -315,7 +316,15 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
    }
 
    public boolean isViewPermitted(ContentEntityObject page) {
-      return _pm.hasPermission(AuthenticatedUserThreadLocal.get(), Permission.VIEW, page);
+	   boolean isViewPermitted = false;
+	   
+	   if (GeneralUtil.getVersionNumber().matches("^[0-4]\\..*$") || GeneralUtil.getVersionNumber().matches("^5\\.[0-1]\\..*$")) {
+			//obviously using a Confluence version prior to 5.2, falling back to old user authentication handling
+		   isViewPermitted = _pm.hasPermission(AuthenticatedUserThreadLocal.getUser(), Permission.VIEW, page);		   
+	   } else {
+		   isViewPermitted = _pm.hasPermission(AuthenticatedUserThreadLocal.get(), Permission.VIEW, page);
+	   }
+      return isViewPermitted;
    }
    
    public boolean doesLabelFit(ContentEntityObject page, Set allowedLabels) {
