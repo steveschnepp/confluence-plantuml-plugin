@@ -1,0 +1,112 @@
+{namespace plantuml.wizard}
+
+/**
+ * Chooser form: Select UML template
+ */
+{template .page1FormUml}
+    <form action="#" method="post" class="aui">
+        <fieldset>
+            <div class="field-group">
+                <label for="template-key">{getText('plantuml.blueprint.wizard.uml.page1.select')}</label>
+                <select id="template-key" class="select" name="contentTemplateKey">
+                    <option value="plantuml_template_activity_diagram_simple">{getText('plantuml.blueprint.templates.activity_diagram_simple.name')}</option>
+                    <option value="plantuml_template_class_diagram_simple">{getText('plantuml.blueprint.templates.class_diagram_simple.name')}</option>
+                    <option value="plantuml_template_component_diagram_simple">{getText('plantuml.blueprint.templates.component_diagram_simple.name')}</option>
+                    <option value="plantuml_template_state_diagram_simple">{getText('plantuml.blueprint.templates.state_diagram_simple.name')}</option>
+                    <option value="plantuml_template_sequence_diagram_simple">{getText('plantuml.blueprint.templates.sequence_diagram_simple.name')}</option>
+                    <option value="plantuml_template_usecase_diagram_simple">{getText('plantuml.blueprint.templates.usecase_diagram_simple.name')}</option>
+                </select>
+                <p><a href="{getText('plantuml.blueprint.wizard.uml.documentation_url')}" class="external-link">{getText('plantuml.blueprint.wizard.uml.documentation')}</a></p>
+            </div>
+        </fieldset>
+    </form>
+{/template}
+
+/**
+ * Chooser form: Select Graphviz template
+ */
+{template .page1FormGraphviz}
+    <form action="#" method="post" class="aui">
+        <fieldset>
+            <div class="field-group">
+                <label for="template-key">{getText('plantuml.blueprint.wizard.graphviz.page1.select')}</label>
+                <select id="template-key" class="select" name="contentTemplateKey">
+                    <option value="plantuml_template_graphviz_diagram_simple">{getText('plantuml.blueprint.templates.graphviz_diagram_simple.name')}</option>
+                    <option value="plantuml_template_flowchart_diagram_simple">{getText('plantuml.blueprint.templates.flowchart_diagram_simple.name')}</option>
+                </select>
+                <p><a href="{getText('plantuml.blueprint.wizard.graphviz.documentation_url')}" class="external-link">{getText('plantuml.blueprint.wizard.graphviz.documentation')}</a></p>
+            </div>
+        </fieldset>
+    </form>
+{/template}
+
+/**
+ * Chooser form: Select DITAA template
+ */
+{template .page1FormDitaa}
+    <form action="#" method="post" class="aui">
+        <fieldset>
+            <div class="field-group">
+                <label for="template-key">{getText('plantuml.blueprint.wizard.ditaa.page1.select')}</label>
+                <select id="template-key" class="select" name="contentTemplateKey">
+                    <option value="plantuml_template_ditaa_diagram_simple">{getText('plantuml.blueprint.templates.ditaa_diagram_simple.name')}</option>
+                </select>
+                <p><a href="{getText('plantuml.blueprint.wizard.ditaa.documentation_url')}" class="external-link">{getText('plantuml.blueprint.wizard.ditaa.documentation')}</a></p>
+            </div>
+        </fieldset>
+    </form>
+{/template}
+
+/**
+ * Chooser form: Select JCCKIT template
+ */
+{template .page1FormJcckit}
+    <form action="#" method="post" class="aui">
+        <fieldset>
+            <div class="field-group">
+                <label for="template-key">{getText('plantuml.blueprint.wizard.jcckit.page1.select')}</label>
+                <select id="template-key" class="select" name="contentTemplateKey">
+                    <option value="plantuml_template_jcckit_diagram_simple">{getText('plantuml.blueprint.templates.jcckit_diagram_simple.name')}</option>
+                </select>
+                <p><a href="{getText('plantuml.blueprint.wizard.jcckit.documentation_url')}" class="external-link">{getText('plantuml.blueprint.wizard.jcckit.documentation')}</a></p>
+            </div>
+        </fieldset>
+    </form>
+{/template}
+
+/**
+ * Chooser form: Select PlantUML template
+ */
+{template .page1FormPlantuml}
+    <form action="#" method="post" class="aui">
+        <fieldset>
+            <div class="field-group">
+                <label for="template-key">{getText('plantuml.blueprint.wizard.plantuml.page1.select')}</label>
+                <select id="template-key" class="select" name="contentTemplateKey">
+                    <option value="plantuml_template_plantuml_spacegraph">{getText('plantuml.blueprint.templates.plantuml_spacegraph.name')}</option>
+                    <option value="plantuml_template_plantuml_version">{getText('plantuml.blueprint.templates.plantuml_version.name')}</option>
+                    <option value="plantuml_template_plantuml_xearth">{getText('plantuml.blueprint.templates.plantuml_xearth.name')}</option>
+                </select>
+                <p><a href="{getText('plantuml.blueprint.wizard.plantumlxearth.documentation_url')}" class="external-link">{getText('plantuml.blueprint.wizard.plantumlxearth.documentation')}</a></p>
+            </div>
+        </fieldset>
+    </form>
+{/template}
+
+/**
+ * Chooser form: Select Salt template
+ */
+{template .page1FormSalt}
+    <form action="#" method="post" class="aui">
+        <fieldset>
+            <div class="field-group">
+                <label for="template-key">{getText('plantuml.blueprint.wizard.salt.page1.select')}</label>
+                <select id="template-key" class="select" name="contentTemplateKey">
+                    <option value="plantuml_template_salt_diagram_simple">{getText('plantuml.blueprint.templates.salt_diagram_simple.name')}</option>
+                </select>
+                <p><a href="{getText('plantuml.blueprint.wizard.salt.documentation_url')}" class="external-link">{getText('plantuml.blueprint.wizard.salt.documentation')}</a></p>
+            </div>
+        </fieldset>
+    </form>
+{/template}
+

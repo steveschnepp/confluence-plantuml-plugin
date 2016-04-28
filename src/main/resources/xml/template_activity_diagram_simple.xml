@@ -1,0 +1,8 @@
+<ac:macro ac:name="plantuml"><ac:plain-text-body><![CDATA[(*)  --> "check input"
+If "input is verbose" then
+--> [Yes] "turn on verbosity"
+--> "run command"
+else
+--> "run command"
+Endif
+-->(*)]]></ac:plain-text-body></ac:macro>

@@ -1,0 +1,3 @@
+<ac:macro ac:name="plantuml">
+  <ac:plain-text-body><![CDATA[version]]></ac:plain-text-body>
+</ac:macro>
