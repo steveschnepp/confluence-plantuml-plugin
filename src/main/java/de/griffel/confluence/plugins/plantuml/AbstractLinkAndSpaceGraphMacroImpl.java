@@ -61,6 +61,9 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
    private PermissionManager _pm;
    private String _baseUrl;
    private LinkAndSpaceGraphMacroParams _macroParams;
+   private Collection<ContentEntityObject> _visitedReferredPages = new ArrayList<ContentEntityObject>();
+   private Collection<ContentEntityObject> _visitedReferringPages = new ArrayList<ContentEntityObject>();
+   private Collection<String> _visitedEdges = new ArrayList<String>();
 
    public String execute(Map<String, String> params, String dotString, RenderContext context) throws MacroException {
       final LinkAndSpaceGraphMacroParams macroParams = new LinkAndSpaceGraphMacroParams(params);
@@ -199,6 +202,9 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
 
       final Collection<ContentEntityObject> rootPages = new ArrayList<ContentEntityObject>();
       final Page startPage = pageManager.getPage(spaceKey, startPageTitle);
+	  this._visitedReferredPages.add(startPage);
+	  this._visitedReferringPages.add(startPage);
+	  
       if (startPage != null
             && isViewPermitted(startPage)
             && !startPage.isDeleted()) {
@@ -232,17 +238,24 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
          for (ContentEntityObject referringPage : linkManager.getReferringContent(currentPage)) {
             if ((referringPage != null)
                   && (currentPage.getId() != referringPage.getId())
+				  && !this._visitedReferringPages.contains(referringPage)
                   && isViewPermitted(referringPage)
                   && !referringPage.isDeleted()
                   && doesLabelFit(referringPage, allowedLabels)) {
                visibleReferringPages.add(referringPage);
+			   this._visitedReferringPages.add(referringPage);
             }
          }
          processReferringPages(sb, visibleReferringPages, maxDepth, currentDepth + 1, allowedLabels, pageManager, linkManager);
 
+		 String edge = "";
          for (ContentEntityObject referringPage : visibleReferringPages) {
             sb.append(buildDotNode(referringPage));
-            sb.append(buildDotEdge(quote(referringPage.getDisplayTitle()), quote(currentPage.getDisplayTitle())));
+			edge = buildDotEdge(quote(referringPage.getDisplayTitle()), quote(currentPage.getDisplayTitle()));
+			if (!this._visitedEdges.contains(edge)) {
+				this._visitedEdges.add(edge);
+				sb.append(edge);
+			}
          }
 
       }
@@ -261,17 +274,25 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
                final Page referredPage = pageManager.getPage(outgoingLink.getDestinationSpaceKey(), outgoingLink.getDestinationPageTitle());
                if ((referredPage != null)
                      && (referredPage.getId() != currentPage.getId())
+					 && !this._visitedReferredPages.contains(referredPage)
                      && isViewPermitted(referredPage)
                      && !referredPage.isDeleted()
-                     && doesLabelFit(referredPage, allowedLabels)) {
+                     && doesLabelFit(referredPage, allowedLabels)) {						
                   visibleReferredPages.add(referredPage);
+				  this._visitedReferredPages.add(referredPage);
                }
             }
          }
          processReferredPages(sb, visibleReferredPages, maxDepth, currentDepth + 1, allowedLabels, pageManager);
+		 
+		 String edge = "";
          for (ContentEntityObject referredPage : visibleReferredPages) {
             sb.append(buildDotNode(referredPage));
-            sb.append(buildDotEdge(quote(currentPage.getDisplayTitle()), quote(referredPage.getDisplayTitle())));
+			edge = buildDotEdge(quote(currentPage.getDisplayTitle()), quote(referredPage.getDisplayTitle()));
+			if (!this._visitedEdges.contains(edge)) {
+				this._visitedEdges.add(edge);
+				sb.append(edge);
+			}
          }
       }
    }
