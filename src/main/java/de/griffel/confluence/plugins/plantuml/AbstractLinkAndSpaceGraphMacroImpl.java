@@ -41,6 +41,7 @@ import com.atlassian.confluence.util.GeneralUtil;
 import com.atlassian.confluence.user.AuthenticatedUserThreadLocal;
 import com.atlassian.renderer.RenderContext;
 import com.atlassian.renderer.v2.macro.MacroException;
+import com.google.common.collect.Sets;
 import net.sourceforge.plantuml.core.DiagramType;
 import org.apache.commons.lang.StringUtils;
 
@@ -61,9 +62,9 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
    private PermissionManager _pm;
    private String _baseUrl;
    private LinkAndSpaceGraphMacroParams _macroParams;
-   private Collection<ContentEntityObject> _visitedReferredPages = new ArrayList<ContentEntityObject>();
-   private Collection<ContentEntityObject> _visitedReferringPages = new ArrayList<ContentEntityObject>();
-   private Collection<String> _visitedEdges = new ArrayList<String>();
+   private Set<ContentEntityObject> _visitedReferredPages = Sets.newHashSet();
+   private Set<ContentEntityObject> _visitedReferringPages = Sets.newHashSet();
+   private Set<String> _visitedEdges = Sets.newHashSet();
 
    public String execute(Map<String, String> params, String dotString, RenderContext context) throws MacroException {
       final LinkAndSpaceGraphMacroParams macroParams = new LinkAndSpaceGraphMacroParams(params);
@@ -248,14 +249,13 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
          }
          processReferringPages(sb, visibleReferringPages, maxDepth, currentDepth + 1, allowedLabels, pageManager, linkManager);
 
-		 String edge = "";
          for (ContentEntityObject referringPage : visibleReferringPages) {
             sb.append(buildDotNode(referringPage));
-			edge = buildDotEdge(quote(referringPage.getDisplayTitle()), quote(currentPage.getDisplayTitle()));
-			if (!this._visitedEdges.contains(edge)) {
-				this._visitedEdges.add(edge);
-				sb.append(edge);
-			}
+            final String edge = buildDotEdge(quote(referringPage.getDisplayTitle()), quote(currentPage.getDisplayTitle()));
+            if (!this._visitedEdges.contains(edge)) {
+               this._visitedEdges.add(edge);
+               sb.append(edge);
+            }
          }
 
       }
@@ -285,14 +285,13 @@ abstract class AbstractLinkAndSpaceGraphMacroImpl {
          }
          processReferredPages(sb, visibleReferredPages, maxDepth, currentDepth + 1, allowedLabels, pageManager);
 		 
-		 String edge = "";
          for (ContentEntityObject referredPage : visibleReferredPages) {
             sb.append(buildDotNode(referredPage));
-			edge = buildDotEdge(quote(currentPage.getDisplayTitle()), quote(referredPage.getDisplayTitle()));
-			if (!this._visitedEdges.contains(edge)) {
-				this._visitedEdges.add(edge);
-				sb.append(edge);
-			}
+            final String edge = buildDotEdge(quote(currentPage.getDisplayTitle()), quote(referredPage.getDisplayTitle()));
+            if (!this._visitedEdges.contains(edge)) {
+               this._visitedEdges.add(edge);
+               sb.append(edge);
+            }
          }
       }
    }
