@@ -1,0 +1,14 @@
+<ac:macro ac:name="plantuml"><ac:plain-text-body><![CDATA[:An\nActor: as User
+
+rectangle boundary {
+  User -right--> (Use the application)
+  (Special use) .left..> (Use the application) : <<extends>>\n{if permission}
+}
+note "This is a note ." as N1
+(Use the application) .. N1
+
+usecase UC1 as "Use case description with
+--
+separator and a title:
+..Conclusion..
+This allows large descriptions."]]></ac:plain-text-body></ac:macro>

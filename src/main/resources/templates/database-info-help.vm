@@ -1,0 +1,24 @@
+
+<tr bgcolor=ffffff>
+  <td width="200px">
+    {database-info:datasources=jiraDS}<br />
+  </td>
+
+  <td>
+    <p> 
+      Show information about databases and JDBC drivers.
+       <ul>
+         <li><b>datasources:</b> - (optional) Names of databases to show information about. They must be configured as datasource by a Confluence admin. Leave empty to show information about all available databases. Multiple names can be separated by comma.</li>
+         <li><b>attributes:</b> - (optional) All available attributes will be shown (default). Attributes to show can be given as comma separated list.</li>
+       </ul>
+    </p>
+    <p>
+       This is the output of the sample on the left side:
+    </p>
+    <p>
+       <img src="$req.contextPath/download/resources/de.griffel.confluence.plugins.plant-uml/icons/database-info-macro-help.png"
+         width="182" height="116" border="0">
+    </p>
+  </td>
+
+</tr>
