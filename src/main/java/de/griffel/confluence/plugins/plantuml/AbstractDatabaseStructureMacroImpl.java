@@ -59,6 +59,8 @@ import de.griffel.confluence.plugins.plantuml.db.IndexDef;
 import de.griffel.confluence.plugins.plantuml.db.KeysDef;
 import de.griffel.confluence.plugins.plantuml.db.TableDef;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * This is the abstract implementation class of the {database-structure} macro.
  */
@@ -389,7 +391,9 @@ abstract class AbstractDatabaseStructureMacroImpl {
 
    private void linkColumnsWithTables(Map<String, TableDef> tables, List<ColumnDef> columns) {
       for (ColumnDef column : columns) {
-         tables.get(column.getTableId()).getColumns().add(column);
+         final TableDef tableDef = tables.get(column.getTableId());
+         checkNotNull(tableDef, "Missing tableDef for table '" + column.getTableId() + "' [" + tables.keySet() + "]");
+         tableDef.getColumns().add(column);
       }
    }
 
