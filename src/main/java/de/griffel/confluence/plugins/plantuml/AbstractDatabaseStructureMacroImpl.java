@@ -131,7 +131,8 @@ abstract class AbstractDatabaseStructureMacroImpl {
       final StringBuilder sb = new StringBuilder("digraph g {\n");
       sb.append("rankdir=LR;\n");
       sb.append("edge [arrowsize=\"0.8\"];");
-      sb.append("node [shape=\"rect\", style=\"filled\", fillcolor=\"lightyellow\", color=\"#bc3b59\", fontname=\"Verdana\", ratio=\"compress\", fontsize=\"");
+      sb.append(
+            "node [shape=\"rect\", style=\"filled\", fillcolor=\"lightyellow\", color=\"#bc3b59\", fontname=\"Verdana\", ratio=\"compress\", fontsize=\"");
       sb.append(_macroParams.getNodeFontsize()).append("\"];\n");
       sb.append(_macroParams.getAdditional()).append("\n");
 
@@ -232,12 +233,12 @@ abstract class AbstractDatabaseStructureMacroImpl {
 
    /**
     * Prints relation between two nodes.
-    *
+    * <p>
     * Output: node1 -> node2 [color="blue"];\n Node names will be cleaned from special characters.
     *
-    * @param sb StringBuilder to write relation to.
-    * @param node1 Left node
-    * @param node2 Right node
+    * @param sb     StringBuilder to write relation to.
+    * @param node1  Left node
+    * @param node2  Right node
     * @param format Additional formatting.
     */
    private void printRelation(StringBuilder sb, String node1, String node2, String format) {
@@ -249,12 +250,12 @@ abstract class AbstractDatabaseStructureMacroImpl {
 
    /**
     * Creates link between Index and table where it is defined.
-    *
+    * <p>
     * Link will have no arrowhead and a dark grey color.
     *
-    * @param sb StringBuilder to write relation to
+    * @param sb           StringBuilder to write relation to
     * @param currentTable Table for which references will be created
-    * @param tables All available tables/indexes
+    * @param tables       All available tables/indexes
     */
    private void buildIndexRelations(final StringBuilder sb, TableDef currentTable, Map<String, TableDef> tables) {
       for (IndexDef ix : currentTable.getIndices()) {
@@ -272,8 +273,8 @@ abstract class AbstractDatabaseStructureMacroImpl {
    /**
     * Creates link between tables based on foreign keys.
     *
-    * @param sb StringBuilder to write to
-    * @param keys All available foreign keys
+    * @param sb     StringBuilder to write to
+    * @param keys   All available foreign keys
     * @param tables All available tables
     */
    private void buildTableRelationsFromForeignKeys(final StringBuilder sb, List<KeysDef> keys,
@@ -288,7 +289,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
    /**
     * Create link between tables based on a regular expression given as macro parameter.
     *
-    * @param sb StringBuilder to write to
+    * @param sb     StringBuilder to write to
     * @param tables All available tables
     */
    private void buildTableRelationsFromRegEx(final StringBuilder sb, Map<String, TableDef> tables) {
@@ -392,8 +393,13 @@ abstract class AbstractDatabaseStructureMacroImpl {
    private void linkColumnsWithTables(Map<String, TableDef> tables, List<ColumnDef> columns) {
       for (ColumnDef column : columns) {
          final TableDef tableDef = tables.get(column.getTableId());
-         checkNotNull(tableDef, "Missing tableDef for table '" + column.getTableId() + "' [" + tables.keySet() + "]");
-         tableDef.getColumns().add(column);
+         // PUML-410: Ignore columns for unknown tables
+         if (tableDef != null) {
+            tableDef.getColumns().add(column);
+         } else {
+            log.warn("Ignore columns from table '" + column.getTableId()
+                  + "' since this table was not returned while reading the tables metadata (DatabaseMetaData#getTables)");
+         }
       }
    }
 
@@ -504,7 +510,7 @@ abstract class AbstractDatabaseStructureMacroImpl {
 
    /**
     * Returns database meta data.
-    *
+    * <p>
     * Returned object must be closed using "closeDatabaseMetaData"
     *
     * @param jdbcName Database which is configured at "java:comp/env/jdbc/<jdbcName>"
