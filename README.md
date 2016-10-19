@@ -3,7 +3,7 @@ Confluence PlantUML Plugin
 
 How to build the plugin
 
-    atlas-mvn install
+    mvn install
 
 How to deploy the plugin
 
