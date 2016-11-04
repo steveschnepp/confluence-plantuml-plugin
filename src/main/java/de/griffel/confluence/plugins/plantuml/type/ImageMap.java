@@ -24,7 +24,7 @@
  */
 package de.griffel.confluence.plugins.plantuml.type;
 
-import com.atlassian.gzipfilter.org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Holds the content of a HTML image <map>.
