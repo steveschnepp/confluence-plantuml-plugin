@@ -1,0 +1,23 @@
+
+syntax: regexp
+build-number.txt
+syntax: regexp
+.project
+syntax: regexp
+.classpath
+syntax: regexp
+.eclipse
+syntax: regexp
+^target$
+syntax: regexp
+^install\.sh$
+syntax: regexp
+^.*\.swp$
+syntax: regexp
+^.*\.orig$
+syntax: regexp
+plant-uml\.iml
+syntax: regexp
+\.idea/
+syntax: regexp
+^bin
