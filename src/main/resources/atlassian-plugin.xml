@@ -31,6 +31,8 @@
             <value name="dot"/>
             <value name="jcckit"/>
             <value name="salt"/>
+            <value name="math"/>
+            <value name="latex"/>
          </parameter>
          <parameter name="title" type="string"/>
          <parameter name="align" type="enum" default="none">
@@ -71,6 +73,8 @@
             <value name="dot"/>
             <value name="jcckit"/>
             <value name="salt"/>
+            <value name="math"/>
+            <value name="latex"/>
          </parameter>
          <parameter name="title" type="string"/>
          <parameter name="align" type="enum" default="none">
