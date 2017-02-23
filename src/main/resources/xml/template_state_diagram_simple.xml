@@ -1,0 +1,15 @@
+<ac:macro ac:name="plantuml"><ac:plain-text-body><![CDATA[[*] --> Configuring
+
+state Configuring {
+  [*] --> NewValueSelection
+  NewValueSelection --> NewValuePreview : EvNewValue
+  NewValuePreview --> NewValueSelection : EvNewValueRejected
+  NewValuePreview --> NewValueSelection : EvNewValueSaved
+  
+  state NewValuePreview {
+     State1 -> State2
+  }
+}
+
+Configuring --> [*] : Saved
+Configuring --> [*] : Aborted]]></ac:plain-text-body></ac:macro>

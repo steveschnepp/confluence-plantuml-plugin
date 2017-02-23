@@ -1,0 +1,728 @@
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <param name="configure.url">/admin/plugins/plantuml/config.action</param>
+        <param name="plugin-icon">images/icons/plantuml-icon.png</param>
+        <param name="plugin-logo">images/plantuml-logo.png</param>
+        <param name="plugin-banner">images/plantuml-banner.png</param>
+        <param name="atlassian-data-center-compatible">true</param>
+    </plugin-info>
+
+    <resource key="icons" name="icons/" type="download" location="/images/icons/"/>
+    <resource name="i18n" type="i18n" location="i18n/plantuml"/>
+
+    <component key="plantuml-configuration-manager"
+               name="plantuml configuration manager"
+               class="de.griffel.confluence.plugins.plantuml.config.DefaultPlantUmlConfigurationManager" />
+
+    <!-- Confluence <=3.x -->
+    <macro name="plantuml"
+           class="de.griffel.confluence.plugins.plantuml.PlantUmlMacro"
+           key="plantuml-macro"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/plantuml-macro-icon.png"
+           documentation-url="${project.url}/Macro plantuml">
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="type" type="enum" default="plantuml">
+            <value name="plantuml"/>
+            <value name="ditaa"/>
+            <value name="dot"/>
+            <value name="jcckit"/>
+            <value name="salt"/>
+            <value name="math"/>
+            <value name="latex"/>
+         </parameter>
+         <parameter name="title" type="string"/>
+         <parameter name="align" type="enum" default="none">
+            <value name="none"/>
+            <value name="left"/>
+            <value name="center"/>
+            <value name="right"/>
+         </parameter>
+         <parameter name="border" type="string"/>
+         <parameter name="hspace" type="string"/>
+         <parameter name="vspace" type="string"/>
+         <parameter name="dropshadow" type="boolean" default="true"/>
+         <parameter name="separation" type="boolean" default="true"/>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/plantuml-help.vm">
+        <param name="help-section" value="misc"/>
+      </resource>
+    </macro>
+
+    <!-- Confluence >=4.x -->
+    <xhtml-macro name="plantuml"
+           class="de.griffel.confluence.plugins.plantuml.PlantUmlMacroV4"
+           key="plantuml-macro-xhtml"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/plantuml-macro-icon.png"
+           documentation-url="${project.url}/Macro plantuml">
+      <device-type>mobile</device-type>
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="type" type="enum" default="plantuml">
+            <value name="plantuml"/>
+            <value name="ditaa"/>
+            <value name="dot"/>
+            <value name="jcckit"/>
+            <value name="salt"/>
+            <value name="math"/>
+            <value name="latex"/>
+         </parameter>
+         <parameter name="title" type="string"/>
+         <parameter name="align" type="enum" default="none">
+            <value name="none"/>
+            <value name="left"/>
+            <value name="center"/>
+            <value name="right"/>
+         </parameter>
+         <parameter name="border" type="string"/>
+         <parameter name="hspace" type="string"/>
+         <parameter name="vspace" type="string"/>
+         <parameter name="dropshadow" type="boolean" default="true"/>
+         <parameter name="separation" type="boolean" default="true"/>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/plantuml-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </xhtml-macro>
+
+    <!-- Confluence >=4.x -->
+    <xhtml-macro name="plantumlrender"
+           class="de.griffel.confluence.plugins.plantuml.PlantUmlRenderMacroV4"
+           key="plantumlrender-macro-xhtml"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/plantumlrender-macro-icon.png"
+           documentation-url="${project.url}/Macro plantumlrender and flowchartrender">
+      <device-type>mobile</device-type>
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="type" type="enum" default="plantuml">
+            <value name="plantuml"/>
+            <value name="ditaa"/>
+            <value name="dot"/>
+            <value name="jcckit"/>
+            <value name="salt"/>
+         </parameter>
+         <parameter name="title" type="string"/>
+         <parameter name="align" type="enum" default="none">
+            <value name="none"/>
+            <value name="left"/>
+            <value name="center"/>
+            <value name="right"/>
+         </parameter>
+         <parameter name="border" type="string"/>
+         <parameter name="hspace" type="string"/>
+         <parameter name="vspace" type="string"/>
+         <parameter name="dropshadow" type="boolean" default="true"/>
+         <parameter name="separation" type="boolean" default="true"/>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/plantuml-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </xhtml-macro>
+
+    <!-- Confluence <=3.x -->
+    <macro name="flowchart"
+           class="de.griffel.confluence.plugins.plantuml.FlowChartMacro"
+           key="flowchart-macro"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/flowchart-macro-icon.png"
+           documentation-url="${project.url}/Macro flowchart">
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="edgeArrowSize" type="string" default="0.8"/>
+         <parameter name="nodeShape" type="enum" default="rect">
+            <value name="rect"/>
+            <value name="ellipse"/>
+            <value name="tab"/>
+            <value name="note"/>
+            <value name="component"/>
+            <value name="folder"/>
+            <value name="box3d"/>
+            <value name="square"/>
+         </parameter>
+         <parameter name="nodeStyle" type="enum" default="filled">
+            <value name="filled"/>
+            <value name="diagonals"/>
+            <value name="rounded"/>
+            <value name="dashed"/>
+            <value name="dotted"/>
+            <value name="solid"/>
+            <value name="bold"/>
+         </parameter>
+         <parameter name="nodeFillColor" type="string" default="lightyellow"/>
+         <parameter name="nodeFontname" type="string" default="Verdana"/>
+         <parameter name="nodeFontsize" type="string" default="9"/>
+          <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/flowchart-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </macro>
+
+    <!-- Confluence >=4.x -->
+    <xhtml-macro name="flowchart"
+           class="de.griffel.confluence.plugins.plantuml.FlowChartMacroV4"
+           key="flowchart-macro-xhtml"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/flowchart-macro-icon.png"
+           documentation-url="${project.url}/Macro flowchart">
+      <device-type>mobile</device-type>
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="edgeArrowSize" type="string" default="0.8"/>
+         <parameter name="nodeShape" type="enum" default="rect">
+            <value name="rect"/>
+            <value name="ellipse"/>
+            <value name="tab"/>
+            <value name="note"/>
+            <value name="component"/>
+            <value name="folder"/>
+            <value name="box3d"/>
+            <value name="square"/>
+         </parameter>
+         <parameter name="nodeStyle" type="enum" default="filled">
+            <value name="filled"/>
+            <value name="diagonals"/>
+            <value name="rounded"/>
+            <value name="dashed"/>
+            <value name="dotted"/>
+            <value name="solid"/>
+            <value name="bold"/>
+         </parameter>
+         <parameter name="nodeFillColor" type="string" default="lightyellow"/>
+         <parameter name="nodeFontname" type="string" default="Verdana"/>
+         <parameter name="nodeFontsize" type="string" default="9"/>
+          <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/flowchart-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </xhtml-macro>
+
+    <!-- Confluence >=4.x -->
+    <xhtml-macro name="flowchartrender"
+           class="de.griffel.confluence.plugins.plantuml.FlowChartRenderMacroV4"
+           key="flowchartrender-macro-xhtml"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/flowchartrender-macro-icon.png"
+           documentation-url="${project.url}/Macro plantumlrender and flowchartrender">
+      <device-type>mobile</device-type>
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="edgeArrowSize" type="string" default="0.8"/>
+         <parameter name="nodeShape" type="enum" default="rect">
+            <value name="rect"/>
+            <value name="ellipse"/>
+            <value name="tab"/>
+            <value name="note"/>
+            <value name="component"/>
+            <value name="folder"/>
+            <value name="box3d"/>
+            <value name="square"/>
+         </parameter>
+         <parameter name="nodeStyle" type="enum" default="filled">
+            <value name="filled"/>
+            <value name="diagonals"/>
+            <value name="rounded"/>
+            <value name="dashed"/>
+            <value name="dotted"/>
+            <value name="solid"/>
+            <value name="bold"/>
+         </parameter>
+         <parameter name="nodeFillColor" type="string" default="lightyellow"/>
+         <parameter name="nodeFontname" type="string" default="Verdana"/>
+         <parameter name="nodeFontsize" type="string" default="9"/>
+          <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/flowchart-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </xhtml-macro>
+
+    <!-- Confluence <=3.x -->
+    <macro name="spacegraph"
+           class="de.griffel.confluence.plugins.plantuml.SpaceGraphMacro"
+           key="spacegraph-macro"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/spacegraph-macro-icon.png"
+           documentation-url="${project.url}/Macro spacegraph">
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="space" type="spacekey" />
+         <parameter name="page" type="string"/>
+         <parameter name="depth" type="string" default="3"/>
+         <parameter name="nodeColor" type="string" default="lightyellow"/>
+         <parameter name="nodeFontsize" type="string" default="9"/>
+         <parameter name="direction" type="enum" default="LR">
+            <value name="LR"/>
+            <value name="TB"/>
+         </parameter>
+         <parameter name="metadata" type="string"/>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/spacegraph-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </macro>
+
+    <!-- Confluence >=4.x -->
+    <xhtml-macro name="spacegraph"
+           class="de.griffel.confluence.plugins.plantuml.SpaceGraphMacroV4"
+           key="spacegraph-macro-xhtml"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/spacegraph-macro-icon.png"
+           documentation-url="${project.url}/Macro spacegraph">
+      <device-type>mobile</device-type>
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="space" type="spacekey" />
+         <parameter name="page"  type="confluence-content"/>
+         <parameter name="depth" type="string" default="3"/>
+         <parameter name="nodeColor" type="string" default="lightyellow"/>
+         <parameter name="nodeFontsize" type="string" default="9"/>
+         <parameter name="direction"    type="enum" default="LR">
+            <value name="LR"/>
+            <value name="TB"/>
+         </parameter>
+         <parameter name="metadata" type="string"/>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/spacegraph-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </xhtml-macro>
+
+    <!-- Confluence <=3.x -->
+    <macro name="linkgraph"
+           class="de.griffel.confluence.plugins.plantuml.LinkGraphMacro"
+           key="linkgraph-macro"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/linkgraph-macro-icon.png"
+           documentation-url="${project.url}/Macro linkgraph">
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="space" type="spacekey" />
+         <parameter name="page" type="string"/>
+         <parameter name="outgoingLinkLevels" type="string" default="1"/>
+         <parameter name="incomingLinkLevels" type="string" default="1"/>
+         <parameter name="rootNodeColor" type="string" default="lightblue"/>
+         <parameter name="nodeColor" type="string" default="lightyellow"/>
+         <parameter name="nodeFontsize" type="string" default="9"/>
+         <parameter name="direction" type="enum" default="LR">
+            <value name="LR"/>
+            <value name="TB"/>
+         </parameter>
+         <parameter name="labels" type="string"/>
+         <parameter name="metadata" type="string"/>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/linkegraph-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </macro>
+
+    <!-- Confluence >=4.x -->
+    <xhtml-macro name="linkgraph"
+           class="de.griffel.confluence.plugins.plantuml.LinkGraphMacroV4"
+           key="linkgraph-macro-xhtml"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/linkgraph-macro-icon.png"
+           documentation-url="${project.url}/Macro linkgraph">
+      <device-type>mobile</device-type>
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="space" type="spacekey" />
+         <parameter name="page" type="string"/>
+         <parameter name="outgoingLinkLevels" type="string" default="1"/>
+         <parameter name="incomingLinkLevels" type="string" default="1"/>
+         <parameter name="rootNodeColor" type="string" default="lightblue"/>
+         <parameter name="nodeColor" type="string" default="lightyellow"/>
+         <parameter name="nodeFontsize" type="string" default="9"/>
+         <parameter name="direction" type="enum" default="LR">
+            <value name="LR"/>
+            <value name="TB"/>
+         </parameter>
+         <parameter name="labels" type="string"/>
+         <parameter name="metadata" type="string"/>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/linkegraph-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </xhtml-macro>
+
+
+    <!-- Confluence <=3.x -->
+    <macro name="database-structure"
+           class="de.griffel.confluence.plugins.plantuml.DatabaseStructureMacro"
+           key="database-structure-macro"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/database-structure-macro-icon.png"
+           documentation-url="${project.url}/Macro database-structure">
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="datasource" type="string" required="true"/>
+         <parameter name="schemaName" type="string"/>
+         <parameter name="tableTypes" type="string" default="TABLE" />
+         <parameter name="tableNameFilter" type="string"/>
+         <parameter name="columnNameFilter" type="string"/>
+         <parameter name="tableNameRegEx" type="string"/>
+         <parameter name="columnNameRegEx" type="string"/>
+         <parameter name="showColumns" type="boolean" default="true"/>
+         <parameter name="showComments" type="boolean" default="false"/>
+         <parameter name="showDefaults" type="boolean" default="false"/>
+         <parameter name="showIndexes" type="boolean" default="false"/>
+         <parameter name="useForeignKeys" type="boolean" default="true"/>
+         <parameter name="relationRegEx" type="string"/>
+         <parameter name="nodeFontsize" type="string" default="9"/>
+         <parameter name="additional" type="string"/>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/database-structure-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </macro>
+
+    <!-- Confluence >=4.x -->
+    <xhtml-macro name="database-structure"
+           class="de.griffel.confluence.plugins.plantuml.DatabaseStructureMacroV4"
+           key="database-structure-macro-xhtml"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/database-structure-macro-icon.png"
+           documentation-url="${project.url}/Macro database-structure">
+      <device-type>mobile</device-type>
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="datasource" type="string" required="true"/>
+         <parameter name="schemaName" type="string"/>
+         <parameter name="tableTypes" type="string" default="TABLE" />
+         <parameter name="tableNameFilter" type="string"/>
+         <parameter name="columnNameFilter" type="string"/>
+         <parameter name="tableNameRegEx" type="string"/>
+         <parameter name="columnNameRegEx" type="string"/>
+         <parameter name="showColumns" type="boolean" default="true"/>
+         <parameter name="showComments" type="boolean" default="false"/>
+         <parameter name="showDefaults" type="boolean" default="false"/>
+         <parameter name="showIndexes" type="boolean" default="false"/>
+         <parameter name="useForeignKeys" type="boolean" default="true"/>
+         <parameter name="relationRegEx" type="string"/>
+         <parameter name="nodeFontsize" type="string" default="9"/>
+         <parameter name="additional" type="string"/>
+         <parameter name="format" type="enum" default="PNG">
+            <value name="PNG"/>
+            <value name="SVG"/>
+         </parameter>
+         <parameter name="exportName" type="string"/>
+         <parameter name="debug" type="boolean" default="false"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/database-structure-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </xhtml-macro>
+
+    <!-- Confluence <=3.x -->
+    <macro name="database-info"
+           class="de.griffel.confluence.plugins.plantuml.DatabaseInfoMacro"
+           key="database-info-macro"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/database-info-macro-icon.png"
+           documentation-url="${project.url}/Macro database-info">
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="datasources" type="string"/>
+         <parameter name="attributes" type="string"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/database-info-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </macro>
+
+    <!-- Confluence >=4.x -->
+    <xhtml-macro name="database-info"
+           class="de.griffel.confluence.plugins.plantuml.DatabaseInfoMacroV4"
+           key="database-info-macro-xhtml"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/database-info-macro-icon.png"
+           documentation-url="${project.url}/Macro database-info">
+      <device-type>mobile</device-type>
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="datasources" type="string"/>
+         <parameter name="attributes" type="string"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/database-info-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </xhtml-macro>
+
+    <xwork name="plantuml xwork actions" key="plantuml-action-xwork">
+        <package name="plantuml-admin-actions" extends="default" namespace="/admin/plugins/plantuml">
+         <default-interceptor-ref name="defaultStack"/>
+         <action name="config" class="de.griffel.confluence.plugins.plantuml.actions.PlantUmlAdminConfigAction" method="load">
+            <result name="error"   type="velocity">/templates/plantuml-admin-config.vm</result>
+            <result name="success" type="velocity">/templates/plantuml-admin-config.vm</result>
+         </action>
+         <action name="save" class="de.griffel.confluence.plugins.plantuml.actions.PlantUmlAdminConfigAction" method="save">
+            <interceptor-ref name="validatingStack"/>
+            <result name="error"   type="velocity">/templates/plantuml-admin-config.vm</result>
+            <result name="success" type="redirect">/admin/plugins/plantuml/config.action</result>
+         </action>
+      </package>
+    </xwork>
+
+
+    <!-- Confluence <=3.x -->
+    <macro name="svg"
+           class="de.griffel.confluence.plugins.plantuml.SvgMacro"
+           key="svg-macro"
+           state="disabled"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/svg-macro-icon.png"
+           documentation-url="${project.url}/Macro svg">
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="page" type="string"/>
+         <parameter name="name" type="string" required="true"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/svg-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </macro>
+
+    <!-- Confluence >=4.x -->
+    <xhtml-macro name="svg"
+           class="de.griffel.confluence.plugins.plantuml.SvgMacroV4"
+           key="svg-macro-xhtml"
+           state="disabled"
+           icon="/download/resources/${project.groupId}.${project.artifactId}/icons/svg-macro-icon.png"
+           documentation-url="${project.url}/Macro svg">
+      <device-type>mobile</device-type>
+      <category name="visuals"/>
+      <parameters>
+         <parameter name="page"  type="confluence-content"/>
+         <parameter name="name" type="attachment" required="true"/>
+      </parameters>
+      <resource type="velocity" name="help" location="templates/svg-help.vm">
+         <param name="help-section" value="misc"/>
+      </resource>
+    </xhtml-macro>
+
+
+    <!-- Blueprints -->
+    <content-template key="plantuml-index-template" i18n-name-key="plantuml.blueprint.templates.index.name">
+      <resource name="template" type="download" location="xml/index.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_activity_diagram_simple" i18n-name-key="plantuml.blueprint.templates.activity_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_activity_diagram_simple.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_class_diagram_simple" i18n-name-key="plantuml.blueprint.templates.class_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_class_diagram_simple.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_component_diagram_simple" i18n-name-key="plantuml.blueprint.templates.component_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_component_diagram_simple.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_sequence_diagram_simple" i18n-name-key="plantuml.blueprint.templates.sequence_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_sequence_diagram_simple.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_state_diagram_simple" i18n-name-key="plantuml.blueprint.templates.state_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_state_diagram_simple.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_usecase_diagram_simple" i18n-name-key="plantuml.blueprint.templates.usecase_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_usecase_diagram_simple.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_graphviz_diagram_simple" i18n-name-key="plantuml.blueprint.templates.graphviz_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_graphviz_diagram_simple.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_flowchart_diagram_simple" i18n-name-key="plantuml.blueprint.templates.flowchart_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_flowchart_diagram_simple.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_ditaa_diagram_simple" i18n-name-key="plantuml.blueprint.templates.ditaa_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_ditaa_simple.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_jcckit_diagram_simple" i18n-name-key="plantuml.blueprint.templates.jcckit_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_jcckit_simple.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_plantuml_spacegraph" i18n-name-key="plantuml.blueprint.templates.plantuml_spacegraph.name">
+      <resource name="template" type="download" location="xml/template_plantuml_spacegraph.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_plantuml_version" i18n-name-key="plantuml.blueprint.templates.plantuml_version.name">
+      <resource name="template" type="download" location="xml/template_plantuml_version.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_plantuml_xearth" i18n-name-key="plantuml.blueprint.templates.plantuml_xearth.name">
+      <resource name="template" type="download" location="xml/template_plantuml_xearth.xml"/>
+    </content-template>
+
+    <content-template key="plantuml_template_salt_diagram_simple" i18n-name-key="plantuml.blueprint.templates.salt_diagram_simple.name">
+      <resource name="template" type="download" location="xml/template_salt_basic_widgets.xml"/>
+    </content-template>
+
+
+    <blueprint key="plantuml-blueprint-uml" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
+      <content-template ref="plantuml_template_activity_diagram_simple"/>
+      <content-template ref="plantuml_template_class_diagram_simple"/>
+      <content-template ref="plantuml_template_component_diagram_simple"/>
+      <content-template ref="plantuml_template_sequence_diagram_simple"/>
+      <content-template ref="plantuml_template_state_diagram_simple"/>
+      <content-template ref="plantuml_template_usecase_diagram_simple"/>
+      <dialog-wizard key="plantuml-wizard">
+        <dialog-page id="page1Id" template-key="plantuml.wizard.page1FormUml" title-key="plantuml.blueprint.wizard.uml.page1.title"/>
+      </dialog-wizard>
+    </blueprint>
+
+    <blueprint key="plantuml-blueprint-graphviz" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
+      <content-template ref="plantuml_template_graphviz_diagram_simple"/>
+      <content-template ref="plantuml_template_flowchart_diagram_simple"/>
+      <dialog-wizard key="plantuml-wizard-graphviz">
+        <dialog-page id="page1Id" template-key="plantuml.wizard.page1FormGraphviz" title-key="plantuml.blueprint.wizard.graphviz.page1.title"/>
+      </dialog-wizard>
+    </blueprint>
+
+    <blueprint key="plantuml-blueprint-ditaa" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
+      <content-template ref="plantuml_template_ditaa_diagram_simple"/>
+      <dialog-wizard key="plantuml-wizard-ditaa">
+        <dialog-page id="page1Id" template-key="plantuml.wizard.page1FormDitaa" title-key="plantuml.blueprint.wizard.ditaa.page1.title"/>
+      </dialog-wizard>
+    </blueprint>
+
+    <blueprint key="plantuml-blueprint-jcckit" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
+      <content-template ref="plantuml_template_jcckit_diagram_simple"/>
+      <dialog-wizard key="plantuml-wizard-jcckit">
+        <dialog-page id="page1Id" template-key="plantuml.wizard.page1FormJcckit" title-key="plantuml.blueprint.wizard.jcckit.page1.title"/>
+      </dialog-wizard>
+    </blueprint>
+
+    <blueprint key="plantuml-blueprint-plantuml" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
+      <content-template ref="plantuml_template_plantuml_spacegraph"/>
+      <content-template ref="plantuml_template_plantuml_version"/>
+      <content-template ref="plantuml_template_plantuml_xearth"/>
+      <dialog-wizard key="plantuml-wizard-puml">
+        <dialog-page id="page1Id" template-key="plantuml.wizard.page1FormPlantuml" title-key="plantuml.blueprint.wizard.plantuml.page1.title"/>
+      </dialog-wizard>
+    </blueprint>
+
+    <blueprint key="plantuml-blueprint-salt" index-key="plantuml" index-template-key="plantuml-index-template" i18n-name-key="plantuml.blueprint.name">
+      <content-template ref="plantuml_template_salt_diagram_simple"/>
+      <dialog-wizard key="plantuml-wizard-salt">
+        <dialog-page id="page1Id" template-key="plantuml.wizard.page1FormSalt" title-key="plantuml.blueprint.wizard.salt.page1.title"/>
+      </dialog-wizard>
+    </blueprint>
+
+    <web-item key="blueprint-item-uml" i18n-name-key="plantuml.blueprint.plugin.uml.title" section="system.create.dialog/content">
+      <description key="plantuml.blueprint.plugin.uml.description"/>
+      <resource name="icon" type="download" location="images/icons/blueprint-uml-icon.png"/>
+      <param name="blueprintKey" value="plantuml-blueprint-uml"/>
+    </web-item>
+
+    <web-item key="blueprint-item-graphviz" i18n-name-key="plantuml.blueprint.plugin.graphviz.title" section="system.create.dialog/content">
+      <description key="plantuml.blueprint.plugin.graphviz.description"/>
+      <resource name="icon" type="download" location="images/icons/blueprint-graphviz-icon.png"/>
+      <param name="blueprintKey" value="plantuml-blueprint-graphviz"/>
+    </web-item>
+
+    <web-item key="blueprint-item-ditaa" i18n-name-key="plantuml.blueprint.plugin.ditaa.title" section="system.create.dialog/content">
+      <description key="plantuml.blueprint.plugin.ditaa.description"/>
+      <resource name="icon" type="download" location="images/icons/blueprint-ditaa-icon.png"/>
+      <param name="blueprintKey" value="plantuml-blueprint-ditaa"/>
+    </web-item>
+
+    <web-item key="blueprint-item-jcckit" i18n-name-key="plantuml.blueprint.plugin.jcckit.title" section="system.create.dialog/content">
+      <description key="plantuml.blueprint.plugin.jcckit.description"/>
+      <resource name="icon" type="download" location="images/icons/blueprint-jcckit-icon.png"/>
+      <param name="blueprintKey" value="plantuml-blueprint-jcckit"/>
+    </web-item>
+
+    <web-item key="blueprint-item-plantuml" i18n-name-key="plantuml.blueprint.plugin.plantuml.title" section="system.create.dialog/content">
+      <description key="plantuml.blueprint.plugin.plantuml.description"/>
+      <resource name="icon" type="download" location="images/icons/blueprint-plantuml-icon.png"/>
+      <param name="blueprintKey" value="plantuml-blueprint-plantuml"/>
+    </web-item>
+
+    <web-item key="blueprint-item-salt" i18n-name-key="plantuml.blueprint.plugin.salt.title" section="system.create.dialog/content">
+      <description key="plantuml.blueprint.plugin.salt.description"/>
+      <resource name="icon" type="download" location="images/icons/blueprint-salt-icon.png"/>
+      <param name="blueprintKey" value="plantuml-blueprint-salt"/>
+    </web-item>
+
+     <web-resource key="macro-browser-fields" name="Macro Browser Smart Fields">
+         <resource type="download" name="macro.js" location="js/macro.js" />
+         <context>macro-browser</context>
+     </web-resource>
+
+    <web-resource name="Resources" key="plantuml-resources">
+      <transformation extension="soy">
+        <transformer key="soyTransformer">
+          <functions>com.atlassian.confluence.plugins.soy:soy-core-functions</functions>
+        </transformer>
+      </transformation>
+
+      <resource type="download" name="wizard-templates-soy.js" location="soy/wizard-templates.soy" />
+
+      <dependency>com.atlassian.confluence.plugins.confluence-create-content-plugin:resources</dependency>
+      <context>atl.general</context>
+      <context>atl.admin</context>
+    </web-resource>
+
+    <rest name="Plant Uml Rest Resource" i18n-name-key="plantuml.rest-resource.name" key="plantuml.rest-resource" path="/plantuml" version="1.0" />
+
+</atlassian-plugin>
