@@ -41,6 +41,7 @@
             <value name="center"/>
             <value name="right"/>
          </parameter>
+         <parameter name="width" type="string"/>
          <parameter name="border" type="string"/>
          <parameter name="hspace" type="string"/>
          <parameter name="vspace" type="string"/>
@@ -83,6 +84,7 @@
             <value name="center"/>
             <value name="right"/>
          </parameter>
+         <parameter name="width" type="string"/>
          <parameter name="border" type="string"/>
          <parameter name="hspace" type="string"/>
          <parameter name="vspace" type="string"/>

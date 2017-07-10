@@ -25,15 +25,15 @@
 package de.griffel.confluence.plugins.plantuml;
 
 import com.atlassian.renderer.RenderContext;
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.collect.Iterators;
+import net.sourceforge.plantuml.FileFormat;
+import net.sourceforge.plantuml.core.DiagramType;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
-import net.sourceforge.plantuml.core.DiagramType;
-import net.sourceforge.plantuml.FileFormat;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterators;
 
 /**
  * Supported PlantUML Macro parameters.
@@ -41,7 +41,7 @@ import com.google.common.collect.Iterators;
 public final class PlantUmlMacroParams {
 
    public enum Param {
-      title, type, border, align, hspace, vspace, format, dropshadow, separation, exportName, debug;
+      title, type, width, border, align, hspace, vspace, format, dropshadow, separation, exportName, debug;
    }
 
    public enum Alignment {
@@ -88,6 +88,11 @@ public final class PlantUmlMacroParams {
       return vspace != null ? Integer.valueOf(vspace) : 0;
    }
 
+   public String getWidth() {
+      final String width = get(Param.width);
+      return width;
+   }
+
    public String getImageStyle() {
       final StringBuilder sb = new StringBuilder();
       sb.append(" style=\"");
@@ -96,6 +101,9 @@ public final class PlantUmlMacroParams {
       }
       if (getHspace() > 0 || getVspace() > 0) {
          sb.append("margin:").append(getVspace()).append("px ").append(getHspace()).append("px;");
+      }
+      if (!Strings.isNullOrEmpty(getWidth())) {
+         sb.append("width:").append(getWidth());
       }
       sb.append("\" ");
       return sb.toString();
